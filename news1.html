@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>iX*OnE二专《iX'World》上线 - 时代骏风</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+<div class="header-container">
+    <img src="images/logo.png" alt="公司Logo" class="logo">
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="news.html">News</a>
+        <a href="about.html">About TJ</a>
+    </nav>
+</div>
+</header>
+
+<section class="news-detail">
+    <h2>iX*OnE二专《iX'World》已在网易云音乐上线</h2>
+    <p style="color:#888; margin-bottom:30px;">发布时间：2024年</p>
+    
+    <p>时代骏风旗下艺人组合 iX*OnE 第二张专辑《iX'World》现已正式在网易云音乐平台上线！</p>
+    
+    <p>专辑包含以下歌曲：</p>
+    <ul style="font-size:18px; line-height:1.8; color:#ddd;">
+        <li>01《Redline》</li>
+        <li>02《WWW（world world world）》</li>
+        <li>03《Summer Vacation》</li>
+        <li>04《Summer Breeze》</li>
+        <li>05《W：RLD》</li>
+    </ul>
+    
+    <p>赶快去网易云音乐收听支持吧！</p>
+    
+    <p style="margin-top:40px;">
+        <a href="news.html" style="color:#ff6b6b;">← 返回新闻列表</a>
+    </p>
+</section>
+
+<footer>
+    <p>© 2026 时代骏风</p>
+</footer>
+
+<script>
+    let lastScrollTop = 0;
+    const header = document.querySelector('header');
+
+    window.addEventListener('scroll', function() {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        if (scrollTop > lastScrollTop && scrollTop > 50) {
+            header.classList.add('hide');
+        } else {
+            header.classList.remove('hide');
+        }
+        lastScrollTop = scrollTop;
+    });
+</script>
+</body>
+</html>
