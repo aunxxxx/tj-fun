@@ -317,14 +317,17 @@ footer {
     }
     
     /* 成员卡片 - 手机上一行3个 */
+   @media (max-width: 768px) {
     .members-container {
-        gap: 12px;
+        gap: 10px;
+        justify-content: center;
     }
     
     .member-card {
-        width: calc(33.333% - 12px);
+        width: 30%;  /* 直接用30%，一行3个 */
         min-width: 100px;
         padding: 8px;
+        margin: 0;
     }
     
     .member-card h3 {
@@ -337,18 +340,18 @@ footer {
     }
     
     .member-card img {
-        border-radius: 8px;  /* 手机端小圆角 */
+        border-radius: 8px;
     }
 }
 
-/* 小手机（宽度小于480px）- 一行3个 */
+/* 小手机（宽度小于480px） */
 @media (max-width: 480px) {
     .members-container {
         gap: 8px;
     }
     
     .member-card {
-        width: calc(33.333% - 8px);
+        width: 30%;  /* 保持一致 */
         padding: 6px;
     }
     
@@ -362,7 +365,7 @@ footer {
     
     nav a {
         margin: 0 5px;
-        font-size: 14px;  /* 小手机也足够大 */
+        font-size: 14px;
         padding: 5px 8px;
     }
     
@@ -373,4 +376,5 @@ footer {
     .department-card p {
         font-size: 18px;
     }
+}
 }
