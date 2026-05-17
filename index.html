@@ -2,8 +2,47 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
-<title>Home</title>
-<link rel="stylesheet" href="css/style.css">
+<title>时代骏风</title>
+<style>
+    body { margin:0; font-family: Arial, sans-serif; background:#ffffff; color:#111; }
+    header { position: fixed; top:0; left:0; width:100%; background:#ffffff; z-index:1000; transition: transform 0.3s ease; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    header.hide { transform: translateY(-100%); }
+    .header-container { display:flex; align-items:center; justify-content: space-between; padding:12px 20px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; position: relative; }
+    .logo { height:45px; flex-shrink: 0; }
+    nav { position: absolute; left: 50%; transform: translateX(-50%); white-space: nowrap; }
+    nav a { color:#333; margin:0 20px; text-decoration:none; font-weight:bold; font-size:18px; transition: all 0.3s ease; padding: 8px 12px; border-radius: 8px; }
+    nav a.current { background-color: #222; color: #fff; }
+    nav a:active { background-color: #222; color: #fff; }
+    .header-container::after { content: ""; width: 45px; flex-shrink: 0; visibility: hidden; }
+    section { padding:100px 20px 60px 20px; }
+    #home { display: flex; justify-content: center; align-items: center; min-height: 70vh; padding: 80px 20px; background: #ffffff; }
+    .department-card { display: block; width: 60%; max-width: 500px; margin: 0 auto; cursor: pointer; text-decoration: none; position: relative; }
+    .department-card img { width: 100%; border-radius: 16px; transition: transform 0.3s, filter 0.3s; display: block; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+    .department-card:hover img { transform: scale(1.02); filter: brightness(0.7); }
+    .department-card p { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 36px; font-weight: bold; margin: 0; opacity: 0; transition: opacity 0.3s; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); white-space: nowrap; }
+    .department-card:hover p { opacity: 1; }
+    footer { background: #f5f5f5; padding: 20px; text-align: center; color: #888; font-size: 14px; }
+    
+    /* ========== 手机端 - 强制放大导航栏 ========== */
+    @media (max-width: 768px) {
+        .header-container { padding: 12px 15px; position: relative; }
+        .logo { height: 40px; }
+        nav { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); white-space: nowrap; }
+        nav a { margin: 0 20px; font-size: 22px !important; font-weight: bold; padding: 10px 16px !important; border-radius: 8px; display: inline-block; }
+        nav a.current { background-color: #222; color: #fff; }
+        .header-container::after { content: ""; width: 40px; flex-shrink: 0; visibility: hidden; }
+        .department-card { width: 80%; max-width: 350px; }
+        .department-card p { font-size: 24px; }
+        section { padding: 100px 15px 40px 15px; }
+    }
+    
+    @media (max-width: 480px) {
+        nav a { margin: 0 12px; font-size: 20px !important; padding: 8px 12px !important; }
+        .logo { height: 35px; }
+        .header-container::after { width: 35px; }
+        .department-card p { font-size: 18px; }
+    }
+</style>
 </head>
 <body>
 
@@ -11,14 +50,13 @@
 <div class="header-container">
     <img src="images/logo.png" alt="公司Logo" class="logo">
     <nav>
-       <a href="index.html" class="current">Home</a>
+        <a href="index.html" class="current">Home</a>
         <a href="news.html">News</a>
         <a href="about.html">About TJ</a>
     </nav>
 </div>
 </header>
 
-<!-- 首页只放部门图片 -->
 <section id="home">
     <a href="members.html" class="department-card">
         <img src="images/iX*OnE.jpg" alt="iX*OnE">
@@ -33,10 +71,8 @@
 <script>
     let lastScrollTop = 0;
     const header = document.querySelector('header');
-
     window.addEventListener('scroll', function() {
         let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        
         if (scrollTop > lastScrollTop && scrollTop > 50) {
             header.classList.add('hide');
         } else {
