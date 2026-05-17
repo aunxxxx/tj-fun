@@ -1,0 +1,109 @@
+body { 
+    margin:0; 
+    font-family: Arial, sans-serif; 
+    background:#111; 
+    color:#fff;
+}
+
+/* 固定头部 */
+header {
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    background:#222;
+    z-index:1000;
+    transition: transform 0.3s ease;
+}
+
+header.hide {
+    transform: translateY(-100%);
+}
+
+.header-container {
+    display:flex;
+    align-items:center;
+    padding:10px 20px;
+}
+
+.logo {
+    height:50px;
+    margin-right:20px;
+}
+
+nav a {
+    color:#fff;
+    margin:0 15px;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+/* 所有页面通用部分 */
+section {
+    padding:100px 20px 40px 20px;
+}
+
+/* 部门卡片 & 新闻卡片 */
+.department-card, .news-card { 
+    display:inline-block; 
+    width:200px; 
+    margin:10px; 
+    cursor:pointer; 
+    text-align:center;
+    text-decoration: none;
+}
+
+.department-card img, .news-card img { 
+    width:100%; 
+    border-radius:8px; 
+    transition: transform 0.3s;
+}
+
+.department-card:hover img, .news-card:hover img { 
+    transform: scale(1.05); 
+}
+
+.department-card p, .news-card p { 
+    margin-top:5px; 
+    color:#fff; 
+}
+
+/* 成员卡片 */
+.member-card { 
+    display:inline-block; 
+    width:200px; 
+    margin:10px; 
+    background:#222; 
+    padding:10px; 
+    border-radius:8px; 
+    text-align:center;
+}
+
+.member-card img { 
+    width:100%; 
+    border-radius:50%; 
+}
+
+/* 页脚 */
+footer { 
+    background:#222; 
+    padding:20px; 
+    text-align:center; 
+    color:#888; 
+}
+
+/* 响应式设计：手机屏幕适配 */
+@media (max-width: 768px) {
+    .member-card {
+        width: calc(50% - 20px);
+    }
+    
+    .header-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .department-card, .news-card {
+        width: 150px;
+    }
+}
