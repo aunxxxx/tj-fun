@@ -5,39 +5,34 @@
 <title>Members</title>
 <link rel="stylesheet" href="css/style.css?v=3">
 <style>
-    /* 强制手机端一行3个 - 直接写在HTML里 */
-    @media (max-width: 768px) {
-        .members-container {
-            display: flex !important;
-            flex-wrap: wrap !important;
-            justify-content: space-between !important;
-        }
-        
-        .member-card {
-            width: 32% !important;
-            margin: 0 0 15px 0 !important;
-            padding: 8px !important;
-            box-sizing: border-box !important;
-            background: #f5f5f5 !important;
-            border-radius: 12px !important;
-            text-align: center !important;
-        }
-        
-        .member-card img {
-            width: 100% !important;
-            aspect-ratio: 1 / 1 !important;
-            object-fit: cover !important;
-            border-radius: 12px !important;
-        }
-        
-        .member-card h3 {
-            font-size: 12px !important;
-            margin: 8px 0 3px !important;
-        }
-        
-        .member-card p {
-            font-size: 9px !important;
-        }
+    .members-container {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 12px !important;
+    }
+    
+    .member-card {
+        margin: 0 !important;
+        padding: 8px !important;
+        background: #f5f5f5 !important;
+        border-radius: 12px !important;
+        text-align: center !important;
+    }
+    
+    .member-card img {
+        width: 100% !important;
+        aspect-ratio: 1 / 1 !important;
+        object-fit: cover !important;
+        border-radius: 12px !important;
+    }
+    
+    .member-card h3 {
+        font-size: 12px !important;
+        margin: 8px 0 3px !important;
+    }
+    
+    .member-card p {
+        font-size: 9px !important;
     }
 </style>
 </head>
