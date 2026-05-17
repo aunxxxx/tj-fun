@@ -1,11 +1,10 @@
 body { 
     margin:0; 
     font-family: Arial, sans-serif; 
-    background:#ffffff;  /* 改白色背景 */
-    color:#111;  /* 文字改深色 */
+    background:#ffffff;
+    color:#111;
 }
 
-/* 固定头部 - 白色背景 */
 header {
     position: fixed;
     top:0;
@@ -38,7 +37,6 @@ header.hide {
     flex-shrink: 0;
 }
 
-/* 导航栏 - 绝对居中 */
 nav {
     position: absolute;
     left: 50%;
@@ -46,28 +44,35 @@ nav {
     white-space: nowrap;
 }
 
+/* 导航栏普通状态 */
 nav a {
     color:#333;
     margin:0 20px;
     text-decoration:none;
     font-weight:bold;
-    font-size:18px;  /* 网页版18px */
-    transition: color 0.3s, background 0.3s;
+    font-size:18px;
+    transition: all 0.3s ease;
     padding: 8px 12px;
     border-radius: 8px;
 }
 
-/* 导航栏点击/激活状态 - 黑色 */
+/* 鼠标悬停效果（电脑端） */
+nav a:hover {
+    color:#ff6b6b;
+}
+
+/* 当前页面的激活状态 - 黑底白字 */
+nav a.current {
+    background-color: #222;
+    color: #fff;
+}
+
+/* 点击瞬间效果 */
 nav a:active {
     background-color: #222;
     color: #fff;
 }
 
-nav a:hover {
-    color:#ff6b6b;
-}
-
-/* 右侧占位，保持平衡 */
 .header-container::after {
     content: "";
     width: 45px;
@@ -75,12 +80,10 @@ nav a:hover {
     visibility: hidden;
 }
 
-/* 所有页面通用部分 */
 section {
     padding:100px 20px 60px 20px;
 }
 
-/* ========== 首页部门卡片 - 适中大小（类似YG） ========== */
 #home {
     display: flex;
     justify-content: center;
@@ -92,8 +95,8 @@ section {
 
 .department-card {
     display: block;
-    width: 60%;  /* 缩小宽度 */
-    max-width: 500px;  /* 最大宽度限制 */
+    width: 60%;
+    max-width: 500px;
     margin: 0 auto;
     cursor: pointer;
     text-decoration: none;
@@ -113,7 +116,6 @@ section {
     filter: brightness(0.7);
 }
 
-/* 图片上的文字 - 默认隐藏，悬停显示 */
 .department-card p {
     position: absolute;
     top: 50%;
@@ -133,7 +135,6 @@ section {
     opacity: 1;
 }
 
-/* 新闻卡片样式 - 深色背景（白色背景下） */
 .news-card { 
     display: block;
     width: 280px;
@@ -166,7 +167,6 @@ section {
     color: #888;
 }
 
-/* 成员卡片容器 */
 #members {
     text-align: center;
     background: #ffffff;
@@ -180,20 +180,17 @@ section {
 }
 
 .members-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     max-width: 1000px;
     margin: 0 auto;
 }
 
-/* 成员卡片 - 正方形图片 */
 .member-card { 
-    width: 280px;
-    background: #f5f5f5; 
-    padding: 15px; 
-    border-radius: 12px; 
+    background: #f5f5f5;
+    padding: 15px;
+    border-radius: 12px;
     text-align: center;
     transition: transform 0.3s;
     cursor: pointer;
@@ -204,12 +201,11 @@ section {
     background: #eeeeee;
 }
 
-/* 正方形图片（不是圆形了） */
 .member-card img { 
-    width: 100%; 
-    aspect-ratio: 1 / 1;  /* 1:1 正方形比例 */
-    object-fit: cover;  /* 图片覆盖整个正方形 */
-    border-radius: 12px;  /* 圆角正方形，不是圆形 */
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 12px;
 }
 
 .member-card h3 {
@@ -223,7 +219,6 @@ section {
     color: #666;
 }
 
-/* 新闻详情页样式 */
 .news-detail {
     max-width: 800px;
     margin: 0 auto;
@@ -249,40 +244,62 @@ section {
     color: #333;
 }
 
-/* 页脚 */
 footer { 
-    background: #f5f5f5; 
-    padding: 20px; 
-    text-align: center; 
-    color: #888; 
+    background: #f5f5f5;
+    padding: 20px;
+    text-align: center;
+    color: #888;
     font-size: 14px;
 }
 
-/* ========== 电脑端默认样式 ========== */
-@media (min-width: 769px) {
-    .member-card {
-        width: 280px;
-    }
-}
-
-/* ========== 手机端（宽度小于等于768px） ========== */
+/* ========== 手机端 ========== */
 @media (max-width: 768px) {
-    /* 导航栏 - 手机端字体调大 */
     .header-container {
         padding: 10px 15px;
+        position: relative;
     }
     
     .logo {
         height: 35px;
     }
     
-    nav a {
-        margin: 0 8px;
-        font-size: 16px;  /* 手机端16px，够大了 */
-        padding: 6px 10px;
+    /* 导航栏完全居中 */
+    nav {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        white-space: nowrap;
     }
     
-    /* 首页部门卡片 - 手机端适中 */
+    nav a {
+        margin: 0 15px;
+        font-size: 20px;
+        font-weight: bold;
+        padding: 8px 12px;
+        border-radius: 8px;
+    }
+    
+    /* 手机端当前页面样式 */
+    nav a.current {
+        background-color: #222;
+        color: #fff;
+    }
+    
+    /* 手机端点击效果 */
+    nav a:active {
+        background-color: #222;
+        color: #fff;
+    }
+    
+    /* 右侧透明占位，让logo和导航栏都居中 */
+    .header-container::after {
+        content: "";
+        width: 35px;
+        flex-shrink: 0;
+        visibility: hidden;
+    }
+    
     .department-card {
         width: 80%;
         max-width: 350px;
@@ -290,44 +307,23 @@ footer {
     
     .department-card p {
         font-size: 24px;
-        white-space: nowrap;
     }
     
-    /* 新闻卡片 */
     .news-card {
         width: 90%;
         max-width: 320px;
     }
     
-    .news-card p {
-        font-size: 16px;
-    }
-    
     section {
-        padding: 80px 15px 40px 15px;
+        padding: 100px 15px 40px 15px;
     }
     
-    /* 新闻详情页手机适配 */
-    .news-detail h2 {
-        font-size: 22px;
-    }
-    
-    .news-detail p, .news-detail ul {
-        font-size: 16px;
-    }
-    
-    /* 成员卡片 - 手机上一行3个 */
-   @media (max-width: 768px) {
     .members-container {
-        gap: 10px;
-        justify-content: center;
+        gap: 12px;
     }
     
     .member-card {
-        width: 30%;  /* 直接用30%，一行3个 */
-        min-width: 100px;
         padding: 8px;
-        margin: 0;
     }
     
     .member-card h3 {
@@ -344,14 +340,27 @@ footer {
     }
 }
 
-/* 小手机（宽度小于480px） */
+/* 小手机 */
 @media (max-width: 480px) {
+    nav a {
+        margin: 0 10px;
+        font-size: 18px;
+        padding: 6px 10px;
+    }
+    
+    .logo {
+        height: 30px;
+    }
+    
+    .header-container::after {
+        width: 30px;
+    }
+    
     .members-container {
         gap: 8px;
     }
     
     .member-card {
-        width: 30%;  /* 保持一致 */
         padding: 6px;
     }
     
@@ -363,18 +372,7 @@ footer {
         font-size: 8px;
     }
     
-    nav a {
-        margin: 0 5px;
-        font-size: 14px;
-        padding: 5px 8px;
-    }
-    
-    .logo {
-        height: 30px;
-    }
-    
     .department-card p {
         font-size: 18px;
     }
-}
 }
