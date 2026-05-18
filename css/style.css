@@ -33,19 +33,19 @@ header.hide {
     position: relative;
 }
 
-/* 公司Logo */
+/* 公司Logo - 调大 */
 .logo {
-    height: 45px;
+    height: 55px;        /* 从 45px 调大到 55px */
     flex-shrink: 0;
 }
 
-/* 导航栏字体 - 调大到36px */
+/* 导航栏字体 - 全局统一调大到36px */
 nav a {
     color:#333;
     margin:0 20px;
     text-decoration:none;
     font-weight:bold;
-    font-size: 36px;
+    font-size: 36px;     /* 统一 36px，所有页面生效 */
     transition: all 0.3s ease;
     padding: 8px 12px;
     border-radius: 8px;
@@ -67,7 +67,7 @@ nav a:active {
 
 .header-container::after {
     content: "";
-    width: 45px;
+    width: 55px;         /* 与 logo 高度同步 */
     flex-shrink: 0;
     visibility: hidden;
 }
@@ -171,8 +171,8 @@ section {
 }
 
 #about p {
-    font-size: 18px;
-    line-height: 1.6;
+    font-size: 22px;          /* 从 18px 调大到 22px */
+    line-height: 1.8;         /* 行高也稍微调大 */
     max-width: 1000px;
     margin: 0 auto;
     color: #333;
@@ -227,7 +227,7 @@ footer {
     display: block;
 }
 
-/* Members 小标题 - 调大到 50px */
+/* Members 小标题 - 50px */
 .members-subtitle {
     width: 100%;
     max-width: 1000px;
@@ -285,10 +285,15 @@ footer {
 /* 平板/手机端 */
 @media (max-width: 768px) {
     .header-container { padding: 10px 15px; }
-    .logo { height: 35px; }
+    .logo { height: 42px; }       /* 平板端 logo 缩小一点 */
     
     /* 导航字体平板端缩小 */
     nav a { margin: 0 15px; font-size: 28px; padding: 8px 12px; }
+    
+    /* 平衡右侧占位 */
+    .header-container::after {
+        width: 42px;
+    }
     
     .members-main-title {
         font-size: 52px;
@@ -325,7 +330,7 @@ footer {
         font-size: 52px;
     }
     #about p {
-        font-size: 16px;
+        font-size: 18px;
         padding: 0 20px;
     }
 }
@@ -333,7 +338,11 @@ footer {
 /* 小屏手机 */
 @media (max-width: 480px) {
     nav a { margin: 0 10px; font-size: 22px; padding: 6px 10px; }
-    .logo { height: 30px; }
+    .logo { height: 32px; }
+    
+    .header-container::after {
+        width: 32px;
+    }
     
     .members-main-title {
         font-size: 38px;
@@ -370,7 +379,7 @@ footer {
         font-size: 38px;
     }
     #about p {
-        font-size: 14px;
+        font-size: 16px;
     }
 }
 
