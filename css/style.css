@@ -1,4 +1,4 @@
-/* =================== 通用样式 =================== */
+/* ================== 通用样式 ================== */
 body { 
     margin:0; 
     font-family: Arial, sans-serif; 
@@ -60,8 +60,7 @@ nav a:hover {
     color:#ff6b6b;
 }
 
-nav a.current,
-nav a:active {
+nav a.current, nav a:active {
     background-color: #222;
     color: #fff;
 }
@@ -160,20 +159,12 @@ section {
     color: #888;
 }
 
-footer { 
-    background: #f5f5f5;
-    padding: 20px;
-    text-align: center;
-    color: #888;
-    font-size: 14px;
-}
-
-/* =================== Members 页面 =================== */
 #members {
     text-align: center;
     background: #ffffff;
 }
 
+/* ================== Members 页面顶部大标题 ================== */
 .members-top {
     display: flex;
     flex-direction: column;
@@ -184,65 +175,50 @@ footer {
 .members-main-title {
     display: flex;
     align-items: center;
-    font-size: 32px;
+    justify-content: center;
+    font-size: 48px; /* 调大字体 */
     font-weight: bold;
     margin-bottom: 20px;
-    justify-content: center;
 }
 
 .member-title-logo {
-    width: 32px;
-    height: 32px;
-    margin-right: 8px;
+    width: 48px;  /* 和字体一样大小 */
+    height: 48px;
+    margin-right: 12px;
+}
+
+.members-main-text {
+    font-size: 48px; /* 和 logo 一致 */
+    font-weight: bold;
 }
 
 .members-main-img {
-    width: 350px;
-    max-width: 90%;
+    width: 80%;        /* 大图覆盖约2.5个成员卡片宽度 */
+    max-width: 1200px; 
     border-radius: 16px;
     margin-bottom: 20px;
 }
 
 .members-subtitle {
-    font-size: 28px;
+    align-self: flex-start;
+    font-size: 32px;
     font-weight: bold;
-    text-align: left;
-    max-width: 1000px;
-    margin: 0 auto 20px auto;
+    margin-bottom: 20px;
+    padding-left: 10px;
 }
 
+/* 成员卡片 grid */
 .members-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
-    max-width: 1000px;
-    margin: 0 auto;
-}
-
-.member-card { 
-    background: #f5f5f5;
-    padding: 15px;
-    border-radius: 12px;
-    text-align: center;
-    transition: transform 0.3s;
-    cursor: pointer;
-}
-
-.member-card:hover {
-    transform: translateY(-5px);
-    background: #eeeeee;
-}
-
-.member-card img { 
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    border-radius: 12px;
+    max-width: 1200px;
+    margin: 0 auto 40px auto;
 }
 
 .member-card h3 {
     font-size: 20px;
-    margin: 8px 0 4px;
+    margin: 4px 0;
     color: #111;
 }
 
@@ -252,65 +228,44 @@ footer {
     color: #666;
 }
 
-/* =================== 手机端优化 =================== */
-@media (max-width: 768px) {
-    .header-container {
-        padding: 10px 15px;
-        position: relative;
-    }
-    
-    .logo {
-        height: 35px;
-    }
-    
-    /* 手机端导航优化 */
-    nav {
-        position: static;
-        transform: none;
-        display: flex;
-        justify-content: center;
-        flex-wrap: nowrap;
-        width: 100%;
-        margin-top: 10px;
-    }
+/* ================== Footer ================== */
+footer { 
+    background: #f5f5f5;
+    padding: 20px;
+    text-align: center;
+    color: #888;
+    font-size: 14px;
+}
 
-    nav a {
-        font-size: 22px;
-        padding: 10px 16px;
-        margin: 0 12px;
-    }
-    
-    .members-main-img {
-        width: 380px;
-    }
-    
-    .members-container {
-        grid-template-columns: repeat(3, 1fr);
-    }
-    
+/* ================== 响应式 ================== */
+@media (max-width: 768px) {
+    .header-container { padding: 10px 15px; }
+    .logo { height: 35px; }
+    nav { position: absolute; left:50%; top:50%; transform: translate(-50%, -50%); white-space: nowrap; }
+    nav a { margin:0 15px; font-size: 20px; font-weight: bold; padding: 8px 12px; border-radius: 8px; }
+
+    /* Members 页面响应式 */
+    .members-container { grid-template-columns: repeat(3, 1fr); }
+    .members-main-title, .members-main-text, .member-title-logo { font-size: 36px; width:auto; height:auto; }
+    .members-main-img { width: 90%; }
+    .members-subtitle { font-size: 28px; }
     .member-card h3 { font-size: 16px; }
     .member-card p { font-size: 12px; }
+
+    /* 其他元素响应式 */
+    .department-card { width: 80%; max-width: 350px; }
+    .department-card p { font-size: 24px; }
+    section { padding: 100px 15px 40px 15px; }
 }
 
 @media (max-width: 480px) {
-    nav a {
-        font-size: 20px;
-        padding: 8px 12px;
-        margin: 0 8px;
-    }
-
-    .logo {
-        height: 30px;
-    }
-
-    .members-main-img {
-        width: 300px;
-    }
-
-    .members-container {
-        grid-template-columns: repeat(3, 1fr);
-    }
-
+    .header-container { padding: 8px 10px; }
+    .logo { height: 30px; }
+    nav a { margin: 0 12px; font-size: 18px; padding: 6px 10px; }
+    .members-container { grid-template-columns: repeat(3, 1fr); }
+    .members-main-title, .members-main-text, .member-title-logo { font-size: 28px; }
+    .members-main-img { width: 95%; }
+    .members-subtitle { font-size: 24px; }
     .member-card h3 { font-size: 14px; }
     .member-card p { font-size: 10px; }
 }
