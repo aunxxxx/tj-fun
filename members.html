@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Members</title>
-<link rel="stylesheet" href="css/style.css?v=4">
+<link rel="stylesheet" href="css/style.css?v=5">
 </head>
 <body>
 
@@ -19,7 +19,16 @@
 </header>
 
 <section id="members">
-    <h2>Members</h2>
+    <!-- 顶部大标题 + Logo -->
+    <div class="members-top">
+        <h2 class="members-main-title">
+            <img src="images/ilogo.jpg" alt="Logo" class="member-title-logo">
+            iX*OnE
+        </h2>
+        <img src="images/iX*OnE.jpg" alt="iX*OnE" class="members-main-img">
+    </div>
+
+    <!-- 成员卡 -->
     <div class="members-container">
         <div class="member-card">
             <img src="images/马睿婕.jpg" alt="马睿婕">
@@ -79,13 +88,12 @@
 
     window.addEventListener('scroll', function() {
         let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        
         if (scrollTop > lastScrollTop && scrollTop > 50) {
             header.classList.add('hide');
         } else {
             header.classList.remove('hide');
         }
-        lastScrollTop = scrollTop;
+        lastScrollTop = Math.max(scrollTop, 0); // 防止负值闪烁
     });
 </script>
 </body>
