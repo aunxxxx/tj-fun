@@ -1,4 +1,4 @@
-/* ================== 通用样式 ================== */
+/* =================== 通用样式 =================== */
 body { 
     margin:0; 
     font-family: Arial, sans-serif; 
@@ -60,11 +60,7 @@ nav a:hover {
     color:#ff6b6b;
 }
 
-nav a.current {
-    background-color: #222;
-    color: #fff;
-}
-
+nav a.current,
 nav a:active {
     background-color: #222;
     color: #fff;
@@ -172,36 +168,49 @@ footer {
     font-size: 14px;
 }
 
-/* ================== Members 页面 ================== */
+/* =================== Members 页面 =================== */
 #members {
+    text-align: center;
     background: #ffffff;
 }
 
-/* 顶部大图 + Members 标题 */
 .members-top {
     display: flex;
     flex-direction: column;
-    align-items: center;  /* 图片居中 */
-    margin-bottom: 30px;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.members-main-title {
+    display: flex;
+    align-items: center;
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.member-title-logo {
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
 }
 
 .members-main-img {
-    width: 250px;       /* 电脑端大图 */
+    width: 350px;
     max-width: 90%;
     border-radius: 16px;
     margin-bottom: 20px;
 }
 
 .members-subtitle {
-    width: 100%;
-    text-align: left;   /* 左对齐 */
     font-size: 28px;
     font-weight: bold;
-    margin: 10px 0 20px 0;
-    padding-left: 20px; /* 左边距 */
+    text-align: left;
+    max-width: 1000px;
+    margin: 0 auto 20px auto;
 }
 
-/* 成员卡片 */
 .members-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -232,18 +241,18 @@ footer {
 }
 
 .member-card h3 {
-    font-size: 18px;
-    margin: 12px 0 5px;
+    font-size: 20px;
+    margin: 8px 0 4px;
     color: #111;
 }
 
 .member-card p {
-    font-size: 14px;
+    font-size: 16px;
+    margin: 0;
     color: #666;
 }
 
-/* ================== 响应式 ================== */
-/* 手机端导航栏、成员卡、顶部图片调整 */
+/* =================== 手机端优化 =================== */
 @media (max-width: 768px) {
     .header-container {
         padding: 10px 15px;
@@ -254,87 +263,54 @@ footer {
         height: 35px;
     }
     
+    /* 手机端导航优化 */
     nav {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        white-space: nowrap; /* 保持一行 */
+        position: static;
+        transform: none;
+        display: flex;
+        justify-content: center;
+        flex-wrap: nowrap;
+        width: 100%;
+        margin-top: 10px;
     }
-    
+
     nav a {
-        margin: 0 15px;
-        font-size: 20px;
-        font-weight: bold;
-        padding: 8px 12px;
-        border-radius: 8px;
+        font-size: 22px;
+        padding: 10px 16px;
+        margin: 0 12px;
     }
     
-    .header-container::after {
-        content: "";
-        width: 35px;
-        flex-shrink: 0;
-        visibility: hidden;
-    }
-    
-    .department-card {
-        width: 80%;
-        max-width: 350px;
-    }
-    
-    .department-card p {
-        font-size: 24px;
-    }
-    
-    section {
-        padding: 100px 15px 40px 15px;
-    }
-
-    /* Members 顶部大图和标题 */
     .members-main-img {
-        width: 280px;
+        width: 380px;
     }
-    .members-subtitle {
-        font-size: 24px;
-        padding-left: 15px;
+    
+    .members-container {
+        grid-template-columns: repeat(3, 1fr);
     }
-
-    /* 成员卡文字 */
+    
     .member-card h3 { font-size: 16px; }
     .member-card p { font-size: 12px; }
 }
 
-/* 小屏幕 */
 @media (max-width: 480px) {
     nav a {
-        margin: 0 12px;
-        font-size: 18px;
-        padding: 6px 10px;
+        font-size: 20px;
+        padding: 8px 12px;
+        margin: 0 8px;
     }
-    
+
     .logo {
         height: 30px;
     }
-    
-    .header-container::after {
-        width: 30px;
-    }
 
-    .department-card p {
-        font-size: 18px;
-    }
-
-    /* Members 顶部大图和标题 */
     .members-main-img {
-        width: 90%;
-        max-width: 300px;
-    }
-    .members-subtitle {
-        font-size: 20px;
-        padding-left: 10px;
+        width: 300px;
     }
 
-    /* 成员卡文字 */
+    .members-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
     .member-card h3 { font-size: 14px; }
     .member-card p { font-size: 10px; }
 }
