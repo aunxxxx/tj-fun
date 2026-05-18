@@ -19,12 +19,14 @@
 </header>
 
 <section id="members">
+
     <!-- 顶部大标题 -->
     <div class="members-top">
         <div class="members-main-title">
             <img src="images/ilogo.jpg" alt="iLogo" class="member-title-logo">
-            <img src="images/iX*OnE.jpg" alt="iX*OnE" class="members-main-img">
+            <span class="members-main-text">iX*OnE</span>
         </div>
+        <img src="images/iX*OnE.jpg" alt="iX*OnE 大图" class="members-main-img">
         <div class="members-subtitle">Members</div>
     </div>
 
@@ -85,10 +87,8 @@
 <script>
     let lastScrollTop = 0;
     const header = document.querySelector('header');
-
     window.addEventListener('scroll', function() {
         let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        
         if (scrollTop > lastScrollTop && scrollTop > 50) {
             header.classList.add('hide');
         } else {
@@ -97,5 +97,6 @@
         lastScrollTop = scrollTop;
     });
 </script>
+
 </body>
 </html>
