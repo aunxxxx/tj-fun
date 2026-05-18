@@ -19,27 +19,24 @@
 </header>
 
 <section id="members">
-    <!-- 顶部大图 + iLogo + iX*OnE标题 -->
+    <!-- 顶部大标题 -->
     <div class="members-top">
-        <img src="images/iX*OnE.jpg" alt="iX*OnE" class="members-main-img">
         <div class="members-main-title">
             <img src="images/ilogo.jpg" alt="iLogo" class="member-title-logo">
-            <span>iX*OnE</span>
+            <img src="images/iX*OnE.jpg" alt="iX*OnE" class="members-main-img">
         </div>
+        <div class="members-subtitle">Members</div>
     </div>
-
-    <!-- Members 标题 -->
-    <div class="members-subtitle">Members</div>
 
     <!-- 成员卡片 -->
     <div class="members-container">
         <div class="member-card">
-            <img src="images/马睿婕.jpg" alt="马睿婕">
+            <img src="images/马睿婕.png" alt="马睿婕">
             <h3>马睿婕</h3>
             <p>2004 / 09 / 02</p>
         </div>
         <div class="member-card">
-            <img src="images/陈朗.jpg" alt="陈朗">
+            <img src="images/陈朗.png" alt="陈朗">
             <h3>陈朗</h3>
             <p>2005 / 08 / 26</p>
         </div>
@@ -49,7 +46,7 @@
             <p>2004 / 10 / 29</p>
         </div>
         <div class="member-card">
-            <img src="images/徐楚茹.jpg" alt="徐楚茹">
+            <img src="images/徐楚茹.png" alt="徐楚茹">
             <h3>徐楚茹</h3>
             <p>2004 / 12 / 19</p>
         </div>
@@ -88,8 +85,10 @@
 <script>
     let lastScrollTop = 0;
     const header = document.querySelector('header');
+
     window.addEventListener('scroll', function() {
         let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
         if (scrollTop > lastScrollTop && scrollTop > 50) {
             header.classList.add('hide');
         } else {
