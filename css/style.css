@@ -1,6 +1,7 @@
-body { 
-    margin:0; 
-    font-family: Arial, sans-serif; 
+/* ========== 全局样式 ========== */
+body {
+    margin:0;
+    font-family: Arial, sans-serif;
     background:#ffffff;
     color:#111;
 }
@@ -44,7 +45,6 @@ nav {
     white-space: nowrap;
 }
 
-/* 导航栏普通状态 */
 nav a {
     color:#333;
     margin:0 20px;
@@ -56,18 +56,15 @@ nav a {
     border-radius: 8px;
 }
 
-/* 鼠标悬停效果（电脑端） */
 nav a:hover {
     color:#ff6b6b;
 }
 
-/* 当前页面的激活状态 - 黑底白字 */
 nav a.current {
     background-color: #222;
     color: #fff;
 }
 
-/* 点击瞬间效果 */
 nav a:active {
     background-color: #222;
     color: #fff;
@@ -80,6 +77,7 @@ nav a:active {
     visibility: hidden;
 }
 
+/* ========== 页面主体 ========== */
 section {
     padding:100px 20px 60px 20px;
 }
@@ -122,7 +120,7 @@ section {
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
-    font-size: 36px;
+    font-size: clamp(18px, 5vw, 36px);
     font-weight: bold;
     margin: 0;
     opacity: 0;
@@ -252,127 +250,117 @@ footer {
     font-size: 14px;
 }
 
-/* ========== 手机端 ========== */
+/* ========== 手机端优化 ========== */
 @media (max-width: 768px) {
     .header-container {
-        padding: 10px 15px;
-        position: relative;
+        padding: 12px 15px;
     }
-    
+
     .logo {
-        height: 35px;
+        height: 40px;
     }
-    
-    /* 导航栏完全居中 */
+
     nav {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
+        position: static;
+        transform: none;
+        display: flex;
+        justify-content: center;
+        gap: 12px;
         white-space: nowrap;
+        overflow-x: auto; /* 超出可水平滚动 */
     }
-    
+
     nav a {
-        margin: 0 15px;
-        font-size: 20px;
-        font-weight: bold;
-        padding: 8px 12px;
-        border-radius: 8px;
+        font-size: clamp(18px, 6vw, 28px);
+        padding: 10px 20px;
+        flex-shrink: 0;
     }
-    
-    /* 手机端当前页面样式 */
-    nav a.current {
-        background-color: #222;
-        color: #fff;
-    }
-    
-    /* 手机端点击效果 */
-    nav a:active {
-        background-color: #222;
-        color: #fff;
-    }
-    
-    /* 右侧透明占位，让logo和导航栏都居中 */
+
     .header-container::after {
-        content: "";
-        width: 35px;
+        width: 40px;
         flex-shrink: 0;
         visibility: hidden;
     }
-    
+
     .department-card {
         width: 80%;
         max-width: 350px;
     }
-    
-    .department-card p {
-        font-size: 24px;
-    }
-    
-    .news-card {
-        width: 90%;
-        max-width: 320px;
-    }
-    
+
     section {
         padding: 100px 15px 40px 15px;
     }
-    
+}
+
+@media (max-width: 480px) {
+    .logo {
+        height: 35px;
+    }
+
+    nav a {
+        font-size: clamp(16px, 7vw, 28px);
+        padding: 8px 16px;
+    }
+
+    .header-container::after {
+        width: 35px;
+    }
+
+    .department-card p {
+        font-size: clamp(14px, 5vw, 18px);
+    }
+    /* ========== Members 页面特殊样式 ========== */
+#members {
+    text-align: center;
+    background: #ffffff;
+}
+
+.members-top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.members-main-title {
+    display: flex;
+    align-items: center;
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.member-title-logo {
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+}
+
+.members-main-img {
+    width: 300px; /* 大图比成员卡大一些 */
+    max-width: 90%;
+    border-radius: 16px;
+    margin-bottom: 20px;
+}
+
+.members-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* 手机端保持 3 列不换行 */
+@media (max-width: 768px) {
     .members-container {
-        gap: 12px;
-    }
-    
-    .member-card {
-        padding: 8px;
-    }
-    
-    .member-card h3 {
-        font-size: 12px;
-        margin: 8px 0 3px;
-    }
-    
-    .member-card p {
-        font-size: 9px;
-    }
-    
-    .member-card img {
-        border-radius: 8px;
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
-/* 小手机 */
 @media (max-width: 480px) {
-    nav a {
-        margin: 0 10px;
-        font-size: 18px;
-        padding: 6px 10px;
-    }
-    
-    .logo {
-        height: 30px;
-    }
-    
-    .header-container::after {
-        width: 30px;
-    }
-    
     .members-container {
-        gap: 8px;
-    }
-    
-    .member-card {
-        padding: 6px;
-    }
-    
-    .member-card h3 {
-        font-size: 10px;
-    }
-    
-    .member-card p {
-        font-size: 8px;
-    }
-    
-    .department-card p {
-        font-size: 18px;
+        grid-template-columns: repeat(3, 1fr);
     }
 }
