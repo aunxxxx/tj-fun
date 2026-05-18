@@ -35,17 +35,17 @@ header.hide {
 
 /* 公司Logo - 调大 */
 .logo {
-    height: 55px;        /* 从 45px 调大到 55px */
+    height: 55px;
     flex-shrink: 0;
 }
 
-/* 导航栏字体 - 全局统一调大到36px */
+/* 导航栏字体 - 全局统一36px */
 nav a {
     color:#333;
     margin:0 20px;
     text-decoration:none;
     font-weight:bold;
-    font-size: 36px;     /* 统一 36px，所有页面生效 */
+    font-size: 36px;
     transition: all 0.3s ease;
     padding: 8px 12px;
     border-radius: 8px;
@@ -67,7 +67,7 @@ nav a:active {
 
 .header-container::after {
     content: "";
-    width: 55px;         /* 与 logo 高度同步 */
+    width: 55px;
     flex-shrink: 0;
     visibility: hidden;
 }
@@ -158,12 +158,12 @@ section {
     display: block;
     margin-top: 10px;
     font-size: 18px;
-    color: #888;
+    color: #666;        /* 从 #888 改为 #666，更深一些，更清晰 */
 }
 
 /* ========== About 页面 ========== */
 #about h2 {
-    font-size: 80px;
+    font-size: 60px;        /* 从 80px 调小到 60px，与正文差距减小 */
     font-weight: bold;
     margin-bottom: 30px;
     text-align: left;
@@ -171,8 +171,8 @@ section {
 }
 
 #about p {
-    font-size: 22px;          /* 从 18px 调大到 22px */
-    line-height: 1.8;         /* 行高也稍微调大 */
+    font-size: 24px;        /* 从 22px 调大到 24px */
+    line-height: 1.8;
     max-width: 1000px;
     margin: 0 auto;
     color: #333;
@@ -285,12 +285,10 @@ footer {
 /* 平板/手机端 */
 @media (max-width: 768px) {
     .header-container { padding: 10px 15px; }
-    .logo { height: 42px; }       /* 平板端 logo 缩小一点 */
+    .logo { height: 42px; }
     
-    /* 导航字体平板端缩小 */
     nav a { margin: 0 15px; font-size: 28px; padding: 8px 12px; }
     
-    /* 平衡右侧占位 */
     .header-container::after {
         width: 42px;
     }
@@ -323,14 +321,15 @@ footer {
     }
     .news-card small {
         font-size: 16px;
+        color: #666;
     }
     
     /* About 页面平板端 */
     #about h2 {
-        font-size: 52px;
+        font-size: 44px;
     }
     #about p {
-        font-size: 18px;
+        font-size: 20px;
         padding: 0 20px;
     }
 }
@@ -372,14 +371,15 @@ footer {
     }
     .news-card small {
         font-size: 14px;
+        color: #666;
     }
     
     /* About 页面小屏 */
     #about h2 {
-        font-size: 38px;
+        font-size: 32px;
     }
     #about p {
-        font-size: 16px;
+        font-size: 18px;
     }
 }
 
