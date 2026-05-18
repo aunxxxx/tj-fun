@@ -33,24 +33,19 @@ header.hide {
     position: relative;
 }
 
+/* 公司Logo */
 .logo {
-    height:45px;
+    height: 45px;
     flex-shrink: 0;
 }
 
-nav {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-}
-
+/* 导航栏字体 - 调大到36px */
 nav a {
     color:#333;
     margin:0 20px;
     text-decoration:none;
     font-weight:bold;
-    font-size:18px;
+    font-size: 36px;
     transition: all 0.3s ease;
     padding: 8px 12px;
     border-radius: 8px;
@@ -81,6 +76,7 @@ section {
     padding:100px 20px 60px 20px;
 }
 
+/* ========== Home 页面 ========== */
 #home {
     display: flex;
     justify-content: center;
@@ -132,36 +128,54 @@ section {
     opacity: 1;
 }
 
+/* ========== News 页面（新闻卡片）========== */
 .news-card {
     display: block;
-    width: 280px;
-    margin: 20px auto;
+    width: 400px;
+    margin: 30px auto;
     cursor: pointer;
     text-align: center;
     text-decoration: none;
     background: #f5f5f5;
-    border-radius: 12px;
-    padding: 20px;
+    border-radius: 16px;
+    padding: 30px;
     transition: transform 0.3s, background 0.3s;
     border: 1px solid #e0e0e0;
 }
 
 .news-card:hover {
     background: #e8e8e8;
-    transform: translateY(-5px);
+    transform: translateY(-8px);
 }
 
 .news-card p {
     color: #333;
-    font-size: 18px;
-    margin-bottom: 8px;
+    font-size: 26px;
+    margin-bottom: 12px;
 }
 
 .news-card small {
     display: block;
-    margin-top: 8px;
-    font-size: 14px;
+    margin-top: 10px;
+    font-size: 18px;
     color: #888;
+}
+
+/* ========== About 页面 ========== */
+#about h2 {
+    font-size: 80px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    text-align: left;
+    color: #111;
+}
+
+#about p {
+    font-size: 18px;
+    line-height: 1.6;
+    max-width: 1000px;
+    margin: 0 auto;
+    color: #333;
 }
 
 footer {
@@ -186,7 +200,7 @@ footer {
     margin-bottom: 40px;
 }
 
-/* 大标题容器 - 像 BLACKPINK 那样醒目 */
+/* 大标题容器 - 80px 醒目 */
 .members-main-title {
     display: flex;
     align-items: center;
@@ -204,7 +218,7 @@ footer {
     margin-right: 16px;
 }
 
-/* iX*OnE 图片 - 比 home 图片大 */
+/* iX*OnE 图片 - 700px */
 .members-main-img {
     width: 90%;
     max-width: 700px;
@@ -213,12 +227,12 @@ footer {
     display: block;
 }
 
-/* Members 小标题 - 左对齐，比原来大 */
+/* Members 小标题 - 调大到 50px */
 .members-subtitle {
     width: 100%;
     max-width: 1000px;
     text-align: left;
-    font-size: 36px;
+    font-size: 50px;
     font-weight: bold;
     margin-bottom: 40px;
     color: #111;
@@ -272,7 +286,9 @@ footer {
 @media (max-width: 768px) {
     .header-container { padding: 10px 15px; }
     .logo { height: 35px; }
-    nav a { margin: 0 15px; font-size: 22px; padding: 10px 16px; }
+    
+    /* 导航字体平板端缩小 */
+    nav a { margin: 0 15px; font-size: 28px; padding: 8px 12px; }
     
     .members-main-title {
         font-size: 52px;
@@ -286,16 +302,37 @@ footer {
         margin-bottom: 25px;
     }
     .members-subtitle {
-        font-size: 28px;
+        font-size: 36px;
     }
     .members-container { grid-template-columns: repeat(3, 1fr); }
     .member-card h3 { font-size: 16px; }
     .member-card p { font-size: 14px; }
+    
+    /* 新闻卡片平板端 */
+    .news-card {
+        width: 320px;
+        padding: 25px;
+    }
+    .news-card p {
+        font-size: 22px;
+    }
+    .news-card small {
+        font-size: 16px;
+    }
+    
+    /* About 页面平板端 */
+    #about h2 {
+        font-size: 52px;
+    }
+    #about p {
+        font-size: 16px;
+        padding: 0 20px;
+    }
 }
 
 /* 小屏手机 */
 @media (max-width: 480px) {
-    nav a { margin: 0 12px; font-size: 20px; padding: 8px 12px; }
+    nav a { margin: 0 10px; font-size: 22px; padding: 6px 10px; }
     .logo { height: 30px; }
     
     .members-main-title {
@@ -310,14 +347,34 @@ footer {
         margin-bottom: 20px;
     }
     .members-subtitle {
-        font-size: 24px;
+        font-size: 28px;
     }
     .members-container { grid-template-columns: repeat(3, 1fr); }
     .member-card h3 { font-size: 14px; }
     .member-card p { font-size: 12px; }
+    
+    /* 新闻卡片小屏 */
+    .news-card {
+        width: 280px;
+        padding: 20px;
+    }
+    .news-card p {
+        font-size: 18px;
+    }
+    .news-card small {
+        font-size: 14px;
+    }
+    
+    /* About 页面小屏 */
+    #about h2 {
+        font-size: 38px;
+    }
+    #about p {
+        font-size: 14px;
+    }
 }
 
-/* 电脑端图片微调 */
+/* 电脑端 */
 @media (min-width: 769px) {
     .members-main-img {
         max-width: 700px;
