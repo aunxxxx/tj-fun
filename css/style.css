@@ -186,26 +186,30 @@ footer {
     margin-bottom: 40px;
 }
 
+/* 大标题容器 - 调大 */
 .members-main-title {
     display: flex;
     align-items: center;
-    font-size: 36px; /* 大标题字体 */
+    font-size: 52px;
     font-weight: bold;
     margin-bottom: 20px;
     justify-content: center;
 }
 
+/* 标题旁边的 logo 图标 - 同步调大 */
 .member-title-logo {
-    width: 36px; /* 跟字体大小一致 */
-    height: 36px;
-    margin-right: 8px;
+    width: 52px;
+    height: 52px;
+    margin-right: 12px;
 }
 
+/* iX*OnE 图片 - 比 home 图片大 */
 .members-main-img {
-    width: 300px; /* 手机端和电脑端默认 */
-    max-width: 90%;
+    width: 90%;
+    max-width: 600px;
     border-radius: 16px;
     margin-bottom: 20px;
+    display: block;
 }
 
 .members-subtitle {
@@ -249,7 +253,7 @@ footer {
 
 .member-card h3 {
     font-size: 18px;
-    margin: 6px 0 4px; /* 缩小上下间距 */
+    margin: 6px 0 4px;
     color: #111;
 }
 
@@ -264,8 +268,20 @@ footer {
     .header-container { padding: 10px 15px; }
     .logo { height: 35px; }
     nav a { margin: 0 15px; font-size: 22px; padding: 10px 16px; }
+    
+    /* 标题手机端缩小 */
+    .members-main-title {
+        font-size: 40px;
+    }
+    .member-title-logo {
+        width: 40px;
+        height: 40px;
+    }
+    /* 图片手机端 */
+    .members-main-img {
+        max-width: 450px;
+    }
     .members-container { grid-template-columns: repeat(3, 1fr); }
-    .members-main-img { width: 300px; }
     .member-card h3 { font-size: 16px; }
     .member-card p { font-size: 14px; }
 }
@@ -274,13 +290,24 @@ footer {
 @media (max-width: 480px) {
     nav a { margin: 0 12px; font-size: 20px; padding: 8px 12px; }
     .logo { height: 30px; }
+    
+    /* 标题小屏手机进一步缩小 */
+    .members-main-title {
+        font-size: 32px;
+    }
+    .member-title-logo {
+        width: 32px;
+        height: 32px;
+    }
+    .members-main-img { max-width: 280px; }
     .members-container { grid-template-columns: repeat(3, 1fr); }
-    .members-main-img { width: 280px; }
     .member-card h3 { font-size: 14px; }
     .member-card p { font-size: 12px; }
 }
 
 /* ========== 电脑端 iX*OnE 图片调整 ========== */
 @media (min-width: 769px) {
-    .members-main-img { width: 200px; } /* 电脑端调小1/3 */
+    .members-main-img {
+        max-width: 550px;
+    }
 }
