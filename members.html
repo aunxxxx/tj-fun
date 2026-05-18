@@ -19,16 +19,19 @@
 </header>
 
 <section id="members">
-    <!-- 顶部大标题 + Logo -->
+    <!-- 顶部大图 + iLogo + iX*OnE标题 -->
     <div class="members-top">
-        <h2 class="members-main-title">
-            <img src="images/ilogo.jpg" alt="Logo" class="member-title-logo">
-            iX*OnE
-        </h2>
         <img src="images/iX*OnE.jpg" alt="iX*OnE" class="members-main-img">
+        <div class="members-main-title">
+            <img src="images/ilogo.jpg" alt="iLogo" class="member-title-logo">
+            <span>iX*OnE</span>
+        </div>
     </div>
 
-    <!-- 成员卡 -->
+    <!-- Members 标题 -->
+    <div class="members-subtitle">Members</div>
+
+    <!-- 成员卡片 -->
     <div class="members-container">
         <div class="member-card">
             <img src="images/马睿婕.jpg" alt="马睿婕">
@@ -85,7 +88,6 @@
 <script>
     let lastScrollTop = 0;
     const header = document.querySelector('header');
-
     window.addEventListener('scroll', function() {
         let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         if (scrollTop > lastScrollTop && scrollTop > 50) {
@@ -93,7 +95,7 @@
         } else {
             header.classList.remove('hide');
         }
-        lastScrollTop = Math.max(scrollTop, 0); // 防止负值闪烁
+        lastScrollTop = scrollTop;
     });
 </script>
 </body>
