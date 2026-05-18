@@ -1,7 +1,7 @@
-/* ========== 全局样式 ========== */
-body {
-    margin:0;
-    font-family: Arial, sans-serif;
+/* ========== 全站样式 ========== */
+body { 
+    margin:0; 
+    font-family: Arial, sans-serif; 
     background:#ffffff;
     color:#111;
 }
@@ -77,7 +77,6 @@ nav a:active {
     visibility: hidden;
 }
 
-/* ========== 页面主体 ========== */
 section {
     padding:100px 20px 60px 20px;
 }
@@ -120,7 +119,7 @@ section {
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
-    font-size: clamp(18px, 5vw, 36px);
+    font-size: 36px;
     font-weight: bold;
     margin: 0;
     opacity: 0;
@@ -171,10 +170,39 @@ section {
 }
 
 #members h2 {
-    text-align: center;
+    text-align: left;
     margin-bottom: 30px;
     font-size: 28px;
     color: #111;
+}
+
+.members-top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.members-main-title {
+    display: flex;
+    align-items: center;
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.member-title-logo {
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+}
+
+.members-main-img {
+    width: 300px;
+    max-width: 90%;
+    border-radius: 16px;
+    margin-bottom: 20px;
 }
 
 .members-container {
@@ -207,13 +235,13 @@ section {
 }
 
 .member-card h3 {
-    font-size: 18px;
+    font-size: 20px; /* 调大名字 */
     margin: 12px 0 5px;
     color: #111;
 }
 
 .member-card p {
-    font-size: 14px;
+    font-size: 16px; /* 调大生日 */
     color: #666;
 }
 
@@ -250,36 +278,46 @@ footer {
     font-size: 14px;
 }
 
-/* ========== 手机端优化 ========== */
+/* ========== 手机端 ========== */
 @media (max-width: 768px) {
     .header-container {
-        padding: 12px 15px;
+        padding: 10px 15px;
+        position: relative;
     }
-
+    
     .logo {
-        height: 40px;
+        height: 35px;
     }
-
+    
     nav {
-        position: static;
-        transform: none;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        white-space: nowrap;
         display: flex;
         justify-content: center;
-        gap: 12px;
-        white-space: nowrap;
-        overflow-x: auto; /* 超出可水平滚动 */
+        align-items: center;
+        flex-wrap: nowrap;
     }
-
+    
     nav a {
-        font-size: clamp(18px, 6vw, 28px);
-        padding: 10px 20px;
-        flex-shrink: 0;
+        margin: 0 15px;
+        font-size: 20px;
+        font-weight: bold;
+        padding: 8px 12px;
+        border-radius: 8px;
     }
 
     .header-container::after {
-        width: 40px;
+        content: "";
+        width: 35px;
         flex-shrink: 0;
         visibility: hidden;
+    }
+    
+    section {
+        padding: 100px 15px 40px 15px;
     }
 
     .department-card {
@@ -287,80 +325,41 @@ footer {
         max-width: 350px;
     }
 
-    section {
-        padding: 100px 15px 40px 15px;
+    .department-card p {
+        font-size: 24px;
     }
+
+    .members-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .member-card h3 { font-size: 16px; }
+    .member-card p { font-size: 12px; }
 }
 
 @media (max-width: 480px) {
-    .logo {
-        height: 35px;
-    }
-
     nav a {
-        font-size: clamp(16px, 7vw, 28px);
-        padding: 8px 16px;
+        margin: 0 12px;
+        font-size: 18px;
+        padding: 6px 10px;
+    }
+    
+    .logo {
+        height: 30px;
     }
 
     .header-container::after {
-        width: 35px;
+        width: 30px;
     }
 
     .department-card p {
-        font-size: clamp(14px, 5vw, 18px);
+        font-size: 18px;
     }
-    /* ========== Members 页面特殊样式 ========== */
-#members {
-    text-align: center;
-    background: #ffffff;
-}
 
-.members-top {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 40px;
-}
-
-.members-main-title {
-    display: flex;
-    align-items: center;
-    font-size: 32px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    justify-content: center;
-}
-
-.member-title-logo {
-    width: 32px;
-    height: 32px;
-    margin-right: 8px;
-}
-
-.members-main-img {
-    width: 300px; /* 大图比成员卡大一些 */
-    max-width: 90%;
-    border-radius: 16px;
-    margin-bottom: 20px;
-}
-
-.members-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    max-width: 1000px;
-    margin: 0 auto;
-}
-
-/* 手机端保持 3 列不换行 */
-@media (max-width: 768px) {
     .members-container {
         grid-template-columns: repeat(3, 1fr);
     }
-}
 
-@media (max-width: 480px) {
-    .members-container {
-        grid-template-columns: repeat(3, 1fr);
-    }
+    .member-card h3 { font-size: 14px; }
+    .member-card p { font-size: 10px; }
 }
