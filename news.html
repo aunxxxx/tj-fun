@@ -2,8 +2,47 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>News</title>
 <link rel="stylesheet" href="css/style.css">
+<style>
+    @media (max-width: 768px) {
+        .header-container {
+            padding: 10px 15px;
+            justify-content: center;
+        }
+        .logo {
+            height: 35px;
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        nav {
+            position: static;
+            transform: none;
+            margin: 0 auto;
+        }
+        nav a {
+            font-size: 26px !important;
+            margin: 0 15px !important;
+            padding: 8px 12px !important;
+        }
+        .header-container::after {
+            display: none;
+        }
+    }
+    @media (max-width: 480px) {
+        .logo {
+            height: 30px;
+        }
+        nav a {
+            font-size: 22px !important;
+            margin: 0 10px !important;
+            padding: 6px 10px !important;
+        }
+    }
+</style>
 </head>
 <body>
 
@@ -12,20 +51,25 @@
     <img src="images/logo.png" alt="公司Logo" class="logo">
     <nav>
         <a href="index.html">Home</a>
-       <a href="news.html" class="current">News</a>
+        <a href="news.html" class="current">News</a>
         <a href="about.html">About TJ</a>
     </nav>
 </div>
 </header>
 
 <section id="news">
-    
-    <!-- 新闻卡片1 -->
-    <a href="news1.html" class="news-card">
-        <p>🎵 iX*OnE二专《iX'World》已在网易云音乐上线</p>
-        <small style="color:#888;">2024年发布</small>
-    </a>
-    
+    <div class="news-card">
+        <a href="news-detail1.html" style="text-decoration:none;">
+            <p>iX*OnE二专《iX'World》上线</p>
+            <small>2024年</small>
+        </a>
+    </div>
+    <div class="news-card">
+        <a href="news-detail2.html" style="text-decoration:none;">
+            <p>时代骏风一周年纪念</p>
+            <small>2025年</small>
+        </a>
+    </div>
 </section>
 
 <footer>
@@ -33,19 +77,18 @@
 </footer>
 
 <script>
-    let lastScrollTop = 0;
-    const header = document.querySelector('header');
-
-    window.addEventListener('scroll', function() {
-        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        
-        if (scrollTop > lastScrollTop && scrollTop > 50) {
-            header.classList.add('hide');
-        } else {
-            header.classList.remove('hide');
-        }
-        lastScrollTop = scrollTop;
-    });
+let lastScrollTop = 0;
+const header = document.querySelector('header');
+window.addEventListener('scroll', function() {
+    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    if (scrollTop > lastScrollTop && scrollTop > 50) {
+        header.classList.add('hide');
+    } else {
+        header.classList.remove('hide');
+    }
+    lastScrollTop = scrollTop;
+});
 </script>
+
 </body>
 </html>
