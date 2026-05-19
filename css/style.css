@@ -45,8 +45,7 @@ nav {
     white-space: nowrap;
 }
 
-/* 电脑端导航栏 */
-header nav a {
+nav a {
     color:#333;
     margin:0 20px;
     text-decoration:none;
@@ -57,18 +56,28 @@ header nav a {
     border-radius: 8px;
 }
 
-header nav a:hover {
+nav a:hover {
     color:#ff6b6b;
 }
 
-header nav a.current {
+nav a.current {
     background-color: #222;
     color: #fff;
 }
 
-header nav a:active {
-    background-color: #222;
-    color: #fff;
+.header-container::after {
+    content: "";
+    width: 45px;
+    flex-shrink: 0;
+    visibility: hidden;
+}
+
+/* 所有页面内容避开固定导航栏 */
+section {
+    padding-top: 100px;
+    padding-bottom: 60px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 /* ========== Home 页面 ========== */
@@ -77,7 +86,7 @@ header nav a:active {
     justify-content: center;
     align-items: center;
     min-height: 70vh;
-    padding: 80px 20px;
+    background: #ffffff;
 }
 
 .department-card {
@@ -122,6 +131,149 @@ header nav a:active {
     opacity: 1;
 }
 
+/* ========== News 页面（新闻卡片）========== */
+#news {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.news-card {
+    display: block;
+    width: 400px;
+    margin: 30px auto;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    background: #f5f5f5;
+    border-radius: 16px;
+    padding: 30px;
+    transition: transform 0.3s, background 0.3s;
+    border: 1px solid #e0e0e0;
+}
+
+.news-card:hover {
+    background: #e8e8e8;
+    transform: translateY(-8px);
+}
+
+.news-card p {
+    color: #333;
+    font-size: 26px;
+    margin-bottom: 12px;
+}
+
+.news-card small {
+    display: block;
+    margin-top: 10px;
+    font-size: 18px;
+    color: #666;
+}
+
+/* ========== About 页面 ========== */
+#about {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+#about h2 {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 25px;
+    text-align: left;
+    color: #111;
+}
+
+#about p {
+    font-size: 22px;
+    line-height: 1.8;
+    color: #333;
+}
+
+/* ========== 成员页面 ========== */
+#members {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.members-top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.members-main-title {
+    display: flex;
+    align-items: center;
+    font-size: 80px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    justify-content: center;
+    letter-spacing: 4px;
+}
+
+.member-title-logo {
+    width: 80px;
+    height: 80px;
+    margin-right: 16px;
+}
+
+.members-main-img {
+    width: 90%;
+    max-width: 700px;
+    border-radius: 16px;
+    margin-bottom: 30px;
+    display: block;
+}
+
+.members-subtitle {
+    width: 100%;
+    text-align: left;
+    font-size: 50px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #111;
+}
+
+.members-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.member-card {
+    background: #f5f5f5;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    transition: transform 0.3s;
+    cursor: pointer;
+}
+
+.member-card:hover {
+    transform: translateY(-5px);
+    background: #eeeeee;
+}
+
+.member-card img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.member-card h3 {
+    font-size: 18px;
+    margin: 6px 0 4px;
+    color: #111;
+}
+
+.member-card p {
+    font-size: 16px;
+    margin: 2px 0 0;
+    color: #666;
+}
+
 /* Footer */
 footer {
     background: #f5f5f5;
@@ -129,29 +281,129 @@ footer {
     text-align: center;
     color: #888;
     font-size: 14px;
+    margin-top: 40px;
 }
 
-/* ========== 响应式导航栏 ========= */
+/* ========== 响应式适配 ========== */
 @media (max-width: 768px) {
-    /* 平板导航 */
-    header .header-container nav a {
-        font-size: 26px !important;
-        margin: 0 12px !important;
-        padding: 8px 12px !important;
+    .header-container {
+        padding: 10px 15px;
+        justify-content: center;
     }
-    header .logo {
-        height: 40px !important;
+    
+    .logo {
+        height: 35px;
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    nav {
+        position: static;
+        transform: none;
+        margin: 0 auto;
+    }
+    
+    nav a {
+        font-size: 20px !important;
+        margin: 0 12px !important;
+        padding: 6px 10px !important;
+    }
+    
+    .header-container::after {
+        display: none;
+    }
+    
+    section {
+        padding-top: 80px;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    .members-main-title {
+        font-size: 52px;
+    }
+    .member-title-logo {
+        width: 52px;
+        height: 52px;
+    }
+    .members-main-img {
+        max-width: 550px;
+        margin-bottom: 20px;
+    }
+    .members-subtitle {
+        font-size: 36px;
+    }
+    .members-container {
+        gap: 15px;
+    }
+    .member-card h3 {
+        font-size: 14px;
+    }
+    .member-card p {
+        font-size: 12px;
+    }
+    
+    .news-card {
+        width: 90%;
+        max-width: 350px;
+        padding: 20px;
+    }
+    .news-card p {
+        font-size: 20px;
+    }
+    .news-card small {
+        font-size: 14px;
+    }
+    
+    #about h2 {
+        font-size: 36px;
+    }
+    #about p {
+        font-size: 18px;
     }
 }
 
 @media (max-width: 480px) {
-    /* 小屏手机导航 */
-    header .header-container nav a {
-        font-size: 22px !important;
-        margin: 0 8px !important;
-        padding: 6px 10px !important;
+    .logo {
+        height: 30px;
+        left: 12px;
     }
-    header .logo {
-        height: 36px !important;
+    
+    nav a {
+        font-size: 18px !important;
+        margin: 0 8px !important;
+        padding: 5px 8px !important;
+    }
+    
+    .members-main-title {
+        font-size: 38px;
+    }
+    .member-title-logo {
+        width: 38px;
+        height: 38px;
+    }
+    .members-main-img {
+        max-width: 380px;
+        margin-bottom: 15px;
+    }
+    .members-subtitle {
+        font-size: 28px;
+    }
+    .members-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    
+    .news-card p {
+        font-size: 18px;
+    }
+    
+    #about h2 {
+        font-size: 28px;
+    }
+    #about p {
+        font-size: 16px;
     }
 }
