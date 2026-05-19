@@ -75,32 +75,38 @@ nav a.current {
     color: #fff;
 }
 
-/* 右侧用户区域 - 留给个人中心 */
+/* 右侧用户图标区域 */
 .user-area {
     position: relative;
     z-index: 100;
 }
 
-.user-area a {
-    color: #333;
-    text-decoration: none;
-    font-size: 16px;
-    padding: 6px 12px;
-    border-radius: 20px;
-    transition: all 0.3s;
+.user-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.user-area a:hover {
-    background: #f0f0f0;
-    color: #ff6b6b;
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    transition: transform 0.2s, opacity 0.2s;
+    cursor: pointer;
 }
 
-/* 右侧占位符 - 让导航栏真正居中，宽度留给个人中心 */
-.header-container::after {
-    content: "";
-    width: 80px;
-    flex-shrink: 0;
-    visibility: hidden;
+.user-avatar:hover {
+    transform: scale(1.05);
+    opacity: 0.8;
+}
+
+/* 手机端缩小一点 */
+@media (max-width: 768px) {
+    .user-avatar {
+        width: 30px;
+        height: 30px;
+    }
 }
 
 /* 所有页面内容区域 - 避开固定导航栏 */
