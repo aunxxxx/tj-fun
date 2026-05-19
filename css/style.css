@@ -45,8 +45,7 @@ nav {
     white-space: nowrap;
 }
 
-/* 电脑端导航栏 - 18px */
-nav a {
+header nav a {
     color:#333;
     margin:0 20px;
     text-decoration:none;
@@ -57,16 +56,16 @@ nav a {
     border-radius: 8px;
 }
 
-nav a:hover {
+header nav a:hover {
     color:#ff6b6b;
 }
 
-nav a.current {
+header nav a.current {
     background-color: #222;
     color: #fff;
 }
 
-nav a:active {
+header nav a:active {
     background-color: #222;
     color: #fff;
 }
@@ -78,18 +77,13 @@ nav a:active {
     visibility: hidden;
 }
 
-section {
-    padding:100px 20px 60px 20px;
-}
-
-/* ========== Home 页面 ========== */
+/* Home 页面 */
 #home {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 70vh;
     padding: 80px 20px;
-    background: #ffffff;
 }
 
 .department-card {
@@ -134,56 +128,7 @@ section {
     opacity: 1;
 }
 
-/* ========== News 页面（新闻卡片）========== */
-.news-card {
-    display: block;
-    width: 400px;
-    margin: 30px auto;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    background: #f5f5f5;
-    border-radius: 16px;
-    padding: 30px;
-    transition: transform 0.3s, background 0.3s;
-    border: 1px solid #e0e0e0;
-}
-
-.news-card:hover {
-    background: #e8e8e8;
-    transform: translateY(-8px);
-}
-
-.news-card p {
-    color: #333;
-    font-size: 26px;
-    margin-bottom: 12px;
-}
-
-.news-card small {
-    display: block;
-    margin-top: 10px;
-    font-size: 18px;
-    color: #666;
-}
-
-/* ========== About 页面 ========== */
-#about h2 {
-    font-size: 48px;
-    font-weight: bold;
-    margin-bottom: 25px;
-    text-align: left;
-    color: #111;
-}
-
-#about p {
-    font-size: 22px;
-    line-height: 1.8;
-    max-width: 1000px;
-    margin: 0 auto;
-    color: #333;
-}
-
+/* Footer */
 footer {
     background: #f5f5f5;
     padding: 20px;
@@ -192,203 +137,27 @@ footer {
     font-size: 14px;
 }
 
-/* ========== 成员页面 ========== */
-#members {
-    background: #ffffff;
-    padding-top: 140px;
-}
-
-.members-top {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.members-main-title {
-    display: flex;
-    align-items: center;
-    font-size: 80px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    justify-content: center;
-    letter-spacing: 4px;
-}
-
-.member-title-logo {
-    width: 80px;
-    height: 80px;
-    margin-right: 16px;
-}
-
-/* iX*OnE 图片 - 底部间距调大，让 Members 标题更远 */
-.members-main-img {
-    width: 90%;
-    max-width: 700px;
-    border-radius: 16px;
-    margin-bottom: 40px;   /* 10px → 40px */
-    display: block;
-}
-
-.members-subtitle {
-    width: 100%;
-    max-width: 1000px;
-    text-align: left;
-    font-size: 50px;
-    font-weight: bold;
-    margin-bottom: 15px;
-    color: #111;
-}
-
-.members-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    max-width: 1000px;
-    margin: 0 auto;
-}
-
-.member-card {
-    background: #f5f5f5;
-    padding: 15px;
-    border-radius: 12px;
-    text-align: center;
-    transition: transform 0.3s;
-    cursor: pointer;
-}
-
-.member-card:hover {
-    transform: translateY(-5px);
-    background: #eeeeee;
-}
-
-.member-card img {
-    width: 100%;
-    aspect-ratio: 1/1;
-    object-fit: cover;
-    border-radius: 12px;
-}
-
-.member-card h3 {
-    font-size: 18px;
-    margin: 6px 0 4px;
-    color: #111;
-}
-
-.member-card p {
-    font-size: 16px;
-    margin: 2px 0 0;
-    color: #666;
-}
-
 /* ========== 响应式适配 ========== */
 
 /* 平板/手机端 */
 @media (max-width: 768px) {
     .header-container { padding: 10px 15px; }
-    .logo { height: 35px; }
-    
-    nav a { 
-        margin: 0 15px; 
-        font-size: 36px !important;
-        padding: 8px 12px; 
-    }
-    
-    .members-main-title {
-        font-size: 52px;
-    }
-    .member-title-logo {
-        width: 52px;
-        height: 52px;
-    }
-    .members-main-img {
-        max-width: 550px;
-        margin-bottom: 30px;   /* 8px → 30px */
-    }
-    .members-subtitle {
-        font-size: 36px;
-        margin-bottom: 10px;
-    }
-    .members-top {
-        margin-bottom: 8px;
-    }
-    .members-container { grid-template-columns: repeat(3, 1fr); }
-    .member-card h3 { font-size: 16px; }
-    .member-card p { font-size: 14px; }
-    
-    .news-card {
-        width: 320px;
-        padding: 25px;
-    }
-    .news-card p {
-        font-size: 22px;
-    }
-    .news-card small {
-        font-size: 16px;
-    }
-    
-    #about h2 {
-        font-size: 36px;
-    }
-    #about p {
-        font-size: 18px;
-        padding: 0 20px;
+    .logo { height: 42px; }
+
+    /* 手机端导航字体放大 */
+    header nav a { 
+        font-size: 42px !important;
+        margin: 0 12px !important;
+        padding: 8px 12px !important;
     }
 }
 
 /* 小屏手机 */
 @media (max-width: 480px) {
-    nav a { 
-        margin: 0 10px; 
-        font-size: 30px !important;
-        padding: 6px 10px; 
+    header nav a { 
+        font-size: 36px !important;
+        margin: 0 10px !important;
+        padding: 6px 10px !important;
     }
-    .logo { height: 30px; }
-    
-    .members-main-title {
-        font-size: 38px;
-    }
-    .member-title-logo {
-        width: 38px;
-        height: 38px;
-    }
-    .members-main-img { 
-        max-width: 380px;
-        margin-bottom: 25px;   /* 6px → 25px */
-    }
-    .members-subtitle {
-        font-size: 28px;
-        margin-bottom: 8px;
-    }
-    .members-top {
-        margin-bottom: 6px;
-    }
-    .members-container { grid-template-columns: repeat(3, 1fr); }
-    .member-card h3 { font-size: 14px; }
-    .member-card p { font-size: 12px; }
-    
-    .news-card {
-        width: 280px;
-        padding: 20px;
-    }
-    .news-card p {
-        font-size: 18px;
-    }
-    .news-card small {
-        font-size: 14px;
-    }
-    
-    #about h2 {
-        font-size: 28px;
-    }
-    #about p {
-        font-size: 16px;
-    }
-}
-
-/* 电脑端 */
-@media (min-width: 769px) {
-    .members-main-img {
-        max-width: 700px;
-    }
+    .logo { height: 36px; }
 }
