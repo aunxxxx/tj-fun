@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>契弟广场 - 时代骏风</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+    /* 契弟广场专用样式 */
+    .forum-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    /* 发帖区域 */
+    .post-area {
+        background: #f9f9f9;
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 30px;
+        border: 1px solid #e0e0e0;
+    }
+
+    .post-area h3 {
+        margin: 0 0 15px 0;
+        font-size: 20px;
+        color: #333;
+    }
+
+    .post-input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        font-size: 16px;
+        font-family: inherit;
+        resize: vertical;
+        box-sizing: border-box;
+    }
+
+    .post-input:focus {
+        outline: none;
+        border-color: #ff6b6b;
+    }
+
+    .post-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 15px;
+    }
+
+    /* 模拟用户切换 */
+    .user-switch {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .user-btn {
+        background: #f0f0f0;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.2s;
+    }
+
+    .user-btn.active {
+        background: #222;
+        color: white;
+    }
+
+    .user-btn:hover {
+        background: #ddd;
+    }
+
+    .post-btn {
+        background: #ff6b6b;
+        color: white;
+        border: none;
+        padding: 8px 24px;
+        border-radius: 24px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .post-btn:hover {
+        background: #ff4444;
+    }
+
+    /* 帖子列表 */
+    .posts-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    /* 单个帖子 */
+    .post-card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 20px;
+        border: 1px solid #e0e0e0;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .post-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    /* 帖子头部：用户信息 + 时间 */
+    .post-header {
+        display: flex;
+    justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .username {
+        font-weight: bold;
+        font-size: 16px;
+        color: #333;
+    }
+
+    /* 认证/等级徽章 */
+    .badge {
+        display: inline-block;
+        font-size: 12px;
+        padding: 2px 8px;
+        border-radius: 20px;
+        background: #f0f0f0;
+        color: #555;
+    }
+
+    .badge-verified {
+        background: #1e90ff;
+        color: white;
+    }
+
+    .badge-practicing {
+        background: #ff6b6b;
+        color: white;
+    }
+
+    .post-time {
+        font-size: 12px;
+        color: #999;
+    }
+
+    /* 帖子内容 */
+    .post-content {
+        font-size: 16px;
+        line-height: 1.6;
+        color: #333;
+        margin-bottom: 15px;
+        word-wrap: break-word;
+    }
+
+    /* 帖子底部：点赞 + 评论 */
+    .post-footer {
+        display: flex;
+        gap: 20px;
+        padding-top: 12px;
+        border-top: 1px solid #eee;
+    }
+
+    .action-btn {
+        background: none;
+        border: none;
+        font-size: 14px;
+        color: #888;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: color 0.2s;
+    }
+
+    .action-btn:hover {
+        color: #ff6b6b;
+    }
+
+    .action-btn.liked {
+        color: #ff6b6b;
+    }
+
+    /* 空状态 */
+    .empty-posts {
+        text-align: center;
+        padding: 60px 20px;
+        color: #999;
+    }
+
+    /* 当前登录用户标识 */
+    .current-user-bar {
+        background: #e8f4ff;
+        border-radius: 12px;
+        padding: 10px 15px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 14px;
+    }
+
+    /* 删除按钮 */
+    .delete-btn {
+        background: none;
+        border: none;
+        color: #ccc;
+        cursor: pointer;
+        font-size: 14px;
+        transition: color 0.2s;
+    }
+
+    .delete-btn:hover {
+        color: #ff4444;
+    }
+</style>
+</head>
+<body>
+
+<header>
+<div class="header-container">
+    <img src="images/logo.png" alt="公司Logo" class="logo">
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="news.html">News</a>
+        <a href="forum.html" class="current">契弟广场</a>
+        <a href="about.html">About TJ</a>
+    </nav>
+</div>
+</header>
+
+<section id="forum">
+    <div class="forum-container">
+        <h1 style="font-size: 36px; margin-bottom: 10px;">🗣️ 契弟广场</h1>
+        <p style="color: #666; margin-bottom: 30px;">有话就说，随便吹水 🤪</p>
+
+        <!-- 当前登录用户栏 -->
+        <div class="current-user-bar">
+            <span>👤 当前登录：<strong id="currentUsername">张三</strong></span>
+            <span id="currentBadge"></span>
+        </div>
+
+        <!-- 发帖区域 -->
+        <div class="post-area">
+            <h3>📝 发新帖</h3>
+            <textarea class="post-input" id="postContent" rows="3" placeholder="说点什么吧..."></textarea>
+            <div class="post-actions">
+                <div class="user-switch">
+                    <span style="font-size: 14px; color: #666;">切换身份（演示用）：</span>
+                    <button class="user-btn" data-user="张三" data-role="user">张三 (练习生)</button>
+                    <button class="user-btn" data-user="李四" data-role="verified">李四 (官方认证)</button>
+                    <button class="user-btn" data-user="王五" data-role="user">王五 (练习生)</button>
+                </div>
+                <button class="post-btn" id="submitPost">✨ 发 布</button>
+            </div>
+        </div>
+
+        <!-- 帖子列表 -->
+        <div class="posts-list" id="postsList">
+            <!-- 动态加载帖子 -->
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 时代骏风 · 契弟广场</p>
+</footer>
+
+<script>
+    // ========== 模拟用户数据 ==========
+    const users = {
+        '张三': { role: 'user', badge: '🎤 练习生', badgeClass: 'badge-practicing' },
+        '李四': { role: 'verified', badge: '✓ 官方认证', badgeClass: 'badge-verified' },
+        '王五': { role: 'user', badge: '🎤 练习生', badgeClass: 'badge-practicing' }
+    };
+
+    // 当前登录用户
+    let currentUser = '张三';
+
+    // 帖子数据（存在 localStorage）
+    let posts = [];
+
+    // 加载本地存储的帖子
+    function loadPosts() {
+        const stored = localStorage.getItem('forum_posts');
+        if (stored) {
+            posts = JSON.parse(stored);
+        } else {
+            // 示例数据
+            posts = [
+                {
+                    id: 1,
+                    author: '李四',
+                    content: '第一位认证用户报到！大家好啊！',
+                    time: new Date(Date.now() - 86400000).toLocaleString(),
+                    likes: 5,
+                    likedBy: []
+                },
+                {
+                    id: 2,
+                    author: '张三',
+                    content: '契弟广场终于开了，开心！',
+                    time: new Date(Date.now() - 7200000).toLocaleString(),
+                    likes: 2,
+                    likedBy: []
+                }
+            ];
+            savePosts();
+        }
+        renderPosts();
+    }
+
+    // 保存帖子到本地存储
+    function savePosts() {
+        localStorage.setItem('forum_posts', JSON.stringify(posts));
+    }
+
+    // 生成新ID
+    function generateId() {
+        return posts.length > 0 ? Math.max(...posts.map(p => p.id)) + 1 : 1;
+    }
+
+    // 发布新帖
+    function addPost(content) {
+        if (!content.trim()) {
+            alert('写点内容再发吧！');
+            return false;
+        }
+        const newPost = {
+            id: generateId(),
+            author: currentUser,
+            content: content.trim(),
+            time: new Date().toLocaleString(),
+            likes: 0,
+            likedBy: []
+        };
+        posts.unshift(newPost); // 新帖放最前面
+        savePosts();
+        renderPosts();
+        return true;
+    }
+
+    // 删除帖子（只能删自己的）
+    function deletePost(postId) {
+        const post = posts.find(p => p.id === postId);
+        if (!post) return;
+        if (post.author !== currentUser) {
+            alert('只能删除自己的帖子哦！');
+            return;
+        }
+        if (confirm('确定要删除这条帖子吗？')) {
+            posts = posts.filter(p => p.id !== postId);
+            savePosts();
+            renderPosts();
+        }
+    }
+
+    // 点赞/取消点赞
+    function toggleLike(postId) {
+        const post = posts.find(p => p.id === postId);
+        if (!post) return;
+        
+        if (post.likedBy.includes(currentUser)) {
+            // 取消点赞
+            post.likes--;
+            post.likedBy = post.likedBy.filter(u => u !== currentUser);
+        } else {
+            // 点赞
+            post.likes++;
+            post.likedBy.push(currentUser);
+        }
+        savePosts();
+        renderPosts();
+    }
+
+    // 渲染帖子列表
+    function renderPosts() {
+        const container = document.getElementById('postsList');
+        if (!container) return;
+
+        if (posts.length === 0) {
+            container.innerHTML = '<div class="empty-posts">📭 还没有帖子，来发第一条吧！</div>';
+            return;
+        }
+
+        container.innerHTML = posts.map(post => {
+            const user = users[post.author] || { role: 'user', badge: '🎤 练习生', badgeClass: 'badge-practicing' };
+            const isLiked = post.likedBy.includes(currentUser);
+            const isAuthor = post.author === currentUser;
+            
+            return `
+                <div class="post-card" data-post-id="${post.id}">
+                    <div class="post-header">
+                        <div class="user-info">
+                            <span class="username">${escapeHtml(post.author)}</span>
+                            <span class="badge ${user.badgeClass}">${user.badge}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span class="post-time">📅 ${post.time}</span>
+                            ${isAuthor ? `<button class="delete-btn" onclick="deletePost(${post.id})">🗑️ 删除</button>` : ''}
+                        </div>
+                    </div>
+                    <div class="post-content">${escapeHtml(post.content)}</div>
+                    <div class="post-footer">
+                       <button class="action-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike(${post.id})">
+    ${isLiked ? '👍' : '👋'} 赏个脸 ${post.likes}
+</button>
+                       <span class="action-btn" style="cursor: default;">💨 放个屁 (演示)</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // 简单的防XSS
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+            return c;
+        });
+    }
+
+    // 更新UI显示当前用户
+    function updateCurrentUserUI() {
+        const usernameSpan = document.getElementById('currentUsername');
+        const badgeSpan = document.getElementById('currentBadge');
+        const user = users[currentUser];
+        
+        if (usernameSpan) usernameSpan.innerText = currentUser;
+        if (badgeSpan && user) {
+            badgeSpan.innerHTML = `<span class="badge ${user.badgeClass}">${user.badge}</span>`;
+        }
+        
+        // 切换按钮的高亮样式
+        document.querySelectorAll('.user-btn').forEach(btn => {
+            if (btn.getAttribute('data-user') === currentUser) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    }
+
+    // 导航栏滚动隐藏
+    let lastScrollTop = 0;
+    const header = document.querySelector('header');
+    window.addEventListener('scroll', function() {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        if (scrollTop > lastScrollTop && scrollTop > 50) {
+            header.classList.add('hide');
+        } else {
+            header.classList.remove('hide');
+        }
+        lastScrollTop = scrollTop;
+    });
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', function() {
+        loadPosts();
+        updateCurrentUserUI();
+        
+        // 发布按钮事件
+        const submitBtn = document.getElementById('submitPost');
+        const postInput = document.getElementById('postContent');
+        
+        submitBtn.addEventListener('click', function() {
+            const content = postInput.value;
+            if (addPost(content)) {
+                postInput.value = '';
+            }
+        });
+        
+        // 按Ctrl+Enter快速发布
+        postInput.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                submitBtn.click();
+            }
+        });
+        
+        // 用户切换按钮
+        document.querySelectorAll('.user-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const userName = this.getAttribute('data-user');
+                if (users[userName]) {
+                    currentUser = userName;
+                    updateCurrentUserUI();
+                    renderPosts(); // 重新渲染以更新点赞状态
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
