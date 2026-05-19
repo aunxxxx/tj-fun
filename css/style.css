@@ -222,7 +222,7 @@ section {
 #members {
     max-width: 1000px;
     margin: 0 auto;
-    padding-top: 20px;  /* 电脑端小间距 */
+    padding-top: 60px;  /* 电脑端小间距 */
 }
 
 /* 顶部区域容器（大标题 + 大图 + Members小标题） */
@@ -377,7 +377,7 @@ footer {
     
     /* ===== Members 页面手机端 ===== */
     #members {
-        padding-top: 120px;  /* 手机端加大，避免导航栏遮挡 */
+        padding-top: 60px;  /* 手机端加大，避免导航栏遮挡 */
     }
     
     .members-main-title {
