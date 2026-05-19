@@ -202,7 +202,7 @@ footer {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 10px;   /* 减小：40px → 10px */
+    margin-bottom: 10px;
 }
 
 .members-main-title {
@@ -221,11 +221,12 @@ footer {
     margin-right: 16px;
 }
 
+/* iX*OnE 图片 - 底部间距调大，让 Members 标题更远 */
 .members-main-img {
     width: 90%;
     max-width: 700px;
     border-radius: 16px;
-    margin-bottom: 10px;   /* 减小：20px → 10px */
+    margin-bottom: 40px;   /* 10px → 40px */
     display: block;
 }
 
@@ -235,7 +236,7 @@ footer {
     text-align: left;
     font-size: 50px;
     font-weight: bold;
-    margin-bottom: 15px;   /* 减小：20px → 15px，让卡片更近 */
+    margin-bottom: 15px;
     color: #111;
 }
 
@@ -287,10 +288,9 @@ footer {
     .header-container { padding: 10px 15px; }
     .logo { height: 35px; }
     
-    /* 手机端导航栏 - 强制放大 */
     nav a { 
         margin: 0 15px; 
-        font-size: 28px !important;
+        font-size: 36px !important;
         padding: 8px 12px; 
     }
     
@@ -303,7 +303,7 @@ footer {
     }
     .members-main-img {
         max-width: 550px;
-        margin-bottom: 8px;
+        margin-bottom: 30px;   /* 8px → 30px */
     }
     .members-subtitle {
         font-size: 36px;
@@ -338,10 +338,9 @@ footer {
 
 /* 小屏手机 */
 @media (max-width: 480px) {
-    /* 小屏手机导航栏 - 强制放大 */
     nav a { 
         margin: 0 10px; 
-        font-size: 22px !important;
+        font-size: 30px !important;
         padding: 6px 10px; 
     }
     .logo { height: 30px; }
@@ -355,7 +354,7 @@ footer {
     }
     .members-main-img { 
         max-width: 380px;
-        margin-bottom: 6px;
+        margin-bottom: 25px;   /* 6px → 25px */
     }
     .members-subtitle {
         font-size: 28px;
