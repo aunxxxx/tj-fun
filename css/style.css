@@ -2,35 +2,35 @@
    全局样式（所有页面共用）
    ============================================ */
 body {
-    margin:0;
+    margin: 0;
     font-family: Arial, sans-serif;
-    background:#ffffff;
-    color:#111;
+    background: #ffffff;
+    color: #111;
 }
 
-/* 固定导航栏 */
+/* 固定导航栏 - 始终在顶部 */
 header {
     position: fixed;
-    top:0;
-    left:0;
-    width:100%;
-    background:#ffffff;
-    z-index:1000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #ffffff;
+    z-index: 1000;
     transition: transform 0.3s ease;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-/* 导航栏隐藏（滚动时） */
+/* 向下滚动时隐藏导航栏 */
 header.hide {
     transform: translateY(-100%);
 }
 
-/* 导航栏内部容器 */
+/* 导航栏内部容器 - 左右布局 */
 .header-container {
-    display:flex;
-    align-items:center;
+    display: flex;
+    align-items: center;
     justify-content: space-between;
-    padding:12px 20px;
+    padding: 12px 20px;
     max-width: 1400px;
     margin: 0 auto;
     width: 100%;
@@ -38,13 +38,13 @@ header.hide {
     position: relative;
 }
 
-/* Logo 图片 */
+/* 网站 Logo */
 .logo {
-    height:45px;
+    height: 45px;
     flex-shrink: 0;
 }
 
-/* 导航链接容器 - 居中 */
+/* 导航链接容器 - 居中显示 */
 nav {
     position: absolute;
     left: 50%;
@@ -52,20 +52,21 @@ nav {
     white-space: nowrap;
 }
 
-/* 导航链接 - 电脑端 24px */
+/* 导航链接 - 电脑端字体 20px（4个链接刚好）*/
 nav a {
-    color:#333;
-    margin:0 20px;
-    text-decoration:none;
-    font-weight:bold;
-    font-size: 24px;
+    color: #333;
+    margin: 0 16px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 20px;
     transition: all 0.3s ease;
-    padding: 8px 12px;
+    padding: 8px 10px;
     border-radius: 8px;
 }
 
+/* 导航链接悬停效果 */
 nav a:hover {
-    color:#ff6b6b;
+    color: #ff6b6b;
 }
 
 /* 当前页面的导航高亮 */
@@ -74,10 +75,30 @@ nav a.current {
     color: #fff;
 }
 
-/* 右侧占位符 - 让导航栏真正居中 */
+/* 右侧用户区域 - 留给个人中心 */
+.user-area {
+    position: relative;
+    z-index: 100;
+}
+
+.user-area a {
+    color: #333;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    transition: all 0.3s;
+}
+
+.user-area a:hover {
+    background: #f0f0f0;
+    color: #ff6b6b;
+}
+
+/* 右侧占位符 - 让导航栏真正居中，宽度留给个人中心 */
 .header-container::after {
     content: "";
-    width: 55px;
+    width: 80px;
     flex-shrink: 0;
     visibility: hidden;
 }
@@ -102,7 +123,7 @@ section {
     background: #ffffff;
 }
 
-/* 首页的卡片（点击跳转到 members） */
+/* 首页的卡片 - 点击跳转到 members */
 .department-card {
     display: block;
     width: 60%;
@@ -148,7 +169,7 @@ section {
 
 
 /* ============================================
-   News 页面（新闻列表页）
+   News 页面（新闻列表）
    ============================================ */
 #news {
     max-width: 1200px;
@@ -217,15 +238,15 @@ section {
 
 
 /* ============================================
-   Members 页面（成员页面）
+   Members 页面（成员展示）
    ============================================ */
 #members {
     max-width: 1000px;
     margin: 0 auto;
-    padding-top: 60px;  /* 电脑端小间距 */
+    padding-top: 100px;  /* 电脑端避开导航栏 */
 }
 
-/* 顶部区域容器（大标题 + 大图 + Members小标题） */
+/* 顶部区域（大标题 + 大图 + Members小标题） */
 .members-top {
     display: flex;
     flex-direction: column;
@@ -251,7 +272,7 @@ section {
     margin-right: 16px;
 }
 
-/* 中间的大图片 iX*OnE.jpg */
+/* 中间的大图片 */
 .members-main-img {
     width: 90%;
     max-width: 700px;
@@ -270,7 +291,7 @@ section {
     color: #111;
 }
 
-/* 成员卡片网格容器 - 3列布局 */
+/* 成员卡片网格 - 3列布局 */
 .members-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -329,38 +350,43 @@ footer {
 
 
 /* ============================================
-   响应式适配（手机端/平板端）
+   手机端/平板端适配（屏幕宽度 ≤ 768px）
    ============================================ */
-
-/* 平板/手机端 (宽度 ≤ 768px) */
 @media (max-width: 768px) {
     /* 导航栏容器 */
     .header-container {
-        padding: 10px 15px;
+        padding: 8px 12px;
         justify-content: center;
     }
     
-    /* Logo - 绝对定位在左边 */
+    /* Logo - 固定在左边 */
     .logo {
-        height: 35px;
+        height: 32px;
         position: absolute;
-        left: 15px;
+        left: 12px;
         top: 50%;
         transform: translateY(-50%);
     }
     
-    /* 导航链接容器 - 取消绝对定位，改为居中 */
+    /* 导航容器 - 取消绝对定位，改为居中 */
     nav {
         position: static;
         transform: none;
         margin: 0 auto;
+        white-space: nowrap;
     }
     
-    /* 手机端导航字体 */
+    /* 手机端导航字体 - 调小让4个链接能挤在一行 */
     nav a {
-        font-size: 20px !important;
-        margin: 0 12px !important;
-        padding: 6px 10px !important;
+        font-size: 14px !important;
+        margin: 0 6px !important;
+        padding: 5px 8px !important;
+    }
+    
+    /* 右侧用户区域 */
+    .user-area a {
+        font-size: 13px;
+        padding: 4px 8px;
     }
     
     /* 隐藏右侧占位符 */
@@ -368,7 +394,7 @@ footer {
         display: none;
     }
     
-    /* 手机端内容区域边距 */
+    /* 内容区域边距 */
     section {
         padding-top: 80px;
         padding-left: 15px;
@@ -377,7 +403,7 @@ footer {
     
     /* ===== Members 页面手机端 ===== */
     #members {
-        padding-top: 60px;  /* 手机端加大，避免导航栏遮挡 */
+        padding-top: 120px;  /* 手机端加大，避免导航栏遮挡 */
     }
     
     .members-main-title {
@@ -395,14 +421,17 @@ footer {
         font-size: 36px;
     }
     .members-container {
-        grid-template-columns: repeat(3, 1fr);  /* 强制3列 */
+        grid-template-columns: repeat(3, 1fr);
         gap: 10px;
     }
     .member-card h3 {
-        font-size: 14px;
+        font-size: 12px;
     }
     .member-card p {
-        font-size: 12px;
+        font-size: 10px;
+    }
+    .member-card {
+        padding: 8px;
     }
     
     /* ===== News 页面手机端 ===== */
@@ -420,65 +449,77 @@ footer {
     
     /* ===== About 页面手机端 ===== */
     #about h2 {
-        font-size: 36px;
+        font-size: 32px;
     }
     #about p {
         font-size: 18px;
     }
 }
 
-/* 小屏手机 (宽度 ≤ 480px) */
+
+/* ============================================
+   小屏手机（屏幕宽度 ≤ 480px）- 字体再小一点
+   ============================================ */
 @media (max-width: 480px) {
     .logo {
-        height: 30px;
-        left: 12px;
+        height: 28px;
+        left: 10px;
     }
     
+    /* 小屏手机导航字体再小一点 */
     nav a {
-        font-size: 18px !important;
-        margin: 0 8px !important;
-        padding: 5px 8px !important;
+        font-size: 12px !important;
+        margin: 0 4px !important;
+        padding: 4px 6px !important;
+    }
+    
+    .user-area a {
+        font-size: 11px;
+        padding: 3px 6px;
     }
     
     /* ===== Members 页面小屏手机 ===== */
     .members-main-title {
-        font-size: 38px;
+        font-size: 32px;
     }
     .member-title-logo {
-        width: 38px;
-        height: 38px;
+        width: 32px;
+        height: 32px;
     }
     .members-main-img {
-        max-width: 380px;
+        max-width: 350px;
         margin-bottom: 15px;
     }
     .members-subtitle {
-        font-size: 28px;
+        font-size: 24px;
     }
     .members-container {
-        grid-template-columns: repeat(3, 1fr);  /* 强制3列 */
-        gap: 8px;
-    }
-    .member-card {
-        padding: 8px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
     }
     .member-card h3 {
-        font-size: 11px;
+        font-size: 10px;
     }
     .member-card p {
-        font-size: 9px;
+        font-size: 8px;
+    }
+    .member-card {
+        padding: 5px;
     }
     
     /* ===== News 页面小屏手机 ===== */
     .news-card p {
-        font-size: 18px;
+        font-size: 16px;
+    }
+    .news-card small {
+        font-size: 12px;
     }
     
     /* ===== About 页面小屏手机 ===== */
     #about h2 {
-        font-size: 28px;
+        font-size: 24px;
     }
     #about p {
-        font-size: 16px;
+        font-size: 15px;
     }
 }
