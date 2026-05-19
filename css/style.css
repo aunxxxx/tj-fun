@@ -1,4 +1,6 @@
-/* ========== 全局样式 ========== */
+/* ============================================
+   全局样式（所有页面共用）
+   ============================================ */
 body {
     margin:0;
     font-family: Arial, sans-serif;
@@ -6,6 +8,7 @@ body {
     color:#111;
 }
 
+/* 固定导航栏 */
 header {
     position: fixed;
     top:0;
@@ -17,10 +20,12 @@ header {
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
+/* 导航栏隐藏（滚动时） */
 header.hide {
     transform: translateY(-100%);
 }
 
+/* 导航栏内部容器 */
 .header-container {
     display:flex;
     align-items:center;
@@ -33,11 +38,13 @@ header.hide {
     position: relative;
 }
 
+/* Logo 图片 */
 .logo {
     height:45px;
     flex-shrink: 0;
 }
 
+/* 导航链接容器 - 居中 */
 nav {
     position: absolute;
     left: 50%;
@@ -45,12 +52,13 @@ nav {
     white-space: nowrap;
 }
 
+/* 导航链接 - 电脑端 24px */
 nav a {
     color:#333;
     margin:0 20px;
     text-decoration:none;
     font-weight:bold;
-    font-size: 18px;
+    font-size: 24px;
     transition: all 0.3s ease;
     padding: 8px 12px;
     border-radius: 8px;
@@ -60,19 +68,21 @@ nav a:hover {
     color:#ff6b6b;
 }
 
+/* 当前页面的导航高亮 */
 nav a.current {
     background-color: #222;
     color: #fff;
 }
 
+/* 右侧占位符 - 让导航栏真正居中 */
 .header-container::after {
     content: "";
-    width: 45px;
+    width: 55px;
     flex-shrink: 0;
     visibility: hidden;
 }
 
-/* 所有页面内容避开固定导航栏 */
+/* 所有页面内容区域 - 避开固定导航栏 */
 section {
     padding-top: 100px;
     padding-bottom: 60px;
@@ -80,7 +90,10 @@ section {
     padding-right: 20px;
 }
 
-/* ========== Home 页面 ========== */
+
+/* ============================================
+   Home 页面（首页）
+   ============================================ */
 #home {
     display: flex;
     justify-content: center;
@@ -89,6 +102,7 @@ section {
     background: #ffffff;
 }
 
+/* 首页的卡片（点击跳转到 members） */
 .department-card {
     display: block;
     width: 60%;
@@ -112,6 +126,7 @@ section {
     filter: brightness(0.7);
 }
 
+/* 卡片上的悬浮文字 "iX*OnE" */
 .department-card p {
     position: absolute;
     top: 50%;
@@ -131,12 +146,16 @@ section {
     opacity: 1;
 }
 
-/* ========== News 页面（新闻卡片）========== */
+
+/* ============================================
+   News 页面（新闻列表页）
+   ============================================ */
 #news {
     max-width: 1200px;
     margin: 0 auto;
 }
 
+/* 新闻卡片 */
 .news-card {
     display: block;
     width: 400px;
@@ -156,12 +175,14 @@ section {
     transform: translateY(-8px);
 }
 
+/* 新闻卡片标题 */
 .news-card p {
     color: #333;
     font-size: 26px;
     margin-bottom: 12px;
 }
 
+/* 新闻卡片日期 */
 .news-card small {
     display: block;
     margin-top: 10px;
@@ -169,12 +190,16 @@ section {
     color: #666;
 }
 
-/* ========== About 页面 ========== */
+
+/* ============================================
+   About 页面（关于我们）
+   ============================================ */
 #about {
     max-width: 1000px;
     margin: 0 auto;
 }
 
+/* About 页面标题 */
 #about h2 {
     font-size: 48px;
     font-weight: bold;
@@ -183,19 +208,24 @@ section {
     color: #111;
 }
 
+/* About 页面正文 */
 #about p {
     font-size: 22px;
     line-height: 1.8;
     color: #333;
 }
 
-/* ========== 成员页面 ========== */
+
+/* ============================================
+   Members 页面（成员页面）
+   ============================================ */
 #members {
     max-width: 1000px;
     margin: 0 auto;
-    padding-top: 20px;  /* 减少与导航栏的距离 */
+    padding-top: 20px;  /* 电脑端小间距 */
 }
 
+/* 顶部区域容器（大标题 + 大图 + Members小标题） */
 .members-top {
     display: flex;
     flex-direction: column;
@@ -203,6 +233,7 @@ section {
     margin-bottom: 20px;
 }
 
+/* 大标题 "iX*OnE" */
 .members-main-title {
     display: flex;
     align-items: center;
@@ -213,12 +244,14 @@ section {
     letter-spacing: 4px;
 }
 
+/* 大标题旁边的 logo */
 .member-title-logo {
     width: 80px;
     height: 80px;
     margin-right: 16px;
 }
 
+/* 中间的大图片 iX*OnE.jpg */
 .members-main-img {
     width: 90%;
     max-width: 700px;
@@ -227,6 +260,7 @@ section {
     display: block;
 }
 
+/* "Members" 小标题 */
 .members-subtitle {
     width: 100%;
     text-align: left;
@@ -236,12 +270,14 @@ section {
     color: #111;
 }
 
+/* 成员卡片网格容器 - 3列布局 */
 .members-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
 }
 
+/* 单个成员卡片 */
 .member-card {
     background: #f5f5f5;
     padding: 15px;
@@ -256,6 +292,7 @@ section {
     background: #eeeeee;
 }
 
+/* 成员头像 */
 .member-card img {
     width: 100%;
     aspect-ratio: 1/1;
@@ -263,19 +300,24 @@ section {
     border-radius: 12px;
 }
 
+/* 成员姓名 */
 .member-card h3 {
     font-size: 18px;
     margin: 6px 0 4px;
     color: #111;
 }
 
+/* 成员生日 */
 .member-card p {
     font-size: 16px;
     margin: 2px 0 0;
     color: #666;
 }
 
-/* Footer */
+
+/* ============================================
+   页脚（所有页面共用）
+   ============================================ */
 footer {
     background: #f5f5f5;
     padding: 20px;
@@ -285,13 +327,20 @@ footer {
     margin-top: 40px;
 }
 
-/* ========== 响应式适配 ========== */
+
+/* ============================================
+   响应式适配（手机端/平板端）
+   ============================================ */
+
+/* 平板/手机端 (宽度 ≤ 768px) */
 @media (max-width: 768px) {
+    /* 导航栏容器 */
     .header-container {
         padding: 10px 15px;
         justify-content: center;
     }
     
+    /* Logo - 绝对定位在左边 */
     .logo {
         height: 35px;
         position: absolute;
@@ -300,26 +349,35 @@ footer {
         transform: translateY(-50%);
     }
     
+    /* 导航链接容器 - 取消绝对定位，改为居中 */
     nav {
         position: static;
         transform: none;
         margin: 0 auto;
     }
     
+    /* 手机端导航字体 */
     nav a {
         font-size: 20px !important;
         margin: 0 12px !important;
         padding: 6px 10px !important;
     }
     
+    /* 隐藏右侧占位符 */
     .header-container::after {
         display: none;
     }
     
+    /* 手机端内容区域边距 */
     section {
         padding-top: 80px;
         padding-left: 15px;
         padding-right: 15px;
+    }
+    
+    /* ===== Members 页面手机端 ===== */
+    #members {
+        padding-top: 120px;  /* 手机端加大，避免导航栏遮挡 */
     }
     
     .members-main-title {
@@ -337,7 +395,7 @@ footer {
         font-size: 36px;
     }
     .members-container {
-        grid-template-columns: repeat(3, 1fr);  /* 手机端强制3列 */
+        grid-template-columns: repeat(3, 1fr);  /* 强制3列 */
         gap: 10px;
     }
     .member-card h3 {
@@ -347,6 +405,7 @@ footer {
         font-size: 12px;
     }
     
+    /* ===== News 页面手机端 ===== */
     .news-card {
         width: 90%;
         max-width: 350px;
@@ -359,6 +418,7 @@ footer {
         font-size: 14px;
     }
     
+    /* ===== About 页面手机端 ===== */
     #about h2 {
         font-size: 36px;
     }
@@ -367,6 +427,7 @@ footer {
     }
 }
 
+/* 小屏手机 (宽度 ≤ 480px) */
 @media (max-width: 480px) {
     .logo {
         height: 30px;
@@ -379,6 +440,7 @@ footer {
         padding: 5px 8px !important;
     }
     
+    /* ===== Members 页面小屏手机 ===== */
     .members-main-title {
         font-size: 38px;
     }
@@ -394,8 +456,11 @@ footer {
         font-size: 28px;
     }
     .members-container {
-        grid-template-columns: repeat(3, 1fr);  /* 小屏手机也强制3列 */
+        grid-template-columns: repeat(3, 1fr);  /* 强制3列 */
         gap: 8px;
+    }
+    .member-card {
+        padding: 8px;
     }
     .member-card h3 {
         font-size: 11px;
@@ -403,14 +468,13 @@ footer {
     .member-card p {
         font-size: 9px;
     }
-    .member-card {
-        padding: 8px;
-    }
     
+    /* ===== News 页面小屏手机 ===== */
     .news-card p {
         font-size: 18px;
     }
     
+    /* ===== About 页面小屏手机 ===== */
     #about h2 {
         font-size: 28px;
     }
