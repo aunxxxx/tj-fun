@@ -2,8 +2,47 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Members</title>
-<link rel="stylesheet" href="css/style.css?v=5">
+<link rel="stylesheet" href="css/style.css">
+<style>
+    @media (max-width: 768px) {
+        .header-container {
+            padding: 10px 15px;
+            justify-content: center;
+        }
+        .logo {
+            height: 35px;
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        nav {
+            position: static;
+            transform: none;
+            margin: 0 auto;
+        }
+        nav a {
+            font-size: 26px !important;
+            margin: 0 15px !important;
+            padding: 8px 12px !important;
+        }
+        .header-container::after {
+            display: none;
+        }
+    }
+    @media (max-width: 480px) {
+        .logo {
+            height: 30px;
+        }
+        nav a {
+            font-size: 22px !important;
+            margin: 0 10px !important;
+            padding: 6px 10px !important;
+        }
+    }
+</style>
 </head>
 <body>
 
@@ -20,41 +59,37 @@
 
 <section id="members">
     <div class="members-top">
-        <!-- 大标题: ilogo + iX*OnE -->
         <div class="members-main-title">
             <img src="images/ilogo.jpg" alt="Logo" class="member-title-logo">
             <span>iX*OnE</span>
         </div>
-        <!-- iX*OnE 图片 -->
         <img src="images/iX*OnE.jpg" alt="iX*OnE" class="members-main-img">
-        <!-- Members 小标题 居左 -->
         <div class="members-subtitle">Members</div>
     </div>
 
-    <!-- 成员卡片 -->
     <div class="members-container">
         <div class="member-card">
-            <img src="images/马睿婕.png" alt="马睿婕">
+            <img src="images/马睿婕.jpg" alt="马睿婕">
             <h3>马睿婕</h3>
             <p>2004 / 09 / 02</p>
         </div>
         <div class="member-card">
-            <img src="images/陈朗.png" alt="陈朗">
+            <img src="images/陈朗.jpg" alt="陈朗">
             <h3>陈朗</h3>
             <p>2005 / 08 / 26</p>
         </div>
         <div class="member-card">
-            <img src="images/冯浩轩.png" alt="冯浩轩">
+            <img src="images/冯浩轩.jpg" alt="冯浩轩">
             <h3>冯浩轩</h3>
             <p>2004 / 10 / 29</p>
         </div>
         <div class="member-card">
-            <img src="images/徐楚茹.png" alt="徐楚茹">
+            <img src="images/徐楚茹.jpg" alt="徐楚茹">
             <h3>徐楚茹</h3>
             <p>2004 / 12 / 19</p>
         </div>
         <div class="member-card">
-            <img src="images/唐芷莹.png" alt="唐芷莹">
+            <img src="images/唐芷莹.jpg" alt="唐芷莹">
             <h3>唐芷莹</h3>
             <p>2005 / 04 / 06</p>
         </div>
@@ -86,17 +121,17 @@
 </footer>
 
 <script>
-    let lastScrollTop = 0;
-    const header = document.querySelector('header');
-    window.addEventListener('scroll', function() {
-        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        if (scrollTop > lastScrollTop && scrollTop > 50) {
-            header.classList.add('hide');
-        } else {
-            header.classList.remove('hide');
-        }
-        lastScrollTop = scrollTop;
-    });
+let lastScrollTop = 0;
+const header = document.querySelector('header');
+window.addEventListener('scroll', function() {
+    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    if (scrollTop > lastScrollTop && scrollTop > 50) {
+        header.classList.add('hide');
+    } else {
+        header.classList.remove('hide');
+    }
+    lastScrollTop = scrollTop;
+});
 </script>
 
 </body>
