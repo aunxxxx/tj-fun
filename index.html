@@ -2,30 +2,9 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>时代骏风</title>
 <link rel="stylesheet" href="css/style.css">
-<style>
-    /* 强制手机端导航栏字体变大 - 比现在大1/2 */
-    @media (max-width: 768px) {
-        nav a {
-            font-size: 32px !important;
-            margin: 0 15px !important;
-            padding: 8px 12px !important;
-        }
-        .logo {
-            height: 42px !important;
-        }
-    }
-    @media (max-width: 480px) {
-        nav a {
-            font-size: 28px !important;
-            margin: 0 12px !important;
-        }
-        .logo {
-            height: 36px !important;
-        }
-    }
-</style>
 </head>
 <body>
 
@@ -52,17 +31,18 @@
 </footer>
 
 <script>
-    let lastScrollTop = 0;
-    const header = document.querySelector('header');
-    window.addEventListener('scroll', function() {
-        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        if (scrollTop > lastScrollTop && scrollTop > 50) {
-            header.classList.add('hide');
-        } else {
-            header.classList.remove('hide');
-        }
-        lastScrollTop = scrollTop;
-    });
+let lastScrollTop = 0;
+const header = document.querySelector('header');
+window.addEventListener('scroll', function() {
+    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    if (scrollTop > lastScrollTop && scrollTop > 50) {
+        header.classList.add('hide');
+    } else {
+        header.classList.remove('hide');
+    }
+    lastScrollTop = scrollTop;
+});
 </script>
+
 </body>
 </html>
