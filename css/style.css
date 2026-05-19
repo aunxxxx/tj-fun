@@ -71,13 +71,6 @@ header nav a:active {
     color: #fff;
 }
 
-.header-container::after {
-    content: "";
-    width: 45px;
-    flex-shrink: 0;
-    visibility: hidden;
-}
-
 /* ========== Home 页面 ========== */
 #home {
     display: flex;
@@ -140,25 +133,25 @@ footer {
 
 /* ========== 响应式导航栏 ========= */
 @media (max-width: 768px) {
-    header nav a {
-        font-size: 28px !important; /* 平板导航字体 */
+    /* 平板导航 */
+    header .header-container nav a {
+        font-size: 26px !important;
         margin: 0 12px !important;
         padding: 8px 12px !important;
     }
     header .logo {
         height: 40px !important;
-        width: auto !important;
     }
 }
 
 @media (max-width: 480px) {
-    header nav a {
-        font-size: 24px !important; /* 小屏手机导航字体 */
-        margin: 0 10px !important;
+    /* 小屏手机导航 */
+    header .header-container nav a {
+        font-size: 22px !important;
+        margin: 0 8px !important;
         padding: 6px 10px !important;
     }
     header .logo {
         height: 36px !important;
-        width: auto !important;
     }
 }
