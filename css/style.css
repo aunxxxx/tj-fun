@@ -193,6 +193,7 @@ section {
 #members {
     max-width: 1000px;
     margin: 0 auto;
+    padding-top: 20px;  /* 减少与导航栏的距离 */
 }
 
 .members-top {
@@ -336,7 +337,8 @@ footer {
         font-size: 36px;
     }
     .members-container {
-        gap: 15px;
+        grid-template-columns: repeat(3, 1fr);  /* 手机端强制3列 */
+        gap: 10px;
     }
     .member-card h3 {
         font-size: 14px;
@@ -392,8 +394,17 @@ footer {
         font-size: 28px;
     }
     .members-container {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
+        grid-template-columns: repeat(3, 1fr);  /* 小屏手机也强制3列 */
+        gap: 8px;
+    }
+    .member-card h3 {
+        font-size: 11px;
+    }
+    .member-card p {
+        font-size: 9px;
+    }
+    .member-card {
+        padding: 8px;
     }
     
     .news-card p {
