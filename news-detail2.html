@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>时代骏风一周年纪念 - 时代骏风</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+<div class="header-container">
+    <img src="images/logo.png" alt="公司Logo" class="logo">
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="news.html">News</a>
+        <a href="about.html">About TJ</a>
+    </nav>
+</div>
+</header>
+
+<section class="news-detail">
+    <h2>时代骏风一周年纪念</h2>
+    <p style="color:#666; margin-bottom:30px;">发布时间：2025年</p>
+    
+    <p>时代骏风（TJ-Fun）成立一周年啦！感谢大家一年来的支持与陪伴。</p>
+    
+    <p>在过去的一年里，我们推出了首支组合 iX*OnE，发布了多首原创歌曲，记录了成员们的成长点滴。</p>
+    
+    <p>未来，时代骏风将继续努力，带来更多优质内容！</p>
+    
+    <p style="margin-top:40px;">
+        <a href="news.html" style="color:#ff6b6b;">← 返回新闻列表</a>
+    </p>
+</section>
+
+<footer>
+    <p>© 2026 时代骏风</p>
+</footer>
+
+<script>
+let lastScrollTop = 0;
+const header = document.querySelector('header');
+window.addEventListener('scroll', function() {
+    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    if (scrollTop > lastScrollTop && scrollTop > 50) {
+        header.classList.add('hide');
+    } else {
+        header.classList.remove('hide');
+    }
+    lastScrollTop = scrollTop;
+});
+</script>
+
+</body>
+</html>
