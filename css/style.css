@@ -45,149 +45,6 @@ nav {
     white-space: nowrap;
 }
 
-/* 导航栏 - 电脑端恢复最初大小 */
-nav a {
-    color:#333;
-    margin:0 20px;
-    text-decoration:none;
-    font-weight:bold;
-    font-size: 18px;      /* 恢复最初的 18px */
-    transition: all 0.3s ease;
-    padding: 8px 12px;
-    border-radius: 8px;
-}
-
-nav a:hover {
-    color:#ff6b6b;
-}
-
-nav a.current {
-    background-color: #222;
-    color: #fff;
-}
-
-nav a:active {
-    background-color: #222;
-    color: #fff;
-}
-
-.header-container::after {
-    content: "";
-    width: 45px;
-    flex-shrink: 0;
-    visibility: hidden;
-}
-
-section {
-    padding:100px 20px 60px 20px;
-}
-
-/* ========== Home 页面 - 修复 ========== */
-#home {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 70vh;
-    padding: 80px 20px;
-    background: #ffffff;
-}
-
-.department-card {
-    display: block;
-    width: 60%;
-    max-width: 500px;
-    margin: 0 auto;
-    cursor: pointer;
-    text-decoration: none;
-    position: relative;
-}
-
-.department-card img {
-    width: 100%;
-    border-radius: 16px;
-    transition: transform 0.3s, filter 0.3s;
-    display: block;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-
-.department-card:hover img {
-    transform: scale(1.02);
-    filter: brightness(0.7);
-}
-
-.department-card p {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-size: 36px;
-    font-weight: bold;
-    margin: 0;
-    opacity: 0;
-    transition: opacity 0.3s;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    white-space: nowrap;
-}
-
-.department-card:hover p {
-    opacity: 1;
-}
-
-/* ========== News 页面（新闻卡片）========== */
-.news-card {
-    display: block;
-    width: 400px;
-    margin: 30px auto;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;/* ========== 全局样式 ========== */
-body {
-    margin:0;
-    font-family: Arial, sans-serif;
-    background:#ffffff;
-    color:#111;
-}
-
-header {
-    position: fixed;
-    top:0;
-    left:0;
-    width:100%;
-    background:#ffffff;
-    z-index:1000;
-    transition: transform 0.3s ease;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-header.hide {
-    transform: translateY(-100%);
-}
-
-.header-container {
-    display:flex;
-    align-items:center;
-    justify-content: space-between;
-    padding:12px 20px;
-    max-width: 1400px;
-    margin: 0 auto;
-    width: 100%;
-    box-sizing: border-box;
-    position: relative;
-}
-
-.logo {
-    height:45px;
-    flex-shrink: 0;
-}
-
-nav {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-}
-
 /* 电脑端导航栏 - 18px */
 nav a {
     color:#333;
@@ -312,7 +169,7 @@ section {
 
 /* ========== About 页面 ========== */
 #about h2 {
-    font-size: 60px;
+    font-size: 48px;
     font-weight: bold;
     margin-bottom: 25px;
     text-align: left;
@@ -320,7 +177,7 @@ section {
 }
 
 #about p {
-    font-size: 48px;
+    font-size: 22px;
     line-height: 1.8;
     max-width: 1000px;
     margin: 0 auto;
@@ -345,7 +202,7 @@ footer {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;   /* 减小：40px → 10px */
 }
 
 .members-main-title {
@@ -368,7 +225,7 @@ footer {
     width: 90%;
     max-width: 700px;
     border-radius: 16px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;   /* 减小：20px → 10px */
     display: block;
 }
 
@@ -378,7 +235,7 @@ footer {
     text-align: left;
     font-size: 50px;
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 15px;   /* 减小：20px → 15px，让卡片更近 */
     color: #111;
 }
 
@@ -425,15 +282,15 @@ footer {
 
 /* ========== 响应式适配 ========== */
 
-/* 平板/手机端 - 导航栏放大 */
+/* 平板/手机端 */
 @media (max-width: 768px) {
     .header-container { padding: 10px 15px; }
     .logo { height: 35px; }
     
-    /* 手机端导航栏调大 */
+    /* 手机端导航栏 - 强制放大 */
     nav a { 
         margin: 0 15px; 
-        font-size: 28px !important;   /* 强制放大 */
+        font-size: 28px !important;
         padding: 8px 12px; 
     }
     
@@ -446,14 +303,14 @@ footer {
     }
     .members-main-img {
         max-width: 550px;
-        margin-bottom: 15px;
+        margin-bottom: 8px;
     }
     .members-subtitle {
         font-size: 36px;
-        margin-bottom: 15px;
+        margin-bottom: 10px;
     }
     .members-top {
-        margin-bottom: 15px;
+        margin-bottom: 8px;
     }
     .members-container { grid-template-columns: repeat(3, 1fr); }
     .member-card h3 { font-size: 16px; }
@@ -481,9 +338,10 @@ footer {
 
 /* 小屏手机 */
 @media (max-width: 480px) {
+    /* 小屏手机导航栏 - 强制放大 */
     nav a { 
         margin: 0 10px; 
-        font-size: 22px !important;   /* 小屏手机放大 */
+        font-size: 22px !important;
         padding: 6px 10px; 
     }
     .logo { height: 30px; }
@@ -497,262 +355,14 @@ footer {
     }
     .members-main-img { 
         max-width: 380px;
-        margin-bottom: 12px;
+        margin-bottom: 6px;
     }
     .members-subtitle {
         font-size: 28px;
-        margin-bottom: 12px;
+        margin-bottom: 8px;
     }
     .members-top {
-        margin-bottom: 12px;
-    }
-    .members-container { grid-template-columns: repeat(3, 1fr); }
-    .member-card h3 { font-size: 14px; }
-    .member-card p { font-size: 12px; }
-    
-    .news-card {
-        width: 280px;
-        padding: 20px;
-    }
-    .news-card p {
-        font-size: 18px;
-    }
-    .news-card small {
-        font-size: 14px;
-    }
-    
-    #about h2 {
-        font-size: 28px;
-    }
-    #about p {
-        font-size: 16px;
-    }
-}
-
-/* 电脑端 */
-@media (min-width: 769px) {
-    .members-main-img {
-        max-width: 700px;
-    }
-}
-    background: #f5f5f5;
-    border-radius: 16px;
-    padding: 30px;
-    transition: transform 0.3s, background 0.3s;
-    border: 1px solid #e0e0e0;
-}
-
-.news-card:hover {
-    background: #e8e8e8;
-    transform: translateY(-8px);
-}
-
-.news-card p {
-    color: #333;
-    font-size: 26px;
-    margin-bottom: 12px;
-}
-
-.news-card small {
-    display: block;
-    margin-top: 10px;
-    font-size: 18px;
-    color: #666;
-}
-
-/* ========== About 页面 ========== */
-#about h2 {
-    font-size: 60px;       
-    font-weight: bold;
-    margin-bottom: 25px;
-    text-align: left;
-    color: #111;
-}
-
-#about p {
-    font-size: 36px;      
-    line-height: 1.8;
-    max-width: 1000px;
-    margin: 0 auto;
-    color: #333;
-}
-
-footer {
-    background: #f5f5f5;
-    padding: 20px;
-    text-align: center;
-    color: #888;
-    font-size: 14px;
-}
-
-/* ========== 成员页面 ========== */
-#members {
-    background: #ffffff;
-    padding-top: 140px;
-}
-
-/* 顶部大标题及iX*OnE部分 */
-.members-top {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 40px;   
-}
-
-/* 大标题容器 - 80px */
-.members-main-title {
-    display: flex;
-    align-items: center;
-    font-size: 80px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    justify-content: center;
-    letter-spacing: 4px;
-}
-
-/* 标题旁边的 logo 图标 */
-.member-title-logo {
-    width: 80px;
-    height: 80px;
-    margin-right: 16px;
-}
-
-/* iX*OnE 图片 */
-.members-main-img {
-    width: 90%;
-    max-width: 700px;
-    border-radius: 16px;
-    margin-bottom: 30px;   
-    display: block;
-}
-
-/* Members 小标题 */
-.members-subtitle {
-    width: 100%;
-    max-width: 1000px;
-    text-align: left;
-    font-size: 50px;
-    font-weight: bold;
-    margin-bottom: 20px;    /* 从 40px 减小到 20px，让卡片更近 */
-    color: #111;
-}
-
-/* 成员卡片 */
-.members-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    max-width: 1000px;
-    margin: 0 auto;
-}
-
-.member-card {
-    background: #f5f5f5;
-    padding: 15px;
-    border-radius: 12px;
-    text-align: center;
-    transition: transform 0.3s;
-    cursor: pointer;
-}
-
-.member-card:hover {
-    transform: translateY(-5px);
-    background: #eeeeee;
-}
-
-.member-card img {
-    width: 100%;
-    aspect-ratio: 1/1;
-    object-fit: cover;
-    border-radius: 12px;
-}
-
-.member-card h3 {
-    font-size: 18px;
-    margin: 6px 0 4px;
-    color: #111;
-}
-
-.member-card p {
-    font-size: 16px;
-    margin: 2px 0 0;
-    color: #666;
-}
-
-/* ========== 响应式适配 ========== */
-
-/* 平板/手机端 - 导航栏保持放大 */
-@media (max-width: 768px) {
-    .header-container { padding: 10px 15px; }
-    .logo { height: 35px; }
-    
-    /* 手机端导航栏调大 */
-    nav a { margin: 0 15px; font-size: 22px; padding: 8px 12px; }
-    
-    .members-main-title {
-        font-size: 52px;
-    }
-    .member-title-logo {
-        width: 52px;
-        height: 52px;
-    }
-    .members-main-img {
-        max-width: 550px;
-        margin-bottom: 15px;
-    }
-    .members-subtitle {
-        font-size: 36px;
-        margin-bottom: 15px;
-    }
-    .members-top {
-        margin-bottom: 15px;
-    }
-    .members-container { grid-template-columns: repeat(3, 1fr); }
-    .member-card h3 { font-size: 16px; }
-    .member-card p { font-size: 14px; }
-    
-    .news-card {
-        width: 320px;
-        padding: 25px;
-    }
-    .news-card p {
-        font-size: 22px;
-    }
-    .news-card small {
-        font-size: 16px;
-    }
-    
-    #about h2 {
-        font-size: 36px;
-    }
-    #about p {
-        font-size: 18px;
-        padding: 0 20px;
-    }
-}
-
-/* 小屏手机 */
-@media (max-width: 480px) {
-    nav a { margin: 0 10px; font-size: 18px; padding: 6px 10px; }
-    .logo { height: 30px; }
-    
-    .members-main-title {
-        font-size: 38px;
-    }
-    .member-title-logo {
-        width: 38px;
-        height: 38px;
-    }
-    .members-main-img { 
-        max-width: 380px;
-        margin-bottom: 12px;
-    }
-    .members-subtitle {
-        font-size: 28px;
-        margin-bottom: 12px;
-    }
-    .members-top {
-        margin-bottom: 12px;
+        margin-bottom: 6px;
     }
     .members-container { grid-template-columns: repeat(3, 1fr); }
     .member-card h3 { font-size: 14px; }
