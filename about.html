@@ -2,8 +2,47 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
-<title>时代骏风 - 关于我们</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About TJ</title>
 <link rel="stylesheet" href="css/style.css">
+<style>
+    @media (max-width: 768px) {
+        .header-container {
+            padding: 10px 15px;
+            justify-content: center;
+        }
+        .logo {
+            height: 35px;
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        nav {
+            position: static;
+            transform: none;
+            margin: 0 auto;
+        }
+        nav a {
+            font-size: 26px !important;
+            margin: 0 15px !important;
+            padding: 8px 12px !important;
+        }
+        .header-container::after {
+            display: none;
+        }
+    }
+    @media (max-width: 480px) {
+        .logo {
+            height: 30px;
+        }
+        nav a {
+            font-size: 22px !important;
+            margin: 0 10px !important;
+            padding: 6px 10px !important;
+        }
+    }
+</style>
 </head>
 <body>
 
@@ -13,16 +52,14 @@
     <nav>
         <a href="index.html">Home</a>
         <a href="news.html">News</a>
-       <a href="about.html" class="current">About TJ</a>
+        <a href="about.html" class="current">About TJ</a>
     </nav>
 </div>
 </header>
 
 <section id="about">
     <h2>关于时代骏风</h2>
-    <p><li>时代骏风（TJ-Fun）成立于2024年，是一个秘密基地。从成立之初，我们就开始记录并分享朋友们的成长故事，并打造了一个属于我们自己的品牌“TJ家族”。我们通过网络新媒体分享我们的日常训练视频和原创内容，让更多人看到我们的努力和进步。<li>
-        <li>我们通过网络新媒体制作并分享了一档名为《登基计划》的成长记录，真实记录了一群热爱唱跳的少年少女，通过学习和合作，最终打造出9人团队“iX*OnE”。<li>
-    </p>
+    <p>时代骏风（TJ-Fun）成立于2024年，是一个秘密基地。从成立之初，我们就开始记录并分享朋友们的成长故事，并打造了一个属于我们自己的品牌"TJ家族"。我们通过网络新媒体分享我们的日常训练视频和原创内容，让更多人看到我们的努力和进步。我们通过网络新媒体制作并分享了一档名为《登基计划》的成长记录，真实记录了一群热爱唱跳的少年少女，通过学习和合作，最终打造出9人团队"iX*OnE"。</p>
 </section>
 
 <footer>
@@ -30,19 +67,18 @@
 </footer>
 
 <script>
-    let lastScrollTop = 0;
-    const header = document.querySelector('header');
-
-    window.addEventListener('scroll', function() {
-        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        
-        if (scrollTop > lastScrollTop && scrollTop > 50) {
-            header.classList.add('hide');
-        } else {
-            header.classList.remove('hide');
-        }
-        lastScrollTop = scrollTop;
-    });
+let lastScrollTop = 0;
+const header = document.querySelector('header');
+window.addEventListener('scroll', function() {
+    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    if (scrollTop > lastScrollTop && scrollTop > 50) {
+        header.classList.add('hide');
+    } else {
+        header.classList.remove('hide');
+    }
+    lastScrollTop = scrollTop;
+});
 </script>
+
 </body>
 </html>
