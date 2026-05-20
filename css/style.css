@@ -283,8 +283,7 @@ section {
 /* plan 图片：和 iX*OnE 图片一样大 */
 .plan-link {
     flex-shrink: 0;
-    width: 60%;            /* 和 department-card 一样 */
-    max-width: 500px;      /* 和 iX*OnE 卡片最大宽度一致 */
+    width: 200px;      /* 和 iX*OnE 卡片最大宽度一致 */
 }
 
 .plan-link:hover {
@@ -327,6 +326,10 @@ section {
         max-width: 100%;
         padding: 20px;
     }
+
+   .plan-link {
+        width: 140px;        /* 手机端图片小一点 */
+    }
    
     .plan-title {
         font-size: 22px;
@@ -335,7 +338,6 @@ section {
     .plan-desc {
         font-size: 14px;
     }
-  }
 }
 
 
