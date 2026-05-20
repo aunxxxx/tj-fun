@@ -411,7 +411,11 @@
         if(!canVoteFor(candidateId, gender)) return;
         // 扣除登顶力
         dailyPower[gender]--;
-        votedTodayIds[gender].push(candidateId);
+         // 只有第一次投这个人时才记录（去重）
+        if(!votedTodayIds[gender].includes(candidateId)) {
+    votedTodayIds[gender].push(candidateId);
+}
+        
         // 增加登顶力
         const targetList = gender === 'boys' ? boysRaw : girlsRaw;
         const candidate = targetList.find(c => c.id === candidateId);
