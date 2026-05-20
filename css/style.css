@@ -270,25 +270,21 @@ section {
     }
    
    /* Home 页面：plan 区域（左图右文）*/
+/* plan 区域：左图右字（永远不换行）*/
 .plan-wrapper {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    max-width: 800px;
-    margin: 0 auto 60px auto;
-    background: #fff9ef;
-    padding: 16px 24px;
-    border-radius: 40px;
-    box-shadow: 0 6px 14px rgba(0,0,0,0.03);
-    border: 1px solid #ffdfb0;
+    justify-content: center;
+    gap: 24px;
+    max-width: 500px;      /* 和 iX*OnE 卡片最大宽度一致 */
+    margin: 0 auto;
 }
 
+/* plan 图片：和 iX*OnE 图片一样大 */
 .plan-link {
     flex-shrink: 0;
-    width: 140px;
-    display: block;
-    transition: transform 0.2s ease;
+    width: 60%;            /* 和 department-card 一样 */
+    max-width: 500px;      /* 和 iX*OnE 卡片最大宽度一致 */
 }
 
 .plan-link:hover {
@@ -297,26 +293,25 @@ section {
 
 .plan-img {
     width: 100%;
-    max-width: 280px;
-    border-radius: 28px;
+    border-radius: 16px;   /* 和 iX*OnE 图片圆角一致 */
     display: block;
-    box-shadow: 0 8px 18px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
 .plan-text {
     flex: 1;
-    text-align: right;
+    text-align: left;
 }
 
 .plan-title {
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 800;
     background: linear-gradient(135deg, #ff9a4a, #ff4d4d);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     margin-bottom: 8px;
-    letter-spacing: -0.3px;
+    letter-spacing: -0.3px;     /* 让字更紧凑 */
 }
 
 .plan-desc {
@@ -328,24 +323,19 @@ section {
 /* 手机端适配 */
 @media (max-width: 650px) {
     .plan-wrapper {
-        flex-direction: column;
-        text-align: center;
         gap: 16px;
+        max-width: 100%;
         padding: 20px;
     }
-    .plan-text {
-        text-align: center;
-    }
-    .plan-link {
-        width: 160px;
-    }
+   
     .plan-title {
         font-size: 22px;
     }
+   
     .plan-desc {
         font-size: 14px;
     }
-}
+  }
 }
 
 
