@@ -8,6 +8,13 @@ body {
     color: #111;
 }
 
+/* 全局图片限制 - 防止图片溢出 */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
 /* 固定导航栏 - 始终在顶部 */
 header {
     position: fixed;
@@ -34,20 +41,18 @@ header.hide {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 12px 40px;  /* ← 导航栏上下高度：改第一个数字（如 20px） */
+        padding: 12px 40px;
         max-width: 1400px;
         margin: 0 auto;
         width: 100%;
         box-sizing: border-box;
     }
     
-    /* Logo - 位置：左边，大小：改 height */
     .logo {
-        height: 45px;        /* ← Logo 大小：改这个值 */
+        height: 45px;
         flex-shrink: 0;
     }
     
-    /* 导航容器 - 居中，位置固定 */
     nav {
         position: absolute;
         left: 50%;
@@ -55,13 +60,12 @@ header.hide {
         white-space: nowrap;
     }
     
-    /* 电脑端导航链接 */
     nav a {
         color: #333;
-        margin: 0 20px;      /* ← 导航链接之间的距离：改这个值（如 30px 更远，10px 更近）*/
+        margin: 0 20px;
         text-decoration: none;
         font-weight: bold;
-        font-size: 18px;     /* ← 电脑端导航字体大小：改这个值 */
+        font-size: 18px;
         transition: all 0.3s ease;
         padding: 8px 16px;
         border-radius: 20px;
@@ -77,14 +81,13 @@ header.hide {
         color: #fff;
     }
     
-    /* 个人头像 - 位置：右边，大小：改 width/height */
     .user-area {
         flex-shrink: 0;
     }
     
     .user-avatar {
-        width: 40px;         /* ← 个人头像大小：改这个值 */
-        height: 40px;        /* ← 个人头像大小：改这个值 */
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
         object-fit: cover;
         cursor: pointer;
@@ -110,34 +113,31 @@ header.hide {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 16px;           /* ← 5个元素之间的距离：改这个值 */
-        padding: 10px 16px;  /* ← 导航栏上下高度：改第一个数字（如 15px）*/
+        gap: 16px;
+        padding: 10px 16px;
         max-width: 1400px;
         margin: 0 auto;
         width: 100%;
         box-sizing: border-box;
     }
     
-    /* Logo - 大小 */
     .logo {
-        height: 30px;        /* ← 手机端 Logo 大小：改这个值 */
+        height: 30px;
         width: auto;
         margin-left: 8px;
     }
     
-    /* 导航容器 - 3个链接集中居中 */
     nav {
         display: flex;
         justify-content: center;
-        gap: 20px;           /* ← 手机端导航链接之间的距离：改这个值 */
+        gap: 20px;
     }
     
-    /* 手机端导航链接 */
     nav a {
         color: #333;
         text-decoration: none;
         font-weight: bold;
-        font-size: 14px;     /* ← 手机端导航字体大小：改这个值 */
+        font-size: 14px;
         transition: all 0.3s ease;
         padding: 6px 12px;
         border-radius: 20px;
@@ -153,14 +153,13 @@ header.hide {
         color: #fff;
     }
     
-    /* 个人头像 - 大小 */
     .user-area {
         flex-shrink: 0;
     }
     
     .user-avatar {
-        width: 30px;         /* ← 手机端个人头像大小：改这个值 */
-        height: 30px;        /* ← 手机端个人头像大小：改这个值 */
+        width: 30px;
+        height: 30px;
         margin-right: 8px;
         border-radius: 50%;
         object-fit: cover;
@@ -173,7 +172,7 @@ header.hide {
    所有页面内容区域（避开固定导航栏）
    ============================================ */
 section {
-    padding-top: 100px;      /* ← 所有页面内容离导航栏的距离 */
+    padding-top: 100px;
     padding-bottom: 60px;
     padding-left: 20px;
     padding-right: 20px;
@@ -185,18 +184,17 @@ section {
    ============================================ */
 #home {
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     min-height: 70vh;
     background: #ffffff;
-    padding-top: 80px;
 }
 
 .department-card {
     display: block;
-    width: 60%;              /* ← 图片容器宽度（相对父级）*/
-    max-width: 500px;        /* ← 图片最大宽度（电脑端）*/
+    width: 60%;
+    max-width: 500px;
     margin: 0 auto;
     cursor: pointer;
     text-decoration: none;
@@ -241,49 +239,22 @@ section {
     display: none;
 }
 
-/* 手机端 Home 页面 */
-@media (max-width: 768px) {
-    /* 隐藏悬浮文字 */
-    .department-card .hover-text {
-        display: none;
-    }
-    
-    /* 显示图片下方文字 */
-    .mobile-text {
-        display: block;
-        text-align: center;
-        margin-top: 12px;
-        font-size: 18px;     /* ← 手机端图片下方文字大小 */
-        font-weight: bold;
-        color: #333;
-    }
-    
-    /* 手机端图片大小 */
-    .department-card {
-        width: 90%;          /* ← 手机端图片容器宽度 */
-        max-width: 500px;    /* ← 手机端图片最大宽度 */
-    }
-   
-   /* 新增：手机端 Home 页面整体离导航栏更近 */
-    #home {
-        padding-top: 80px;
-    }
-   
-   /* Home 页面：plan 区域（左图右文）*/
-/* plan 区域：左图右字（永远不换行）*/
+
+/* ============================================
+   plan 区域（登顶计划入口）
+   ============================================ */
 .plan-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 24px;
-    max-width: 500px;      /* 和 iX*OnE 卡片最大宽度一致 */
-    margin: 0 auto;
+    max-width: 500px;
+    margin: 40px auto 0;
 }
 
-/* plan 图片：和 iX*OnE 图片一样大 */
 .plan-link {
     flex-shrink: 0;
-    width: 200px;      /* 和 iX*OnE 卡片最大宽度一致 */
+    width: 200px;
 }
 
 .plan-link:hover {
@@ -292,7 +263,7 @@ section {
 
 .plan-img {
     width: 100%;
-    border-radius: 16px;   /* 和 iX*OnE 图片圆角一致 */
+    border-radius: 16px;
     display: block;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
@@ -310,7 +281,7 @@ section {
     background-clip: text;
     color: transparent;
     margin-bottom: 8px;
-    letter-spacing: -0.3px;     /* 让字更紧凑 */
+    letter-spacing: -0.3px;
 }
 
 .plan-desc {
@@ -319,34 +290,54 @@ section {
     font-weight: 500;
 }
 
-/* 手机端适配 */
-@media (max-width: 650px) {
+
+/* ============================================
+   手机端 Home 页面 + plan 区域
+   ============================================ */
+@media (max-width: 768px) {
+    /* Home 页面 */
+    .department-card .hover-text {
+        display: none;
+    }
+    
+    .mobile-text {
+        display: block;
+        text-align: center;
+        margin-top: 12px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+    }
+    
+    .department-card {
+        width: 80%;
+        max-width: 350px;
+    }
+    
+    /* plan 区域手机端 */
     .plan-wrapper {
         gap: 16px;
-        max-width: 100%;
-        padding: 20px;
+        margin: 30px auto 0;
+        padding: 0 16px;
     }
-
-   .plan-link {
-        width: 140px;        /* 手机端图片小一点 */
+    
+    .plan-link {
+        width: 140px;
     }
-   
+    
     .plan-title {
-        font-size: 22px;
+        font-size: 18px;
     }
-   
+    
     .plan-desc {
-        font-size: 14px;
+        font-size: 13px;
     }
 }
 
 
 /* ============================================
-   以下为其他页面样式（News、About、Members）
-   可根据需要修改
+   News 页面
    ============================================ */
-
-/* News 页面 */
 #news {
     max-width: 1200px;
     margin: 0 auto;
@@ -398,7 +389,10 @@ section {
     }
 }
 
-/* About 页面 */
+
+/* ============================================
+   About 页面
+   ============================================ */
 #about {
     max-width: 1000px;
     margin: 0 auto;
@@ -427,7 +421,10 @@ section {
     }
 }
 
-/* Members 页面 */
+
+/* ============================================
+   Members 页面
+   ============================================ */
 #members {
     max-width: 1000px;
     margin: 0 auto;
@@ -533,7 +530,6 @@ section {
         margin-bottom: 10px;
     }
     .members-container {
-        grid-template-columns: repeat(3, 1fr);
         gap: 10px;
     }
     .member-card h3 {
@@ -547,7 +543,10 @@ section {
     }
 }
 
-/* 页脚 */
+
+/* ============================================
+   页脚
+   ============================================ */
 footer {
     background: #f5f5f5;
     padding: 20px;
