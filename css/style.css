@@ -25,7 +25,7 @@ header.hide {
     transform: translateY(-100%);
 }
 
-/* 导航栏内部容器 - 左右布局 */
+/* 导航栏内部容器 */
 .header-container {
     display: flex;
     align-items: center;
@@ -38,13 +38,13 @@ header.hide {
     position: relative;
 }
 
-/* 网站 Logo */
+/* Logo */
 .logo {
     height: 45px;
     flex-shrink: 0;
 }
 
-/* 导航链接容器 - 居中显示 */
+/* 导航容器 - 居中 */
 nav {
     position: absolute;
     left: 50%;
@@ -73,16 +73,10 @@ nav a.current {
     color: #fff;
 }
 
-/* 右侧用户图标区域 */
+/* 右侧用户区域 */
 .user-area {
     position: relative;
     z-index: 100;
-}
-
-.user-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .user-avatar {
@@ -90,8 +84,8 @@ nav a.current {
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
-    transition: transform 0.2s, opacity 0.2s;
     cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
 }
 
 .user-avatar:hover {
@@ -99,7 +93,7 @@ nav a.current {
     opacity: 0.8;
 }
 
-/* 右侧占位符 */
+/* 右侧占位符 - 保持导航居中 */
 .header-container::after {
     content: "";
     width: 80px;
@@ -347,44 +341,46 @@ footer {
    手机端/平板端适配（屏幕宽度 ≤ 768px）
    ============================================ */
 @media (max-width: 768px) {
-    /* 导航栏容器 - 高度加大 */
+    /* 导航栏容器 - 平均分布 */
     .header-container {
-        padding: 15px 12px;
-        justify-content: center;
+        padding: 10px 8px;
+        justify-content: space-evenly;
     }
     
-    /* Logo 固定在左边 */
+    /* Logo - 不绝对定位，参与平均分布 */
     .logo {
-        height: 32px;
-        position: absolute;
-        left: 12px;
-        top: 50%;
-        transform: translateY(-50%);
+        height: 30px;
+        position: static;
+        transform: none;
     }
     
-    /* 导航栏 - 平均分布 */
+    /* 导航容器 - 改为 flex 平均分布 */
     nav {
         position: static;
         transform: none;
         display: flex;
-        justify-content: space-around;
-        width: 100%;
+        justify-content: space-evenly;
+        flex: 1;
         white-space: nowrap;
     }
     
-    /* 手机端导航链接 - 等宽 + 字体调大 */
+    /* 手机端导航链接 */
     nav a {
         flex: 1;
         text-align: center;
-        font-size: 16px !important;
+        font-size: 12px !important;
         margin: 0 !important;
-        padding: 8px 0 !important;
+        padding: 4px 2px !important;
     }
     
-    /* 右侧用户图标 - 缩小一点 */
+    /* 用户区域 */
+    .user-area {
+        position: static;
+    }
+    
     .user-avatar {
-        width: 32px;
-        height: 32px;
+        width: 28px;
+        height: 28px;
     }
     
     /* 隐藏右侧占位符 */
@@ -400,12 +396,10 @@ footer {
     }
     
     /* ===== Home 页面手机端 ===== */
-    /* 隐藏悬浮文字 */
     .department-card .hover-text {
         display: none;
     }
     
-    /* 显示图片下方文字 */
     .mobile-text {
         display: block;
         text-align: center;
@@ -477,22 +471,21 @@ footer {
    ============================================ */
 @media (max-width: 480px) {
     .logo {
-        height: 28px;
-        left: 10px;
+        height: 26px;
     }
     
     nav a {
-        font-size: 14px !important;
-        padding: 6px 0 !important;
+        font-size: 10px !important;
+        padding: 3px 1px !important;
     }
     
     .user-avatar {
-        width: 28px;
-        height: 28px;
+        width: 24px;
+        height: 24px;
     }
     
     .mobile-text {
-        font-size: 18px;
+        font-size: 16px;
     }
     
     .members-main-title {
