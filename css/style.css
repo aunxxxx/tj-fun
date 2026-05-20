@@ -52,7 +52,7 @@ nav {
     white-space: nowrap;
 }
 
-/* 导航链接 - 电脑端字体 20px（4个链接刚好）*/
+/* 电脑端导航链接 */
 nav a {
     color: #333;
     margin: 0 16px;
@@ -64,12 +64,10 @@ nav a {
     border-radius: 8px;
 }
 
-/* 导航链接悬停效果 */
 nav a:hover {
     color: #ff6b6b;
 }
 
-/* 当前页面的导航高亮 */
 nav a.current {
     background-color: #222;
     color: #fff;
@@ -88,8 +86,8 @@ nav a.current {
 }
 
 .user-avatar {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     object-fit: cover;
     transition: transform 0.2s, opacity 0.2s;
@@ -101,12 +99,12 @@ nav a.current {
     opacity: 0.8;
 }
 
-/* 手机端缩小一点 */
-@media (max-width: 768px) {
-    .user-avatar {
-        width: 30px;
-        height: 30px;
-    }
+/* 右侧占位符 */
+.header-container::after {
+    content: "";
+    width: 80px;
+    flex-shrink: 0;
+    visibility: hidden;
 }
 
 /* 所有页面内容区域 - 避开固定导航栏 */
@@ -129,7 +127,7 @@ section {
     background: #ffffff;
 }
 
-/* 首页的卡片 - 点击跳转到 members */
+/* 首页卡片 */
 .department-card {
     display: block;
     width: 60%;
@@ -153,8 +151,8 @@ section {
     filter: brightness(0.7);
 }
 
-/* 卡片上的悬浮文字 "iX*OnE" */
-.department-card p {
+/* 电脑端：悬浮文字（默认隐藏，鼠标放上去才显示）*/
+.department-card .hover-text {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -169,8 +167,13 @@ section {
     white-space: nowrap;
 }
 
-.department-card:hover p {
+.department-card:hover .hover-text {
     opacity: 1;
+}
+
+/* 手机端：图片下方文字（默认隐藏）*/
+.mobile-text {
+    display: none;
 }
 
 
@@ -182,7 +185,6 @@ section {
     margin: 0 auto;
 }
 
-/* 新闻卡片 */
 .news-card {
     display: block;
     width: 400px;
@@ -202,14 +204,12 @@ section {
     transform: translateY(-8px);
 }
 
-/* 新闻卡片标题 */
 .news-card p {
     color: #333;
     font-size: 26px;
     margin-bottom: 12px;
 }
 
-/* 新闻卡片日期 */
 .news-card small {
     display: block;
     margin-top: 10px;
@@ -226,7 +226,6 @@ section {
     margin: 0 auto;
 }
 
-/* About 页面标题 */
 #about h2 {
     font-size: 48px;
     font-weight: bold;
@@ -235,7 +234,6 @@ section {
     color: #111;
 }
 
-/* About 页面正文 */
 #about p {
     font-size: 22px;
     line-height: 1.8;
@@ -249,10 +247,9 @@ section {
 #members {
     max-width: 1000px;
     margin: 0 auto;
-    padding-top: 100px;  /* 电脑端避开导航栏 */
+    padding-top: 100px;
 }
 
-/* 顶部区域（大标题 + 大图 + Members小标题） */
 .members-top {
     display: flex;
     flex-direction: column;
@@ -260,7 +257,6 @@ section {
     margin-bottom: 20px;
 }
 
-/* 大标题 "iX*OnE" */
 .members-main-title {
     display: flex;
     align-items: center;
@@ -271,14 +267,12 @@ section {
     letter-spacing: 4px;
 }
 
-/* 大标题旁边的 logo */
 .member-title-logo {
     width: 80px;
     height: 80px;
     margin-right: 16px;
 }
 
-/* 中间的大图片 */
 .members-main-img {
     width: 90%;
     max-width: 700px;
@@ -287,24 +281,21 @@ section {
     display: block;
 }
 
-/* "Members" 小标题 */
 .members-subtitle {
     width: 100%;
     text-align: left;
     font-size: 50px;
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     color: #111;
 }
 
-/* 成员卡片网格 - 3列布局 */
 .members-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
 }
 
-/* 单个成员卡片 */
 .member-card {
     background: #f5f5f5;
     padding: 15px;
@@ -319,7 +310,6 @@ section {
     background: #eeeeee;
 }
 
-/* 成员头像 */
 .member-card img {
     width: 100%;
     aspect-ratio: 1/1;
@@ -327,14 +317,12 @@ section {
     border-radius: 12px;
 }
 
-/* 成员姓名 */
 .member-card h3 {
     font-size: 18px;
     margin: 6px 0 4px;
     color: #111;
 }
 
-/* 成员生日 */
 .member-card p {
     font-size: 16px;
     margin: 2px 0 0;
@@ -359,13 +347,13 @@ footer {
    手机端/平板端适配（屏幕宽度 ≤ 768px）
    ============================================ */
 @media (max-width: 768px) {
-    /* 导航栏容器 */
+    /* 导航栏容器 - 高度加大 */
     .header-container {
-        padding: 18px 12px;
+        padding: 15px 12px;
         justify-content: center;
     }
     
-    /* Logo - 固定在左边 */
+    /* Logo 固定在左边 */
     .logo {
         height: 32px;
         position: absolute;
@@ -374,25 +362,29 @@ footer {
         transform: translateY(-50%);
     }
     
-    /* 导航容器 - 取消绝对定位，改为居中 */
+    /* 导航栏 - 平均分布 */
     nav {
         position: static;
         transform: none;
-        margin: 0 auto;
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
         white-space: nowrap;
     }
     
-    /* 手机端导航字体 - 调小让4个链接能挤在一行 */
+    /* 手机端导航链接 - 等宽 + 字体调大 */
     nav a {
+        flex: 1;
+        text-align: center;
         font-size: 16px !important;
-        margin: 0 6px !important;
-        padding: 6px 10px !important;
+        margin: 0 !important;
+        padding: 8px 0 !important;
     }
     
-    /* 右侧用户区域 */
-    .user-area a {
-        font-size: 13px;
-        padding: 4px 8px;
+    /* 右侧用户图标 - 缩小一点 */
+    .user-avatar {
+        width: 32px;
+        height: 32px;
     }
     
     /* 隐藏右侧占位符 */
@@ -407,9 +399,25 @@ footer {
         padding-right: 15px;
     }
     
+    /* ===== Home 页面手机端 ===== */
+    /* 隐藏悬浮文字 */
+    .department-card .hover-text {
+        display: none;
+    }
+    
+    /* 显示图片下方文字 */
+    .mobile-text {
+        display: block;
+        text-align: center;
+        margin-top: 12px;
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+    }
+    
     /* ===== Members 页面手机端 ===== */
     #members {
-        padding-top: 60px;  /* 手机端加大，避免导航栏遮挡 */
+        padding-top: 120px;
     }
     
     .members-main-title {
@@ -425,7 +433,7 @@ footer {
     }
     .members-subtitle {
         font-size: 36px;
-       margin-bottom: 10px;
+        margin-bottom: 10px;
     }
     .members-container {
         grid-template-columns: repeat(3, 1fr);
@@ -465,7 +473,7 @@ footer {
 
 
 /* ============================================
-   小屏手机（屏幕宽度 ≤ 480px）- 字体再小一点
+   小屏手机（屏幕宽度 ≤ 480px）
    ============================================ */
 @media (max-width: 480px) {
     .logo {
@@ -473,35 +481,35 @@ footer {
         left: 10px;
     }
     
-    /* 小屏手机导航字体再小一点 */
     nav a {
-        font-size: 12px !important;
-        margin: 0 4px !important;
-        padding: 4px 6px !important;
+        font-size: 14px !important;
+        padding: 6px 0 !important;
     }
     
-    .user-area a {
-        font-size: 11px;
-        padding: 3px 6px;
+    .user-avatar {
+        width: 28px;
+        height: 28px;
     }
     
-    /* ===== Members 页面小屏手机 ===== */
+    .mobile-text {
+        font-size: 18px;
+    }
+    
     .members-main-title {
-        font-size: 32px;
+        font-size: 38px;
     }
     .member-title-logo {
-        width: 32px;
-        height: 32px;
+        width: 38px;
+        height: 38px;
     }
     .members-main-img {
-        max-width: 350px;
+        max-width: 380px;
         margin-bottom: 15px;
     }
     .members-subtitle {
-        font-size: 24px;
+        font-size: 28px;
     }
     .members-container {
-        grid-template-columns: repeat(3, 1fr);
         gap: 6px;
     }
     .member-card h3 {
@@ -514,7 +522,6 @@ footer {
         padding: 5px;
     }
     
-    /* ===== News 页面小屏手机 ===== */
     .news-card p {
         font-size: 16px;
     }
@@ -522,7 +529,6 @@ footer {
         font-size: 12px;
     }
     
-    /* ===== About 页面小屏手机 ===== */
     #about h2 {
         font-size: 24px;
     }
