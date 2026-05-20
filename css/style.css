@@ -141,7 +141,7 @@ header.hide {
         color: #333;
         text-decoration: none;
         font-weight: bold;
-        font-size: 16px;   /* ← 手机端导航字体大小：改这个值 */
+        font-size: 14px;   /* ← 手机端导航字体大小：改这个值 */
         transition: all 0.3s ease;
         padding: 6px 12px;
         border-radius: 20px;
@@ -162,8 +162,8 @@ header.hide {
     }
     
     .user-avatar {
-        width: 50px;   /* ← 手机端个人头像大小：改这个值 */
-        height: 50px;   /* ← 手机端个人头像大小：改这个值 */
+        width: 40px;   /* ← 手机端个人头像大小：改这个值 */
+        height: 40px;   /* ← 手机端个人头像大小：改这个值 */
         margin-right: 5px;
         border-radius: 50%;
         object-fit: cover;
