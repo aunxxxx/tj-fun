@@ -41,13 +41,14 @@ header.hide {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 12px 40px;
+        padding: 12px 40px;   /* ← 导航栏上下高度：改第一个数字（如 20px） */
         max-width: 1400px;
         margin: 0 auto;
         width: 100%;
         box-sizing: border-box;
     }
-    
+
+    /* Logo - 位置：左边，大小：改 height */
     .logo {
         height: 45px;
         flex-shrink: 0;
@@ -59,7 +60,8 @@ header.hide {
         transform: translateX(-50%);
         white-space: nowrap;
     }
-    
+
+    /* 导航容器 - 居中，位置固定 */
     nav a {
         color: #333;
         margin: 0 20px;
@@ -80,14 +82,15 @@ header.hide {
         background-color: #222;
         color: #fff;
     }
-    
+
+    /* 个人头像 - 位置：右边，大小：改 width/height */
     .user-area {
         flex-shrink: 0;
     }
     
     .user-avatar {
-        width: 40px;
-        height: 40px;
+        width: 45px;   /* ← 个人头像大小：改这个值 */
+        height: 45px;  /* ← 个人头像大小：改这个值 */
         border-radius: 50%;
         object-fit: cover;
         cursor: pointer;
@@ -113,8 +116,8 @@ header.hide {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 16px;
-        padding: 10px 16px;
+        gap: 16px;   /* ← 5个元素之间的距离：改这个值 */
+        padding: 10px 16px;   /* ← 导航栏上下高度：改第一个数字（如 15px）*/
         max-width: 1400px;
         margin: 0 auto;
         width: 100%;
@@ -122,22 +125,23 @@ header.hide {
     }
     
     .logo {
-        height: 30px;
+        height: 30px;  /* ← 手机端 Logo 大小：改这个值 */
         width: auto;
-        margin-left: 8px;
+        margin-left: 5px;
     }
-    
+
+   /* 导航容器 - 3个链接集中居中 */
     nav {
         display: flex;
         justify-content: center;
-        gap: 20px;
+        gap: 20px;   /* ← 手机端导航链接之间的距离：改这个值 */
     }
     
     nav a {
         color: #333;
         text-decoration: none;
         font-weight: bold;
-        font-size: 14px;
+        font-size: 16px;   /* ← 手机端导航字体大小：改这个值 */
         transition: all 0.3s ease;
         padding: 6px 12px;
         border-radius: 20px;
@@ -158,9 +162,9 @@ header.hide {
     }
     
     .user-avatar {
-        width: 30px;
-        height: 30px;
-        margin-right: 8px;
+        width: 50px;   /* ← 手机端个人头像大小：改这个值 */
+        height: 50px;   /* ← 手机端个人头像大小：改这个值 */
+        margin-right: 5px;
         border-radius: 50%;
         object-fit: cover;
         cursor: pointer;
@@ -172,7 +176,7 @@ header.hide {
    所有页面内容区域（避开固定导航栏）
    ============================================ */
 section {
-    padding-top: 100px;
+    padding-top: 100px;  /* ← 所有页面内容离导航栏的距离 */
     padding-bottom: 60px;
     padding-left: 20px;
     padding-right: 20px;
@@ -193,8 +197,8 @@ section {
 
 .department-card {
     display: block;
-    width: 60%;
-    max-width: 500px;
+    width: 60%;    /* ← 图片容器宽度（相对父级）*/
+    max-width: 500px;    /* ← 图片最大宽度（电脑端）*/
     margin: 0 auto;
     cursor: pointer;
     text-decoration: none;
@@ -299,12 +303,13 @@ section {
     .department-card .hover-text {
         display: none;
     }
-    
+
+    /* 显示图片下方文字 */
     .mobile-text {
         display: block;
         text-align: center;
         margin-top: 12px;
-        font-size: 18px;
+        font-size: 26px;  /* ← 手机端图片下方文字大小 */
         font-weight: bold;
         color: #333;
     }
