@@ -408,25 +408,28 @@ window.addEventListener('scroll', function() {
         return [...list].sort((a,b) => b.votes - a.votes);
     }
     
-    // 检查投票权限 (时间、票数、不同人数量)
-    function canVoteFor(candidateId, gender) {
-        const now = new Date();
-        if(now.getDay() === 0) {   // 周日
-            alert('❌ 周日休息日，登顶力暂不生效～ 请周一至周六来助登！');
-            return false;
-        }
-        if(dailyPower[gender] <= 0) {
-            alert(`今日${gender === 'boys' ? 'Boys' : 'Girls'}通道登顶力已用完 (0/5)`);
-            return false;
-        }
-        const votedList = votedTodayIds[gender];
-       
-        if(votedList.length >= 3) {
-            alert(`登顶力最多只能分给3位不同的练习生，你今天已助登${votedList.length}位`);
-            return false;
-        }
-        return true;
+   function canVoteFor(candidateId, gender) {
+    const now = new Date();
+    if (now.getDay() === 0) {   // 周日
+        alert('❌ 周日休息日，登顶力暂不生效～ 请周一至周六来助登！');
+        return false;
     }
+    if (dailyPower[gender] <= 0) {
+        alert(`今日${gender === 'boys' ? 'Boys' : 'Girls'}通道登顶力已用完 (0/5)`);
+        return false;
+    }
+
+    const votedList = votedTodayIds[gender];
+
+    // 只有当尝试投给「第 4 个不同的练习生」时才拦截
+    if (!votedList.includes(candidateId) && votedList.length >= 3) {
+        alert(`登顶力最多只能分给3位不同的练习生，你今天已助登${votedList.length}位`);
+        return false;
+    }
+
+    // 同一人可以重复投（不拦截）
+    return true;
+}
     
     function handleVote(candidateId, gender) {
         if(!canVoteFor(candidateId, gender)) return;
@@ -481,8 +484,8 @@ window.addEventListener('scroll', function() {
                 <img class="avatar" src="${first.avatar}" alt="${first.name}" 
                      onclick="viewProfile(${first.id})" style="cursor:pointer;">
                 <div class="name">${first.name}</div>
-                <div class="votes">🎫 ${first.votes} 登顶力</div>
-                <button class="vote-btn" data-id="${first.id}" data-gender="${currentGender}">🚩 助登</button>
+                <div class="votes"> ${first.votes} 登顶力</div>
+                <button class="vote-btn" data-id="${first.id}" data-gender="${currentGender}">助登</button>
             </div>
         `;
         
@@ -494,7 +497,7 @@ window.addEventListener('scroll', function() {
                         <img class="avatar" src="${c.avatar}" alt="${c.name}" 
                              onclick="viewProfile(${c.id})" style="cursor:pointer;">
                         <div class="name">${c.name}</div>
-                        <div class="votes">🎫 ${c.votes} 登顶力</div>
+                        <div class="votes"> ${c.votes} 登顶力</div>
                         <button class="small-vote-btn" data-id="${c.id}" data-gender="${currentGender}">助登</button>
                     </div>
                 `;
