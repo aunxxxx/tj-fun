@@ -256,9 +256,91 @@ section {
     
     /* 手机端图片大小 */
     .department-card {
-        width: 80%;          /* ← 手机端图片容器宽度 */
-        max-width: 350px;    /* ← 手机端图片最大宽度 */
+        width: 90%;          /* ← 手机端图片容器宽度 */
+        max-width: 500px;    /* ← 手机端图片最大宽度 */
     }
+   
+   /* 新增：手机端 Home 页面整体离导航栏更近 */
+    #home {
+        padding-top: 40px;
+    }
+   
+   /* Home 页面：plan 区域（左图右文）*/
+.plan-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    max-width: 800px;
+    margin: 0 auto 60px auto;
+    background: #fff9ef;
+    padding: 16px 24px;
+    border-radius: 40px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.03);
+    border: 1px solid #ffdfb0;
+}
+
+.plan-link {
+    flex-shrink: 0;
+    width: 140px;
+    display: block;
+    transition: transform 0.2s ease;
+}
+
+.plan-link:hover {
+    transform: scale(1.02);
+}
+
+.plan-img {
+    width: 100%;
+    border-radius: 28px;
+    display: block;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.1);
+}
+
+.plan-text {
+    flex: 1;
+    text-align: right;
+}
+
+.plan-title {
+    font-size: 26px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #ff9a4a, #ff4d4d);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+}
+
+.plan-desc {
+    font-size: 16px;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+/* 手机端适配 */
+@media (max-width: 650px) {
+    .plan-wrapper {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+        padding: 20px;
+    }
+    .plan-text {
+        text-align: center;
+    }
+    .plan-link {
+        width: 160px;
+    }
+    .plan-title {
+        font-size: 22px;
+    }
+    .plan-desc {
+        font-size: 14px;
+    }
+}
 }
 
 
