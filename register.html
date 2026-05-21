@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册 - 时代骏风</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+        }
+        .register-card {
+            background: white;
+            max-width: 450px;
+            width: 100%;
+            padding: 32px 24px;
+            border-radius: 32px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+        }
+        .tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 28px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 12px;
+        }
+        .tab-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            font-size: 18px;
+            font-weight: 600;
+            padding: 8px 0;
+            color: #aaa;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .tab-btn.active {
+            color: #ff7b5c;
+            border-bottom: 3px solid #ff7b5c;
+            border-radius: 0;
+        }
+        .form-panel {
+            display: none;
+        }
+        .form-panel.active-panel {
+            display: block;
+        }
+        .input-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #ddd;
+            border-radius: 24px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #ff7b5c;
+        }
+        button {
+            background: #ff7b5c;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 32px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .info-note {
+            font-size: 13px;
+            color: #777;
+            text-align: center;
+            margin-top: 16px;
+        }
+        .error {
+            color: #e55a3e;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="register-card">
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="fan">✨ 粉丝注册</button>
+        <button class="tab-btn" data-tab="trainee">🎤 练习生申请</button>
+    </div>
+
+    <!-- 粉丝注册 -->
+    <div id="fanPanel" class="form-panel active-panel">
+        <div class="input-group">
+            <label>用户名</label>
+            <input type="text" id="fanUsername" placeholder="输入用户名">
+        </div>
+        <div class="input-group">
+            <label>密码</label>
+            <input type="password" id="fanPassword" placeholder="密码">
+        </div>
+        <div class="input-group">
+            <label>确认密码</label>
+            <input type="password" id="fanConfirmPwd" placeholder="再次输入密码">
+        </div>
+        <button id="registerFanBtn">注册并登录</button>
+        <div id="fanError" class="error"></div>
+        <div class="info-note">注册后自动登录，进入首页</div>
+    </div>
+
+    <!-- 练习生申请 -->
+    <div id="traineePanel" class="form-panel">
+        <div class="input-group">
+            <label>邮箱地址</label>
+            <input type="email" id="traineeEmail" placeholder="你的邮箱">
+        </div>
+        <button id="applyTraineeBtn">提交申请</button>
+        <div id="traineeMsg" class="info-note" style="margin-top: 16px;"></div>
+    </div>
+</div>
+
+<script>
+    // 切换 Tab
+    const tabs = document.querySelectorAll('.tab-btn');
+    const fanPanel = document.getElementById('fanPanel');
+    const traineePanel = document.getElementById('traineePanel');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            const target = tab.getAttribute('data-tab');
+            if (target === 'fan') {
+                fanPanel.classList.add('active-panel');
+                traineePanel.classList.remove('active-panel');
+            } else {
+                traineePanel.classList.add('active-panel');
+                fanPanel.classList.remove('active-panel');
+            }
+        });
+    });
+
+    // 粉丝注册逻辑
+    function getUsers() {
+        return JSON.parse(localStorage.getItem('users')) || [];
+    }
+
+    function saveUsers(users) {
+        localStorage.setItem('users', JSON.stringify(users));
+    }
+
+    document.getElementById('registerFanBtn').addEventListener('click', () => {
+        const username = document.getElementById('fanUsername').value.trim();
+        const password = document.getElementById('fanPassword').value.trim();
+        const confirm = document.getElementById('fanConfirmPwd').value.trim();
+        const errorDiv = document.getElementById('fanError');
+
+        if (!username || !password || !confirm) {
+            errorDiv.innerText = '请填写完整信息';
+            return;
+        }
+        if (password !== confirm) {
+            errorDiv.innerText = '两次输入的密码不一致';
+            return;
+        }
+        let users = getUsers();
+        if (users.find(u => u.username === username)) {
+            errorDiv.innerText = '用户名已被占用';
+            return;
+        }
+
+        const newUser = {
+            id: Date.now(),
+            username,
+            password,
+            role: 'fan',
+            isVerified: false,
+            avatar: 'images/people.jpg'
+        };
+        users.push(newUser);
+        saveUsers(users);
+        localStorage.setItem('currentUser', JSON.stringify(newUser));
+        window.location.href = 'index.html';
+    });
+
+    // 练习生申请（模拟）
+    document.getElementById('applyTraineeBtn').addEventListener('click', () => {
+        const email = document.getElementById('traineeEmail').value.trim();
+        const msgDiv = document.getElementById('traineeMsg');
+        if (!email) {
+            msgDiv.innerText = '请填写邮箱地址';
+            msgDiv.style.color = '#e55a3e';
+            return;
+        }
+        msgDiv.style.color = '#2c7a4d';
+        msgDiv.innerText = `✅ 已向 ${email} 发送账号信息（演示版），请等待管理员审核。`;
+        document.getElementById('traineeEmail').value = '';
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 2000);
+    });
+</script>
+</body>
+</html>
