@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人主页 - 时代骏风</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* 个人主页专用样式 */
+        .profile-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 用户信息卡片 */
+        .profile-card {
+            background: #ffffff;
+            border-radius: 32px;
+            padding: 32px 24px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            margin-bottom: 24px;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 16px;
+            border: 3px solid #ff7b5c;
+        }
+
+        .profile-name {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        /* 头衔徽章 */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .badge-trainee {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .badge-verified {
+            background: #1e90ff;
+            color: white;
+        }
+
+        /* 关注/粉丝统计 */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin: 20px 0;
+            padding-top: 16px;
+            border-top: 1px solid #eee;
+        }
+
+        .stat-item {
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #888;
+        }
+
+        /* 留言记录 */
+        .posts-section {
+            background: #ffffff;
+            border-radius: 32px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .post-item {
+            background: #f9f9f9;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .post-content {
+            font-size: 15px;
+            line-height: 1.5;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .post-time {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .empty-posts {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-container">
+        <a href="about.html">
+            <img src="images/logo.png" alt="公司Logo" class="logo">
+        </a>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="news.html">大事件</a>
+            <a href="forum.html">铁汁窝</a>
+        </nav>
+        <div class="user-area">
+            <a href="profile.html">
+                <img src="images/people.jpg" alt="个人中心" class="user-avatar">
+            </a>
+        </div>
+    </div>
+</header>
+
+<section class="profile-container">
+    <div class="profile-card">
+        <img src="images/people.jpg" alt="头像" class="profile-avatar" id="profileAvatar">
+        <div class="profile-name" id="profileName">加载中...</div>
+        <div id="profileBadge"></div>
+        
+        <div class="stats">
+            <div class="stat-item" id="followBtn">
+                <div class="stat-number" id="followCount">0</div>
+                <div class="stat-label">关注</div>
+            </div>
+            <div class="stat-item" id="fansBtn">
+                <div class="stat-number" id="fansCount">0</div>
+                <div class="stat-label">粉丝</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="posts-section">
+        <div class="section-title">📝 留言记录</div>
+        <div id="userPostsList">
+            <div class="empty-posts">加载中...</div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 时代骏风</p>
+</footer>
+
+<script>
+    // 强制登录检查
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) {
+        window.location.href = 'login.html';
+    }
+
+    // 设置右上角头像
+    const headerAvatar = document.querySelector('.user-avatar');
+    if (headerAvatar && currentUser) {
+        headerAvatar.src = currentUser.avatar || 'images/people.jpg';
+        headerAvatar.onerror = () => { headerAvatar.src = 'images/people.jpg'; };
+    }
+
+    // 显示当前用户信息
+    const profileAvatar = document.getElementById('profileAvatar');
+    const profileName = document.getElementById('profileName');
+    const profileBadge = document.getElementById('profileBadge');
+
+    profileAvatar.src = currentUser.avatar || 'images/people.jpg';
+    profileAvatar.onerror = () => { profileAvatar.src = 'images/people.jpg'; };
+    profileName.innerText = currentUser.username;
+
+    // 显示头衔
+    if (currentUser.role === 'trainee') {
+        if (currentUser.isVerified) {
+            profileBadge.innerHTML = '<span class="badge badge-verified">✓ 官方认证</span>';
+        } else {
+            profileBadge.innerHTML = '<span class="badge badge-trainee">练习生</span>';
+        }
+    } else {
+        profileBadge.innerHTML = '';  // 粉丝无头衔
+    }
+
+    // 加载用户的留言记录（从铁汁窝的 localStorage 读取）
+    function loadUserPosts() {
+        const postsContainer = document.getElementById('userPostsList');
+        const forumPosts = JSON.parse(localStorage.getItem('forum_posts')) || [];
+        const userPosts = forumPosts.filter(post => post.author === currentUser.username);
+
+        if (userPosts.length === 0) {
+            postsContainer.innerHTML = '<div class="empty-posts">📭 暂无留言，去铁汁窝发帖吧～</div>';
+            return;
+        }
+
+        postsContainer.innerHTML = userPosts.map(post => `
+            <div class="post-item">
+                <div class="post-content">${escapeHtml(post.content)}</div>
+                <div class="post-time">📅 ${post.time}</div>
+            </div>
+        `).join('');
+    }
+
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // 加载关注/粉丝数（后续实现）
+    function loadFollowStats() {
+        const follows = JSON.parse(localStorage.getItem('follows')) || [];
+        const followCount = follows.filter(f => f.followerId === currentUser.id).length;
+        const fansCount = follows.filter(f => f.followingId === currentUser.id).length;
+        document.getElementById('followCount').innerText = followCount;
+        document.getElementById('fansCount').innerText = fansCount;
+    }
+
+    loadUserPosts();
+    loadFollowStats();
+
+    // 导航栏滚动隐藏
+    let lastScrollTop = 0;
+    const header = document.querySelector('header');
+    window.addEventListener('scroll', function() {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        if (scrollTop > lastScrollTop && scrollTop > 50) {
+            header.classList.add('hide');
+        } else {
+            header.classList.remove('hide');
+        }
+        lastScrollTop = scrollTop;
+    });
+</script>
+
+</body>
+</html>
