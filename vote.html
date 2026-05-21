@@ -1,611 +1,390 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>登顶计划 - 时代骏风</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none; /* 避免移动端长按菜单 */
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>登顶计划 - 时代骏风</title>
+<style>
+    /* ========== 自定义变量（方便你调透明度和后续改背景）========== */
+    :root {
+        --card-opacity: 0.92;      /* 👈 成员卡片背景透明度（0~1），后续改这里 */
+        --top-card-opacity: 0.95;
+        --bg-gradient-end: rgba(217, 244, 255, 1);
+    }
 
-        body {
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: #f8f9fc;
-            padding-top: 70px;  /* 为固定导航栏留出空间 */
-            padding-bottom: 40px;
-        }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-      /* 投票页导航栏（与全站风格统一）*/
-.vote-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background: #ffffff;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    z-index: 1000;
-    padding: 12px 20px;   /* 与全局 header 内边距一致 */
-    transition: transform 0.3s ease;
-}
-        
-.vote-header.hide {
-    transform: translateY(-100%);       /* 向下滑隐藏 */
-}
+    html, body {
+        width: 100%;
+        min-height: 100%;
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        background: 
+            linear-gradient(to bottom, transparent 60%, var(--bg-gradient-end) 100%),
+            url('images/b.jpg') top center no-repeat;
+        background-size: 100% auto;
+    }
 
-.nav-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 1400px;
-    margin: 0 auto;
-    position: relative;
-}
+    /* 固定导航栏 */
+    .vote-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(255,255,255,0.96);
+        backdrop-filter: blur(8px);
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        z-index: 1000;
+        transition: transform 0.3s ease;
+    }
 
-/* 左边返回按钮 - 缩小且不抢眼 */
-.back-btn {
-    background: none;
-    border: none;
-    font-size: 18px;
-    font-weight: normal;
-    color: #555;
-    cursor: pointer;
-    padding: 6px 12px;
-    border-radius: 20px;
-    transition: background 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-.back-btn:active { background: #f0f0f0; }
+    .vote-header.hide {
+        transform: translateY(-100%);
+    }
 
-/* 中间 Boys/Girls 切换 - 完全居中 */
-.nav-tabs {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 24px;
-    background: #f1f3f8;
-    padding: 4px;
-    border-radius: 40px;
-}
+    .nav-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 12px 24px;
+    }
 
-.tab-btn {
-    font-size: 18px;
-    font-weight: 600;
-    padding: 6px 20px;
-    border-radius: 32px;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    transition: all 0.2s;
-    color: #555;
-}
-.tab-btn.active {
-    background: #ffffff;
-    color: #222;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
+    .back-btn {
+        background: none;
+        border: none;
+        font-size: 18px;
+        font-weight: 500;
+        cursor: pointer;
+        padding: 6px 14px;
+        border-radius: 30px;
+    }
 
-/* 右边头像 - 与全站一致 */
-.user-icon {
-    display: block;
-}
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-    cursor: pointer;
-}
+    .nav-tabs {
+        display: flex;
+        gap: 12px;
+        background: #f0f2f8;
+        padding: 4px;
+        border-radius: 40px;
+    }
 
-        /* ----- 主要内容区 ----- */
-        .container {
-            max-width: 700px;
-            margin: 0 auto;
-            padding: 16px 16px 40px;
-        }
+    .tab-btn {
+        font-size: 18px;
+        font-weight: 600;
+        padding: 6px 24px;
+        border-radius: 32px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+    }
 
-        /* 登顶计划主标题（特殊字体后续可改）*/
-        .hero-title {
-            text-align: center;
-            font-size: 42px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            margin: 20px 0 24px 0;
-            background: linear-gradient(135deg, #ffb347, #ff6b6b);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            font-family: 'Trebuchet MS', '华文行书', 'Segoe UI', cursive;
-        }
+    .tab-btn.active {
+        background: white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        color: #ff6b4a;
+    }
 
-        /* 第一名独占一行卡片（大小保持一致）*/
-        .top-card {
-            text-align: center;
-            background: #fff9ef;
-            border-radius: 48px;
-            padding: 24px 16px 20px;
-            margin-bottom: 36px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.03);
-            border: 1px solid #ffe0b5;
-            position: relative;
-        }
-        .crown {
-            font-size: 32px;
-            position: absolute;
-            top: -16px;
-            left: 50%;
-            transform: translateX(-50%);
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-        }
-        /* 第一名图片尺寸与Grid卡片完全一致 */
-        .top-card .avatar {
-            width: 120px;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 50%;
-            margin: 0 auto 12px;
-            display: block;
-            box-shadow: 0 6px 14px rgba(0,0,0,0.1);
-            border: 3px solid #ffd966;
-        }
-        .top-card .name {
-            font-size: 22px;
-            font-weight: 700;
-            margin: 8px 0 6px;
-        }
-        .top-card .votes {
-            font-size: 18px;
-            color: #7f8c8d;
-            margin-bottom: 12px;
-        }
-        .vote-btn {
-            background: #ff7b5c;
-            border: none;
-            padding: 8px 28px;
-            border-radius: 60px;
-            font-size: 18px;
-            font-weight: 600;
-            color: white;
-            cursor: pointer;
-            transition: 0.2s;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        }
-        .vote-btn:active { transform: scale(0.96); background: #e55a3e; }
-        .vote-btn.disabled {
-            background: #ccc;
-            pointer-events: none;
-            opacity: 0.6;
-        }
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        cursor: pointer;
+    }
 
-        /* Grid 区域 — 强制一行3个 */
-        .grid-list {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px 12px;
-            margin-top: 8px;
-        }
-        .candidate-card {
-            text-align: center;
-            background: white;
-            border-radius: 32px;
-            padding: 16px 8px 14px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-            transition: 0.2s;
-            border: 1px solid #eee;
-        }
-        .candidate-card .avatar {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 50%;
-            margin: 0 auto 8px;
-            display: block;
-            background: #f2f2f2;
-        }
-        .candidate-card .name {
-            font-weight: 600;
-            font-size: 16px;
-            margin: 6px 0 4px;
-        }
-        .candidate-card .votes {
-            font-size: 14px;
-            color: #7f8c8d;
-            margin-bottom: 10px;
-        }
-        .small-vote-btn {
-            background: #ff7b5c;
-            border: none;
-            padding: 6px 16px;
-            border-radius: 32px;
-            font-size: 14px;
-            font-weight: 600;
-            color: white;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .small-vote-btn:active { transform: scale(0.96); }
-        .small-vote-btn.disabled {
-            background: #ccc;
-            pointer-events: none;
-        }
+    /* 主内容区 */
+    .vote-container {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 100px 20px 60px;
+    }
 
-        /* 弹窗遮罩 */
-        .modal {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.75);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-        }
-        .modal-card {
-            background: white;
-            max-width: 300px;
-            width: 80%;
-            border-radius: 32px;
-            padding: 28px 20px 24px;
-            text-align: center;
-            box-shadow: 0 20px 30px rgba(0,0,0,0.2);
-        }
-        .modal-card p {
-            font-size: 16px;
-            margin: 12px 0;
-            line-height: 1.4;
-            color: #2c3e4e;
-        }
-        .modal-btn {
-            background: #ff7b5c;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 48px;
-            font-weight: bold;
-            font-size: 18px;
-            margin-top: 16px;
-            cursor: pointer;
-        }
+    /* ========== 标题区域（已去掉文字，但保留高度 ========== */
+    /* 👇 后续你想加回标题，直接在这里加 h1 或 div 内容即可 */
+    .title-placeholder {
+        height: 70px;    /* 👈 预留空间，后续你可改成实际标题 */
+        margin-bottom: 16px;
+    }
 
-        /* 提示 */
-        .toast-msg {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.7);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 40px;
-            font-size: 14px;
-            z-index: 1200;
-            pointer-events: none;
-        }
-    </style>
+    /* 第一名卡片 */
+    .top-card {
+        background: rgba(255, 248, 235, var(--top-card-opacity));
+        border-radius: 48px;
+        padding: 24px 20px;
+        text-align: center;
+        margin-bottom: 32px;
+        border: 1px solid #ffe0b0;
+        position: relative;
+    }
+
+    .crown {
+        font-size: 34px;
+        position: absolute;
+        top: -18px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .avatar {
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin: 0 auto 12px;
+        border: 3px solid #ffc285;
+        cursor: pointer;
+    }
+
+    .member-name {
+        font-size: 22px;
+        font-weight: 700;
+        margin: 8px 0 4px;
+    }
+
+    .member-votes {
+        font-size: 18px;
+        color: #6c757d;
+        margin-bottom: 14px;
+    }
+
+    .vote-button {
+        background: #ff7b5c;
+        border: none;
+        padding: 8px 28px;
+        border-radius: 40px;
+        font-size: 18px;
+        font-weight: bold;
+        color: white;
+        cursor: pointer;
+    }
+
+    /* 网格 — 3列 */
+    .candidates-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px 14px;
+    }
+
+    /* 👇 成员卡片透明度：直接改 --card-opacity */
+    .candidate-card {
+        background: rgba(255, 255, 255, var(--card-opacity));
+        backdrop-filter: blur(2px);
+        border-radius: 32px;
+        padding: 16px 8px 14px;
+        text-align: center;
+        position: relative;
+        transition: 0.2s;
+        border: 1px solid rgba(255,255,240,0.6);
+    }
+
+    /* 排名角标 (#2, #3, #4...) */
+    .rank-badge {
+        position: absolute;
+        top: 10px;
+        left: 12px;
+        background: #ff9f4a;
+        color: white;
+        font-weight: bold;
+        font-size: 13px;
+        padding: 2px 8px;
+        border-radius: 40px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+
+    .candidate-card .avatar {
+        width: 90px;
+        height: 90px;
+        border: 2px solid #ffcd94;
+    }
+
+    .no-first-tip {
+        background: rgba(255,240,210,0.7);
+        border-radius: 48px;
+        padding: 30px 20px;
+        text-align: center;
+        margin-bottom: 32px;
+        font-weight: 500;
+        color: #aa7a4a;
+    }
+
+    .disabled-btn {
+        background: #bbb;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+</style>
 </head>
 <body>
 
-<div class="vote-header">
+<div class="vote-header" id="voteHeader">
     <div class="nav-container">
-        <!-- 左边返回按钮（点击跳转 home）-->
-        <button class="back-btn" id="backHomeBtn">← 返回</button>
-
-        <!-- Boys / Girls 切换 -->
+        <button class="back-btn" id="backBtn">← 返回</button>
         <div class="nav-tabs">
             <button class="tab-btn active" data-gender="boys">Boys</button>
             <button class="tab-btn" data-gender="girls">Girls</button>
         </div>
-
-        <!-- 右边个人头像（与之前风格统一）-->
-        <div class="user-icon">
-            <img src="images/people.jpg" alt="个人中心" class="user-avatar" id="userAvatar">
-        </div>
+        <img src="images/people.jpg" alt="个人中心" class="user-avatar" id="userAvatar">
     </div>
 </div>
 
-<div class="container" id="appContainer">
-    <!-- 动态渲染内容 -->
-</div>
+<div class="vote-container" id="voteContainer"></div>
 
 <script>
-
-    // 强制登录检查
-const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-if (!currentUser) {
-    window.location.href = 'login.html';
-}
-    
-    // 投票页导航栏滚动隐藏
-let lastScrollTop = 0;
-const voteHeader = document.querySelector('.vote-header');
-
-window.addEventListener('scroll', function() {
-    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    if (voteHeader) {
-        if (scrollTop > lastScrollTop && scrollTop > 50) {
-            voteHeader.classList.add('hide');
-        } else {
-            voteHeader.classList.remove('hide');
-        }
-    }
-    lastScrollTop = scrollTop;
-});
-    
-    // ---------- 假数据 ----------
-    // Boys 候选 (id, 名字, 票数, 图片占位)
-    const boysRaw = [
-        { id: 1, name: "陈朗", votes: 1240, avatar: "images/people.jpg" },
-        { id: 2, name: "冯浩轩", votes: 880, avatar: "images/people.jpg" },
-        { id: 3, name: "谭思盈", votes: 2450, avatar: "images/people.png" },
-        { id: 4, name: "陈安愉", votes: 630, avatar: "images/people.png" },
-        { id: 5, name: "陈珊珊", votes: 990, avatar: "images/people.png" },
-        { id: 6, name: "陈琪琪", votes: 420, avatar: "images/people.png" }
+    // ========== 数据 ==========
+    // 👇 这是「上周最终票数」（管理员结算后修改）
+    let boysData = [
+        { id: 1, name: "陈朗", totalVotes: 0, avatar: "images/陈朗.jpg" },
+        { id: 2, name: "冯浩轩", totalVotes: 0, avatar: "images/冯浩轩.jpg" },
+        { id: 3, name: "谭思盈", totalVotes: 0, avatar: "images/谭思盈.png" }
     ];
-    // Girls 候选
-    const girlsRaw = [
-        { id: 7, name: "马睿婕", votes: 3120, avatar: "images/people.jpg" },
-        { id: 8, name: "徐楚茹", votes: 1870, avatar: "images/people.jpg" },
-        { id: 9, name: "唐芷莹", votes: 980, avatar: "images/people.jpg" },
-        { id: 10, name: "林晓彤", votes: 740, avatar: "images/people.jpg" },
-        { id: 11, name: "张雅琳", votes: 520, avatar: "images/people.jpg" },
-        { id: 12, name: "黄子晴", votes: 360, avatar: "images/people.jpg" }
+    let girlsData = [
+        { id: 4, name: "马睿婕", totalVotes: 0, avatar: "images/马睿婕.jpg" },
+        { id: 5, name: "徐楚茹", totalVotes: 0, avatar: "images/徐楚茹.jpg" }
     ];
 
-    // 补全 girls 缺的图片
-    girlsRaw.forEach(g => { if(!g.avatar || g.avatar === 'images/default.jpg') g.avatar = 'images/people.jpg'; });
-    boysRaw.forEach(b => { if(!b.avatar) b.avatar = 'images/people.jpg'; });
+    let currentGender = "boys";
+    let voteEnabled = false;
 
-    let currentGender = 'boys';      // 'boys' 或 'girls'
-    let currentList = [];            // 存排序后的数据
-    
-    // 每日每人剩余登顶力 (Boys/Girls 独立)
-    let dailyPower = { boys: 5, girls: 5 };
-    // 已投给哪些人 (id 数组, 用于限制最多3个不同人)
-    let votedTodayIds = { boys: [], girls: [] };
-    
-    // ---------- 工具函数 ----------
-    function getTodayStr() {
-        const d = new Date();
-        return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+    // 检查投票开放时间（6月1日）
+    function checkVoteAvailability() {
+        const now = new Date();
+        const openDate = new Date(2026, 5, 1); // 2026年6月1日
+        voteEnabled = now >= openDate;
+        return voteEnabled;
     }
-    function loadDailyData() {
-        const today = getTodayStr();
-        const stored = localStorage.getItem(`vote_power_${today}`);
-        if(stored) {
-            const data = JSON.parse(stored);
-            dailyPower = data.power;
-            votedTodayIds = data.votedIds;
+
+    // 按总票数排序
+    function sortByVotes(list) {
+        return [...list].sort((a,b) => b.totalVotes - a.totalVotes);
+    }
+
+    // 渲染页面（只看上周票数）
+    function render() {
+        const container = document.getElementById("voteContainer");
+        const rawList = currentGender === "boys" ? boysData : girlsData;
+        const sorted = sortByVotes(rawList);
+        const hasFirst = sorted.length > 0 && sorted[0].totalVotes > 0;
+
+        let html = `<div class="title-placeholder"></div>`; // 👈 预留标题位置
+
+        // 第一名区域
+        if (hasFirst) {
+            const first = sorted[0];
+            html += `
+                <div class="top-card">
+                    <div class="crown">👑</div>
+                    <img class="avatar" src="${first.avatar}" alt="${first.name}" onclick="viewProfile(${first.id})">
+                    <div class="member-name">${first.name}</div>
+                    <div class="member-votes">🎫 ${first.totalVotes} 登顶票</div>
+                    <button class="vote-button" data-id="${first.id}" data-name="${first.name}">🚩 助登</button>
+                </div>
+            `;
         } else {
-            dailyPower = { boys: 5, girls: 5 };
-            votedTodayIds = { boys: [], girls: [] };
+            html += `<div class="no-first-tip">✨ 暂无登顶选手 ✨</div>`;
         }
-    }
-    function saveDailyData() {
-        const today = getTodayStr();
-        localStorage.setItem(`vote_power_${today}`, JSON.stringify({
-            power: dailyPower,
-            votedIds: votedTodayIds
-        }));
-    }
-    
-    // 加载票数数据（投票后的持久）
-    function loadVotesFromStorage() {
-        const storedVotes = localStorage.getItem('vote_counts');
-        if(storedVotes) {
-            const votesMap = JSON.parse(storedVotes);
-            const all = [...boysRaw, ...girlsRaw];
-            all.forEach(c => {
-                if(votesMap[c.id]) c.votes = votesMap[c.id];
-            });
-        }
-    }
-    function saveVotesToStorage() {
-        const votesMap = {};
-        [...boysRaw, ...girlsRaw].forEach(c => { votesMap[c.id] = c.votes; });
-        localStorage.setItem('vote_counts', JSON.stringify(votesMap));
-    }
-    
-    // 根据票数排序 (第一名第一，其他按票数)
-    function sortList(list) {
-        return [...list].sort((a,b) => b.votes - a.votes);
-    }
-    
-   function canVoteFor(candidateId, gender) {
-    const now = new Date();
-    if (now.getDay() === 0) {   // 周日
-        alert('❌ 周日休息日，登顶力暂不生效～ 请周一至周六来助登！');
-        return false;
-    }
-    if (dailyPower[gender] <= 0) {
-        alert(`今日${gender === 'boys' ? 'Boys' : 'Girls'}通道登顶力已用完 (0/5)`);
-        return false;
-    }
 
-    const votedList = votedTodayIds[gender];
-
-    // 只有当尝试投给「第 4 个不同的练习生」时才拦截
-    if (!votedList.includes(candidateId) && votedList.length >= 3) {
-        alert(`登顶力最多只能分给3位不同的练习生，你今天已助登${votedList.length}位`);
-        return false;
-    }
-
-    // 同一人可以重复投（不拦截）
-    return true;
-}
-    
-    function handleVote(candidateId, gender) {
-        if(!canVoteFor(candidateId, gender)) return;
-        // 扣除登顶力
-        dailyPower[gender]--;
-         // 只有第一次投这个人时才记录（去重）
-        if(!votedTodayIds[gender].includes(candidateId)) {
-    votedTodayIds[gender].push(candidateId);
-}
-        
-        // 增加登顶力
-        const targetList = gender === 'boys' ? boysRaw : girlsRaw;
-        const candidate = targetList.find(c => c.id === candidateId);
-        if(candidate) candidate.votes += 1;
-        
-        saveDailyData();
-        saveVotesToStorage();
-        renderPage();  // 刷新视图
-        showToast(`✨ 已为 ${candidate.name} 助力！剩余登顶力 ${dailyPower[gender]} / 5`);
-    }
-    
-    function showToast(msg) {
-        let t = document.querySelector('.toast-msg');
-        if(t) t.remove();
-        let div = document.createElement('div');
-        div.className = 'toast-msg';
-        div.innerText = msg;
-        document.body.appendChild(div);
-        setTimeout(() => div.remove(), 2000);
-    }
-    
-    // ----- 渲染 （第一名独占一行 + 皇冠，但尺寸一致）-----
-    function renderPage() {
-        const container = document.getElementById('appContainer');
-        const rawList = currentGender === 'boys' ? boysRaw : girlsRaw;
-        const sorted = sortList(rawList);
-        currentList = sorted;
-        
-        if(sorted.length === 0) {
-            container.innerHTML = '<div style="text-align:center; margin-top:60px;">暂无练习生数据</div>';
-            return;
-        }
-        
-        const first = sorted[0];
+        // 其他选手（第二名开始）
         const others = sorted.slice(1);
-        
-        let html = `
-            <div class="hero-title">✨ 登顶计划 ✨</div>
-            <!-- 第一名独占一行（卡片尺寸保持统一）-->
-            <div class="top-card">
-                <div class="crown">👑</div>
-                <img class="avatar" src="${first.avatar}" alt="${first.name}" 
-                     onclick="viewProfile(${first.id})" style="cursor:pointer;">
-                <div class="name">${first.name}</div>
-                <div class="votes"> ${first.votes} 登顶力</div>
-                <button class="vote-btn" data-id="${first.id}" data-gender="${currentGender}">助登</button>
-            </div>
-        `;
-        
-        if(others.length > 0) {
-            html += `<div class="grid-list">`;
-            others.forEach(c => {
+        if (others.length) {
+            html += `<div class="candidates-grid">`;
+            others.forEach((m, idx) => {
+                const rank = idx + 2; // 第二名 = #2
                 html += `
                     <div class="candidate-card">
-                        <img class="avatar" src="${c.avatar}" alt="${c.name}" 
-                             onclick="viewProfile(${c.id})" style="cursor:pointer;">
-                        <div class="name">${c.name}</div>
-                        <div class="votes"> ${c.votes} 登顶力</div>
-                        <button class="small-vote-btn" data-id="${c.id}" data-gender="${currentGender}">助登</button>
+                        <div class="rank-badge">#${rank}</div>
+                        <img class="avatar" src="${m.avatar}" alt="${m.name}" onclick="viewProfile(${m.id})">
+                        <div class="member-name">${m.name}</div>
+                        <div class="member-votes">🎫 ${m.totalVotes} 登顶票</div>
+                        <button class="vote-button" data-id="${m.id}" data-name="${m.name}">助登</button>
                     </div>
                 `;
             });
             html += `</div>`;
         }
-        
+
         container.innerHTML = html;
-        
-        // 绑定投票事件
-        document.querySelectorAll('.vote-btn, .small-vote-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
+
+        // 绑定投票事件（仅记录意愿，不刷新票数）
+        document.querySelectorAll(".vote-button").forEach(btn => {
+            btn.addEventListener("click", (e) => {
                 e.stopPropagation();
-                const id = parseInt(btn.getAttribute('data-id'));
-                const gender = btn.getAttribute('data-gender');
-                handleVote(id, gender);
+                if (!checkVoteAvailability()) {
+                    alert("⏰ 登顶计划将于6月1日开启，敬请期待！");
+                    return;
+                }
+                const id = btn.getAttribute("data-id");
+                const name = btn.getAttribute("data-name");
+                // 仅演示：提示“已记录助登意愿”（未来管理员后台可看）
+                alert(`✅ 已记录你对「${name}」的助登意愿。`);
+                // TODO: 后续发送到后台记录（本周新增 +1）
             });
         });
-        
-        // 更新导航栏激活样式
-        document.querySelectorAll('.tab-btn').forEach(tab => {
-            if(tab.getAttribute('data-gender') === currentGender) {
-                tab.classList.add('active');
-            } else {
-                tab.classList.remove('active');
-            }
-        });
     }
-    
+
+    // 预留个人主页跳转（暂不跳）
+    window.viewProfile = function(id) {
+        // 未来改成 window.location.href = `profile.html?id=${id}`;
+        alert("🔗 个人主页预留，暂不跳转");
+    };
+
     // 切换性别
     function switchGender(gender) {
         currentGender = gender;
-        loadDailyData();       // 重新加载今日剩余登顶力
-        loadVotesFromStorage();
-        renderPage();
-    }
-    
-    // 模拟查看个人主页（弹窗演示）
-    window.viewProfile = function(id) {
-        let name = '';
-        const all = [...boysRaw, ...girlsRaw];
-        const target = all.find(c => c.id === id);
-        if(target) name = target.name;
-        alert(`🔍 即将进入 ${name} 的个人主页 (个人页待完善)`);
-        // 未来可以 window.location.href = `profile.html?id=${id}`;
-    };
-    
-    // ---- 弹窗 + 初始化 ----
-    let modalActive = true;
-    function showWelcomeModal() {
-        if(!modalActive) return;
-        const modalDiv = document.createElement('div');
-        modalDiv.className = 'modal';
-        modalDiv.id = 'welcomeModal';
-        modalDiv.innerHTML = `
-            <div class="modal-card">
-                <div style="font-size: 32px;">🗳️</div>
-                <p style="font-weight:bold;">登顶计划投票规则</p>
-                <p>📆 每周一 ~ 周六可投票<br>⛔ 周日休息<br>💪 每天在Boys/Girls各5个登顶力<br>❤️ 最多可分别在Boys/Girls助力3位不同练习生</p>
-                <button class="modal-btn" id="understandBtn">已了解</button>
-            </div>
-        `;
-        document.body.appendChild(modalDiv);
-        document.getElementById('understandBtn').addEventListener('click', () => {
-            modalDiv.remove();
-            modalActive = false;
-            // 弹窗关闭后正式加载数据
-            initAfterModal();
+        render();
+        document.querySelectorAll(".tab-btn").forEach(btn => {
+            if (btn.getAttribute("data-gender") === gender) {
+                btn.classList.add("active");
+            } else {
+                btn.classList.remove("active");
+            }
         });
     }
-    
-    function initAfterModal() {
-        loadDailyData();
-        loadVotesFromStorage();
-        renderPage();
-    }
-    
-    // 按钮与头像跳转
-    document.addEventListener('DOMContentLoaded', () => {
-        showWelcomeModal();
-        
-        // 返回首页
-        const backBtn = document.getElementById('backHomeBtn');
-        if(backBtn) backBtn.addEventListener('click', () => window.location.href = 'index.html');
-        
-        // 头像点击模拟个人中心跳转
-        const avatarIcon = document.getElementById('userAvatar');
-        if(avatarIcon) avatarIcon.addEventListener('click', () => alert('个人中心待完善'));
-        
-        // Tabs 切换
-        const tabs = document.querySelectorAll('.tab-btn');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                const gender = tab.getAttribute('data-gender');
-                if(gender === currentGender) return;
+
+    // 导航栏交互 + 返回首页 + 头像预留
+    function bindUI() {
+        document.getElementById("backBtn").addEventListener("click", () => {
+            window.location.href = "index.html";
+        });
+        document.getElementById("userAvatar").addEventListener("click", () => {
+            alert("个人中心预留");
+        });
+        document.querySelectorAll(".tab-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const gender = btn.getAttribute("data-gender");
+                if (gender === currentGender) return;
                 switchGender(gender);
             });
         });
-        
-        // 若弹窗在加载前就试图渲染？先占位
-    });
+    }
+
+    // 滚动隐藏
+    let lastScroll = 0;
+    function setupScrollHide() {
+        const header = document.getElementById("voteHeader");
+        window.addEventListener("scroll", () => {
+            const top = window.scrollY;
+            if (top > lastScroll && top > 60) {
+                header.classList.add("hide");
+            } else {
+                header.classList.remove("hide");
+            }
+            lastScroll = top;
+        });
+    }
+
+    // 初始化
+    function init() {
+        checkVoteAvailability();
+        bindUI();
+        setupScrollHide();
+        render();
+    }
+
+    init();
 </script>
 </body>
 </html>
