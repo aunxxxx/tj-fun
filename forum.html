@@ -263,20 +263,19 @@
             <span id="currentBadge"></span>
         </div>
 
-        <!-- 发帖区域 -->
-        <div class="post-area">
-            <h3>📝 发新帖</h3>
-            <textarea class="post-input" id="postContent" rows="3" placeholder="说点什么吧..."></textarea>
-            <div class="post-actions">
-                <div class="user-switch">
-                    <span style="font-size: 14px; color: #666;">切换身份（演示用）：</span>
-                    <button class="user-btn" data-user="张三" data-role="user">张三 (练习生)</button>
-                    <button class="user-btn" data-user="李四" data-role="verified">李四 (官方认证)</button>
-                    <button class="user-btn" data-user="王五" data-role="user">王五 (练习生)</button>
-                </div>
-                <button class="post-btn" id="submitPost">✨ 发 布</button>
-            </div>
+       <!-- 发帖区域 -->
+<div class="post-area">
+    <h3>📝 发新帖</h3>
+    <textarea class="post-input" id="postContent" rows="3" placeholder="说点什么吧..."></textarea>
+    <div class="post-actions">
+        <div class="current-user-info">
+            <span style="font-size: 14px; color: #666;">当前登录：</span>
+            <strong id="currentUsername">加载中...</strong>
+            <span id="currentBadge"></span>
         </div>
+        <button class="post-btn" id="submitPost">✨ 发 布</button>
+    </div>
+</div>
 
         <!-- 帖子列表 -->
         <div class="posts-list" id="postsList">
@@ -298,14 +297,32 @@ if (!currentUser) {
 }
     
     // ========== 模拟用户数据 ==========
-    const users = {
-        '张三': { role: 'user', badge: '🎤 练习生', badgeClass: 'badge-practicing' },
-        '李四': { role: 'verified', badge: '✓ 官方认证', badgeClass: 'badge-verified' },
-        '王五': { role: 'user', badge: '🎤 练习生', badgeClass: 'badge-practicing' }
-    };
-
-    // 当前登录用户
-    let currentUser = '张三';
+   function updateCurrentUserUI() {
+    // 从 localStorage 读取真实登录用户
+    const realUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!realUser) {
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    currentUser = realUser.username;
+    
+    const usernameSpan = document.getElementById('currentUsername');
+    const badgeSpan = document.getElementById('currentBadge');
+    
+    if (usernameSpan) usernameSpan.innerText = currentUser;
+    
+    // 根据真实用户的身份显示徽章
+    if (realUser.role === 'trainee') {
+        if (realUser.isVerified) {
+            badgeSpan.innerHTML = '<span class="badge badge-verified">✓ 官方认证</span>';
+        } else {
+            badgeSpan.innerHTML = '<span class="badge badge-practicing">练习生</span>';
+        }
+    } else {
+        badgeSpan.innerHTML = ''; // 粉丝无头衔
+    }
+}
 
     // 帖子数据（存在 localStorage）
     let posts = [];
@@ -509,18 +526,6 @@ if (!currentUser) {
             if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
                 submitBtn.click();
             }
-        });
-        
-        // 用户切换按钮
-        document.querySelectorAll('.user-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const userName = this.getAttribute('data-user');
-                if (users[userName]) {
-                    currentUser = userName;
-                    updateCurrentUserUI();
-                    renderPosts(); // 重新渲染以更新点赞状态
-                }
-            });
         });
     });
 </script>
