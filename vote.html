@@ -313,6 +313,13 @@
 </div>
 
 <script>
+
+    // 强制登录检查
+const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+if (!currentUser) {
+    window.location.href = 'login.html';
+}
+    
     // 投票页导航栏滚动隐藏
 let lastScrollTop = 0;
 const voteHeader = document.querySelector('.vote-header');
