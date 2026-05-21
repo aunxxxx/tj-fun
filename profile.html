@@ -90,6 +90,7 @@
             border-radius: 32px;
             padding: 24px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            margin-bottom: 24px;
         }
 
         .section-title {
@@ -124,6 +125,87 @@
             padding: 40px 20px;
             color: #999;
         }
+
+        /* 编辑资料区域 */
+        .edit-section {
+            background: #ffffff;
+            border-radius: 32px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        .edit-section h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #ddd;
+            border-radius: 24px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #ff7b5c;
+        }
+
+        .edit-btn {
+            background: #ff7b5c;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 32px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .edit-btn:hover {
+            background: #e55a3e;
+        }
+
+        .error-msg {
+            color: #e55a3e;
+            font-size: 13px;
+            margin-top: 12px;
+            text-align: center;
+        }
+
+        .success-msg {
+            color: #2c7a4d;
+        }
+
+        .trainee-tip {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -136,7 +218,7 @@
         <nav>
             <a href="index.html">Home</a>
             <a href="news.html">大事件</a>
-            <a href="forum.html">铁汁窝</a>
+            <a href="forum.html">契弟广场</a>
         </nav>
         <div class="user-area">
             <a href="profile.html">
@@ -170,6 +252,11 @@
             <div class="empty-posts">加载中...</div>
         </div>
     </div>
+
+    <div class="edit-section" id="editSection">
+        <h3>✏️ 编辑资料</h3>
+        <div id="editArea"></div>
+    </div>
 </section>
 
 <footer>
@@ -177,8 +264,8 @@
 </footer>
 
 <script>
-    // 强制登录检查
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    // ========== 强制登录检查 ==========
+    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (!currentUser) {
         window.location.href = 'login.html';
     }
@@ -190,7 +277,7 @@
         headerAvatar.onerror = () => { headerAvatar.src = 'images/people.jpg'; };
     }
 
-    // 显示当前用户信息
+    // ========== 显示用户信息 ==========
     const profileAvatar = document.getElementById('profileAvatar');
     const profileName = document.getElementById('profileName');
     const profileBadge = document.getElementById('profileBadge');
@@ -204,20 +291,20 @@
         if (currentUser.isVerified) {
             profileBadge.innerHTML = '<span class="badge badge-verified">✓ 官方认证</span>';
         } else {
-            profileBadge.innerHTML = '<span class="badge badge-trainee">练习生</span>';
+            profileBadge.innerHTML = '<span class="badge badge-trainee">🎤 练习生</span>';
         }
     } else {
-        profileBadge.innerHTML = '';  // 粉丝无头衔
+        profileBadge.innerHTML = '';
     }
 
-    // 加载用户的留言记录（从铁汁窝的 localStorage 读取）
+    // ========== 加载留言记录 ==========
     function loadUserPosts() {
         const postsContainer = document.getElementById('userPostsList');
         const forumPosts = JSON.parse(localStorage.getItem('forum_posts')) || [];
         const userPosts = forumPosts.filter(post => post.author === currentUser.username);
 
         if (userPosts.length === 0) {
-            postsContainer.innerHTML = '<div class="empty-posts">📭 暂无留言，去铁汁窝发帖吧～</div>';
+            postsContainer.innerHTML = '<div class="empty-posts">📭 暂无留言，去契弟广场发帖吧～</div>';
             return;
         }
 
@@ -238,7 +325,7 @@
         });
     }
 
-    // 加载关注/粉丝数（后续实现）
+    // ========== 加载关注/粉丝数 ==========
     function loadFollowStats() {
         const follows = JSON.parse(localStorage.getItem('follows')) || [];
         const followCount = follows.filter(f => f.followerId === currentUser.id).length;
@@ -247,10 +334,120 @@
         document.getElementById('fansCount').innerText = fansCount;
     }
 
+    // ========== 编辑资料（根据角色显示不同表单）==========
+    function renderEditForm() {
+        const editArea = document.getElementById('editArea');
+        
+        if (currentUser.role === 'trainee') {
+            // 练习生：只能改密码
+            editArea.innerHTML = `
+                <div class="trainee-tip">🔒 练习生用户名由管理员统一管理，不可自行修改（密码可改）</div>
+                <div class="input-group">
+                    <label>原密码</label>
+                    <input type="password" id="oldPassword" placeholder="输入原密码">
+                </div>
+                <div class="input-group">
+                    <label>新密码</label>
+                    <input type="password" id="newPassword" placeholder="留空则不变">
+                </div>
+                <div class="input-group">
+                    <label>确认新密码</label>
+                    <input type="password" id="confirmPassword" placeholder="再次输入新密码">
+                </div>
+                <button class="edit-btn" id="saveProfileBtn">💾 保存修改</button>
+                <div id="editError" class="error-msg"></div>
+            `;
+        } else {
+            // 粉丝：可改用户名 + 密码
+            editArea.innerHTML = `
+                <div class="input-group">
+                    <label>新用户名</label>
+                    <input type="text" id="newUsername" placeholder="输入新用户名">
+                </div>
+                <div class="input-group">
+                    <label>原密码</label>
+                    <input type="password" id="oldPassword" placeholder="输入原密码">
+                </div>
+                <div class="input-group">
+                    <label>新密码</label>
+                    <input type="password" id="newPassword" placeholder="留空则不变">
+                </div>
+                <div class="input-group">
+                    <label>确认新密码</label>
+                    <input type="password" id="confirmPassword" placeholder="再次输入新密码">
+                </div>
+                <button class="edit-btn" id="saveProfileBtn">💾 保存修改</button>
+                <div id="editError" class="error-msg"></div>
+            `;
+        }
+        
+        // 绑定保存事件
+        document.getElementById('saveProfileBtn').addEventListener('click', saveProfile);
+    }
+
+    function saveProfile() {
+        const errorDiv = document.getElementById('editError');
+        const oldPassword = document.getElementById('oldPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        
+        let users = JSON.parse(localStorage.getItem('users'));
+        let currentUserData = JSON.parse(localStorage.getItem('currentUser'));
+        
+        // 验证原密码
+        if (oldPassword !== currentUserData.password) {
+            errorDiv.innerText = '原密码错误';
+            return;
+        }
+        
+        // 粉丝：修改用户名
+        if (currentUserData.role !== 'trainee') {
+            const newUsername = document.getElementById('newUsername').value.trim();
+            if (newUsername && newUsername !== currentUserData.username) {
+                if (users.find(u => u.username === newUsername)) {
+                    errorDiv.innerText = '用户名已被占用';
+                    return;
+                }
+                currentUserData.username = newUsername;
+            }
+        }
+        
+        // 修改密码
+        if (newPassword) {
+            if (newPassword !== confirmPassword) {
+                errorDiv.innerText = '两次输入的新密码不一致';
+                return;
+            }
+            if (newPassword.length < 3) {
+                errorDiv.innerText = '密码至少3位';
+                return;
+            }
+            currentUserData.password = newPassword;
+        }
+        
+        // 更新 users 列表
+        const userIndex = users.findIndex(u => u.id === currentUserData.id);
+        users[userIndex] = currentUserData;
+        localStorage.setItem('users', JSON.stringify(users));
+        localStorage.setItem('currentUser', JSON.stringify(currentUserData));
+        
+        // 刷新当前用户变量
+        currentUser = currentUserData;
+        
+        errorDiv.classList.add('success-msg');
+        errorDiv.innerText = '✅ 修改成功！页面即将刷新...';
+        
+        setTimeout(() => {
+            window.location.reload();
+        }, 1500);
+    }
+
+    // ========== 初始化 ==========
     loadUserPosts();
     loadFollowStats();
+    renderEditForm();
 
-    // 导航栏滚动隐藏
+    // ========== 导航栏滚动隐藏 ==========
     let lastScrollTop = 0;
     const header = document.querySelector('header');
     window.addEventListener('scroll', function() {
@@ -263,6 +460,5 @@
         lastScrollTop = scrollTop;
     });
 </script>
-
 </body>
 </html>
