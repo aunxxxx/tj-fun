@@ -1,498 +1,629 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>铁汁窝 - 时代骏风</title>
-<link rel="stylesheet" href="css/style.css">
-<style>
-    /* 铁汁窝专用样式 */
-    .forum-container {
-        max-width: 800px;
-        margin: 0 auto;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>铁汁窝 - 时代骏风</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* 铁汁窝专用样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    /* 发帖区域 */
-    .post-area {
-        background: #f9f9f9;
-        border-radius: 16px;
-        padding: 20px;
-        margin-bottom: 30px;
-        border: 1px solid #e0e0e0;
-    }
+        body {
+            background: #f5f7fb;
+        }
 
-    .post-area h3 {
-        margin: 0 0 15px 0;
-        font-size: 20px;
-        color: #333;
-    }
+        /* 主容器 */
+        .forum-container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px 16px 60px;
+        }
 
-    .post-input {
-        width: 100%;
-        padding: 12px;
-        border: 1px solid #ddd;
-        border-radius: 12px;
-        font-size: 16px;
-        font-family: inherit;
-        resize: vertical;
-        box-sizing: border-box;
-    }
+        /* ===== 烧榜模块 ===== */
+        .hot-section {
+            background: linear-gradient(135deg, #fff9e8, #fff0d4);
+            border-radius: 28px;
+            padding: 16px;
+            margin-bottom: 28px;
+            position: relative;
+            border: 1px solid #ffe0b0;
+        }
 
-    .post-input:focus {
-        outline: none;
-        border-color: #ff6b6b;
-    }
+        /* 加号按钮（仅练习生可见）*/
+        .plus-btn {
+            position: absolute;
+            top: 12px;
+            left: 16px;
+            width: 32px;
+            height: 32px;
+            background: #ff7b5c;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
 
-    .post-actions {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 15px;
-    }
+        .plus-btn:hover {
+            transform: scale(1.05);
+            background: #e55a3e;
+        }
 
-    /* 模拟用户切换 */
-    .user-switch {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-    }
+        .hot-title {
+            text-align: center;
+            font-size: 20px;
+            font-weight: 800;
+            color: #ff7b5c;
+            margin-bottom: 16px;
+        }
 
-    .user-btn {
-        background: #f0f0f0;
-        border: none;
-        padding: 6px 12px;
-        border-radius: 20px;
-        cursor: pointer;
-        font-size: 14px;
-        transition: all 0.2s;
-    }
+        .hot-posts {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
 
-    .user-btn.active {
-        background: #222;
-        color: white;
-    }
+        .hot-post-item {
+            background: rgba(255,255,240,0.8);
+            border-radius: 20px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
 
-    .user-btn:hover {
-        background: #ddd;
-    }
+        .hot-post-item:hover {
+            background: #fff5e0;
+        }
 
-    .post-btn {
-        background: #ff6b6b;
-        color: white;
-        border: none;
-        padding: 8px 24px;
-        border-radius: 24px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background 0.2s;
-    }
+        .hot-post-title {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
 
-    .post-btn:hover {
-        background: #ff4444;
-    }
+        .hot-post-stats {
+            font-size: 12px;
+            color: #b97f4a;
+        }
 
-    /* 帖子列表 */
-    .posts-list {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-    }
+        /* ===== 帖子列表 ===== */
+        .posts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
 
-    /* 单个帖子 */
-    .post-card {
-        background: #ffffff;
-        border-radius: 16px;
-        padding: 20px;
-        border: 1px solid #e0e0e0;
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
+        .post-card {
+            background: white;
+            border-radius: 24px;
+            padding: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            transition: 0.2s;
+        }
 
-    .post-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
 
-    /* 帖子头部：用户信息 + 时间 */
-    .post-header {
-        display: flex;
-    justify-content: space-between;
-        align-items: center;
-        margin-bottom: 12px;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
+        .post-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+        }
 
-    .user-info {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        flex-wrap: wrap;
-    }
+        .post-author {
+            flex: 1;
+        }
 
-    .username {
-        font-weight: bold;
-        font-size: 16px;
-        color: #333;
-    }
+        .author-name {
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            display: inline-block;
+        }
 
-    /* 认证/等级徽章 */
-    .badge {
-        display: inline-block;
-        font-size: 12px;
-        padding: 2px 8px;
-        border-radius: 20px;
-        background: #f0f0f0;
-        color: #555;
-    }
+        /* 🔽 认证徽章样式（可修改颜色/背景/文字）*/
+        .verified-badge {
+            background-color: #1e90ff;  /* 👈 改这里调整背景色 */
+            color: white;               /* 👈 改这里调整文字颜色 */
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+            margin-left: 8px;
+            display: inline-block;
+        }
 
-    .badge-verified {
-        background: #1e90ff;
-        color: white;
-    }
+        .post-time {
+            font-size: 11px;
+            color: #aaa;
+            margin-top: 4px;
+        }
 
-    .badge-practicing {
-        background: #ff6b6b;
-        color: white;
-    }
+        .post-content {
+            margin: 12px 0;
+            font-size: 15px;
+            line-height: 1.45;
+            color: #222;
+            word-break: break-word;
+        }
 
-    .post-time {
-        font-size: 12px;
-        color: #999;
-    }
+        .post-image {
+            max-width: 100%;
+            border-radius: 20px;
+            margin: 8px 0;
+            max-height: 300px;
+        }
 
-    /* 帖子内容 */
-    .post-content {
-        font-size: 16px;
-        line-height: 1.6;
-        color: #333;
-        margin-bottom: 15px;
-        word-wrap: break-word;
-    }
+        .post-stats {
+            display: flex;
+            gap: 24px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
 
-    /* 帖子底部：点赞 + 评论 */
-    .post-footer {
-        display: flex;
-        gap: 20px;
-        padding-top: 12px;
-        border-top: 1px solid #eee;
-    }
+        .stat-btn {
+            background: none;
+            border: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            color: #777;
+        }
 
-    .action-btn {
-        background: none;
-        border: none;
-        font-size: 14px;
-        color: #888;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        transition: color 0.2s;
-    }
+        .stat-num {
+            cursor: pointer;
+            font-weight: 500;
+        }
 
-    .action-btn:hover {
-        color: #ff6b6b;
-    }
+        /* 弹窗（点赞/评论列表）*/
+        .slide-modal {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(12px); /* 🔽 模糊强度 */
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.2s;
+        }
 
-    .action-btn.liked {
-        color: #ff6b6b;
-    }
+        .slide-modal.show {
+            visibility: visible;
+            opacity: 1;
+        }
 
-    /* 空状态 */
-    .empty-posts {
-        text-align: center;
-        padding: 60px 20px;
-        color: #999;
-    }
+        .modal-content {
+            background: rgba(30,30,40,0.9);
+            backdrop-filter: blur(16px);
+            width: 100%;
+            max-width: 500px;
+            border-radius: 32px 32px 0 0;
+            padding: 24px 20px 40px;
+            color: white;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
 
-    /* 当前登录用户标识 */
-    .current-user-bar {
-        background: #e8f4ff;
-        border-radius: 12px;
-        padding: 10px 15px;
-        margin-bottom: 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 14px;
-    }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 18px;
+        }
 
-    /* 删除按钮 */
-    .delete-btn {
-        background: none;
-        border: none;
-        color: #ccc;
-        cursor: pointer;
-        font-size: 14px;
-        transition: color 0.2s;
-    }
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
 
-    .delete-btn:hover {
-        color: #ff4444;
-    }
-</style>
+        .modal-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .modal-user-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .modal-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .modal-username {
+            font-weight: 500;
+        }
+
+        .modal-comment-text {
+            font-size: 13px;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        /* 发帖动画全屏层 */
+        .fullscreen-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 3000;
+            transform: scale(0);
+            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            overflow-y: auto;
+        }
+
+        .fullscreen-overlay.open {
+            transform: scale(1);
+        }
+
+        .post-editor {
+            padding: 60px 24px 40px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .editor-close, .editor-submit {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .editor-submit {
+            color: #ff7b5c;
+        }
+
+        .editor-textarea {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 18px;
+            padding: 16px 0;
+            resize: none;
+            font-family: inherit;
+        }
+
+        .image-picker {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background: #f5f5f5;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-top: 24px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .image-picker .plus-icon {
+            font-size: 48px;
+            color: #ccc;
+        }
+    </style>
 </head>
 <body>
 
 <header>
-<div class="header-container">
-    <a href="about.html">
-    <img src="images/logo.png" alt="公司Logo" class="logo">
-</a>
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="news.html">大事件</a>
-        <a href="forum.html" class="current">铁汁窝</a>
-    </nav>
-    <!-- 新增：个人中心图标 -->
-    <div class="user-area">
-        <a href="profile.html" class="user-icon">
-            <img src="images/people.jpg" alt="个人中心" class="user-avatar">
+    <div class="header-container">
+        <a href="about.html">
+            <img src="images/logo.png" alt="公司Logo" class="logo">
         </a>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="news.html">大事件</a>
+            <a href="forum.html" class="current">铁汁窝</a>
+        </nav>
+        <div class="user-area">
+            <a href="profile.html">
+                <img src="images/people.jpg" alt="个人中心" class="user-avatar">
+            </a>
+        </div>
     </div>
-</div>
 </header>
 
-<section id="forum">
-    <div class="forum-container">
-        <h1 style="font-size: 36px; margin-bottom: 10px;">🗣️ 契弟广场</h1>
-        <p style="color: #666; margin-bottom: 30px;">有话就说，随便吹水 🤪</p>
-
-        <!-- 当前登录用户栏 -->
-        <div class="current-user-bar">
-            <span>👤 当前登录：<strong id="currentUsername">张三</strong></span>
-            <span id="currentBadge"></span>
-        </div>
-
-       <!-- 发帖区域 -->
-<div class="post-area">
-    <h3>📝 发新帖</h3>
-    <textarea class="post-input" id="postContent" rows="3" placeholder="说点什么吧..."></textarea>
-    <div class="post-actions">
-        <div class="current-user-info">
-            <span style="font-size: 14px; color: #666;">当前登录：</span>
-            <strong id="currentUsername">加载中...</strong>
-            <span id="currentBadge"></span>
-        </div>
-        <button class="post-btn" id="submitPost">✨ 发 布</button>
-    </div>
-</div>
-
-        <!-- 帖子列表 -->
-        <div class="posts-list" id="postsList">
-            <!-- 动态加载帖子 -->
-        </div>
-    </div>
-</section>
-
-<footer>
-    <p>© 2026 时代骏风 · 契弟广场</p>
-</footer>
+<div class="forum-container" id="forumApp"></div>
 
 <script>
-    
-    // 强制登录检查
-const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-if (!currentUser) {
-    window.location.href = 'login.html';
-}
-    
-    // ========== 模拟用户数据 ==========
-   function updateCurrentUserUI() {
-    // 从 localStorage 读取真实登录用户
-    const realUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (!realUser) {
+    // ========== 可配置项 ==========
+    // 🔽 官方认证显示文字（可修改）
+    const VERIFIED_BADGE_TEXT = "✓ 官方认证";
+    // 🔽 烧榜展示数量
+    const HOT_POST_COUNT = 3;
+
+    // ========== 获取当前登录用户 ==========
+    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) {
         window.location.href = 'login.html';
-        return;
-    }
-    
-    currentUser = realUser.username;
-    
-    const usernameSpan = document.getElementById('currentUsername');
-    const badgeSpan = document.getElementById('currentBadge');
-    
-    if (usernameSpan) usernameSpan.innerText = currentUser;
-    
-    // 根据真实用户的身份显示徽章
-    if (realUser.role === 'trainee') {
-        if (realUser.isVerified) {
-            badgeSpan.innerHTML = '<span class="badge badge-verified">✓ 官方认证</span>';
-        } else {
-            badgeSpan.innerHTML = '<span class="badge badge-practicing">练习生</span>';
-        }
-    } else {
-        badgeSpan.innerHTML = ''; // 粉丝无头衔
-    }
-}
-
-    // 帖子数据（存在 localStorage）
-    let posts = [];
-
-    // 加载本地存储的帖子
-    function loadPosts() {
-        const stored = localStorage.getItem('forum_posts');
-        if (stored) {
-            posts = JSON.parse(stored);
-        } else {
-            // 示例数据
-            posts = [
-                {
-                    id: 1,
-                    author: '李四',
-                    content: '第一位认证用户报到！大家好啊！',
-                    time: new Date(Date.now() - 86400000).toLocaleString(),
-                    likes: 5,
-                    likedBy: []
-                },
-                {
-                    id: 2,
-                    author: '张三',
-                    content: '契弟广场终于开了，开心！',
-                    time: new Date(Date.now() - 7200000).toLocaleString(),
-                    likes: 2,
-                    likedBy: []
-                }
-            ];
-            savePosts();
-        }
-        renderPosts();
     }
 
-    // 保存帖子到本地存储
+    // 是不是练习生（决定是否显示加号/发帖入口）
+    const isTrainee = currentUser.role === 'trainee';
+
+    // ========== 帖子数据 ==========
+    let posts = JSON.parse(localStorage.getItem('forum_posts')) || [];
+
+    // ========== 辅助函数 ==========
     function savePosts() {
         localStorage.setItem('forum_posts', JSON.stringify(posts));
     }
 
-    // 生成新ID
-    function generateId() {
-        return posts.length > 0 ? Math.max(...posts.map(p => p.id)) + 1 : 1;
+    function getHotPosts() {
+        // 热度 = 点赞数 + 评论数（评论数暂时用随机模拟，后期替换）
+        const withHeat = posts.map(p => ({
+            ...p,
+            heat: (p.likes || 0) + (p.comments?.length || 0)
+        }));
+        withHeat.sort((a,b) => b.heat - a.heat);
+        return withHeat.slice(0, HOT_POST_COUNT);
     }
 
-    // 发布新帖
-    function addPost(content) {
-        if (!content.trim()) {
-            alert('写点内容再发吧！');
-            return false;
-        }
-        const newPost = {
-            id: generateId(),
-            author: currentUser,
-            content: content.trim(),
-            time: new Date().toLocaleString(),
-            likes: 0,
-            likedBy: []
-        };
-        posts.unshift(newPost); // 新帖放最前面
-        savePosts();
-        renderPosts();
-        return true;
+    // 获取帖子评论数
+    function getCommentCount(post) {
+        return post.comments ? post.comments.length : 0;
     }
 
-    // 删除帖子（只能删自己的）
-    function deletePost(postId) {
-        const post = posts.find(p => p.id === postId);
-        if (!post) return;
-        if (post.author !== currentUser) {
-            alert('只能删除自己的帖子哦！');
-            return;
-        }
-        if (confirm('确定要删除这条帖子吗？')) {
-            posts = posts.filter(p => p.id !== postId);
-            savePosts();
-            renderPosts();
-        }
-    }
-
-    // 点赞/取消点赞
-    function toggleLike(postId) {
-        const post = posts.find(p => p.id === postId);
-        if (!post) return;
-        
-        if (post.likedBy.includes(currentUser)) {
-            // 取消点赞
-            post.likes--;
-            post.likedBy = post.likedBy.filter(u => u !== currentUser);
-        } else {
-            // 点赞
-            post.likes++;
-            post.likedBy.push(currentUser);
-        }
-        savePosts();
-        renderPosts();
+    // 渲染烧榜
+    function renderHotPosts() {
+        const hot = getHotPosts();
+        if (hot.length === 0) return '<div class="hot-post-item">暂无热门帖子</div>';
+        return hot.map(p => `
+            <div class="hot-post-item" data-post-id="${p.id}">
+                <div class="hot-post-title">
+                    <span>${escapeHtml(p.content.substring(0, 30))}${p.content.length > 30 ? '…' : ''}</span>
+                    <span class="hot-post-stats">🔥 ${p.heat}</span>
+                </div>
+            </div>
+        `).join('');
     }
 
     // 渲染帖子列表
-    function renderPosts() {
-        const container = document.getElementById('postsList');
-        if (!container) return;
-
-        if (posts.length === 0) {
-            container.innerHTML = '<div class="empty-posts">📭 还没有帖子，来发第一条吧！</div>';
-            return;
-        }
-
-        container.innerHTML = posts.map(post => {
-            const user = users[post.author] || { role: 'user', badge: '🎤 练习生', badgeClass: 'badge-practicing' };
-            const isLiked = post.likedBy.includes(currentUser);
-            const isAuthor = post.author === currentUser;
-            
+    function renderPostsList() {
+        if (posts.length === 0) return '<div style="text-align:center;padding:40px;">暂无帖子，来发第一条吧～</div>';
+        return posts.map(post => {
+            const user = JSON.parse(localStorage.getItem('users'))?.find(u => u.username === post.author) || {};
+            const showVerified = user.role === 'trainee' && user.isVerified === true;
+            const commentCount = getCommentCount(post);
             return `
                 <div class="post-card" data-post-id="${post.id}">
                     <div class="post-header">
-                        <div class="user-info">
-                            <span class="username">${escapeHtml(post.author)}</span>
-                            <span class="badge ${user.badgeClass}">${user.badge}</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <span class="post-time">📅 ${post.time}</span>
-                            ${isAuthor ? `<button class="delete-btn" onclick="deletePost(${post.id})">🗑️ 删除</button>` : ''}
+                        <img class="post-avatar" src="${user.avatar || 'images/people.jpg'}" alt="头像" onclick="viewProfile('${post.author}')">
+                        <div class="post-author">
+                            <span class="author-name" onclick="viewProfile('${post.author}')">${escapeHtml(post.author)}</span>
+                            ${showVerified ? `<span class="verified-badge">${VERIFIED_BADGE_TEXT}</span>` : ''}
+                            <div class="post-time">${post.time}</div>
                         </div>
                     </div>
                     <div class="post-content">${escapeHtml(post.content)}</div>
-                    <div class="post-footer">
-                       <button class="action-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike(${post.id})">
-    ${isLiked ? '👍' : '👋'} 赏个脸 ${post.likes}
-</button>
-                       <span class="action-btn" style="cursor: default;">💨 放个屁 (演示)</span>
+                    ${post.image ? `<img src="${post.image}" class="post-image" alt="post image">` : ''}
+                    <div class="post-stats">
+                        <button class="stat-btn like-btn" data-id="${post.id}">❤️ <span class="stat-num like-num" data-id="${post.id}">${post.likes || 0}</span></button>
+                        <button class="stat-btn comment-btn" data-id="${post.id}">💬 <span class="stat-num comment-num" data-id="${post.id}">${commentCount}</span></button>
                     </div>
                 </div>
             `;
         }).join('');
     }
 
-    // 简单的防XSS
+    // 全局渲染
+    function renderForum() {
+        const container = document.getElementById('forumApp');
+        container.innerHTML = `
+            <div class="hot-section">
+                ${isTrainee ? '<div class="plus-btn" id="plusBtn">+</div>' : ''}
+                <div class="hot-title">🔥 烧榜</div>
+                <div class="hot-posts" id="hotPostsList">${renderHotPosts()}</div>
+            </div>
+            <div class="posts-list" id="postsList">${renderPostsList()}</div>
+        `;
+
+        // 绑定帖子点击跳转详情（预留）
+        document.querySelectorAll('.hot-post-item').forEach(el => {
+            el.addEventListener('click', () => alert('帖子详情页预留'));
+        });
+
+        // 点赞、评论按钮事件
+        document.querySelectorAll('.like-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const id = parseInt(btn.dataset.id);
+                const post = posts.find(p => p.id === id);
+                if (post) {
+                    post.likes = (post.likes || 0) + 1;
+                    savePosts();
+                    renderForum();
+                }
+            });
+        });
+
+        document.querySelectorAll('.comment-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const id = parseInt(btn.dataset.id);
+                showCommentModal(id);
+            });
+        });
+    }
+
+    // 点赞/评论弹窗（从下往上，高斯模糊）
+    function showCommentModal(postId) {
+        const post = posts.find(p => p.id === postId);
+        if (!post) return;
+        const comments = post.comments || [];
+        const modalHtml = `
+            <div class="slide-modal" id="commentModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <span>💬 评论列表</span>
+                        <button class="close-modal" id="closeModalBtn">✕</button>
+                    </div>
+                    <div class="modal-list">
+                        ${comments.map(c => `
+                            <div class="modal-user-item" onclick="viewProfile('${c.username}')">
+                                <img class="modal-avatar" src="${c.avatar || 'images/people.jpg'}" alt="">
+                                <div>
+                                    <div class="modal-username">${escapeHtml(c.username)}</div>
+                                    <div class="modal-comment-text">${escapeHtml(c.text)}</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                        ${comments.length === 0 ? '<div>暂无评论</div>' : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        const modal = document.getElementById('commentModal');
+        setTimeout(() => modal.classList.add('show'), 10);
+        document.getElementById('closeModalBtn').addEventListener('click', () => {
+            modal.classList.remove('show');
+            setTimeout(() => modal.remove(), 300);
+        });
+    }
+
+    // 发帖动画 + 发帖页
+    function showPostEditor() {
+        const overlay = document.createElement('div');
+        overlay.className = 'fullscreen-overlay';
+        overlay.innerHTML = `
+            <div class="post-editor">
+                <div class="editor-header">
+                    <button class="editor-close" id="editorCloseBtn">✕</button>
+                    <button class="editor-submit" id="editorSubmitBtn">发送</button>
+                </div>
+                <textarea class="editor-textarea" id="postContentInput" placeholder="写点什么..." rows="6"></textarea>
+                <div class="image-picker" id="imagePicker">
+                    <div class="plus-icon" id="plusIcon">+</div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        setTimeout(() => overlay.classList.add('open'), 10);
+
+        let selectedImage = null;
+        const picker = document.getElementById('imagePicker');
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    selectedImage = ev.target.result;
+                    picker.style.backgroundImage = `url(${selectedImage})`;
+                    picker.style.backgroundSize = 'cover';
+                    picker.innerHTML = '';
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+        picker.addEventListener('click', () => fileInput.click());
+
+        document.getElementById('editorCloseBtn').addEventListener('click', () => {
+            overlay.classList.remove('open');
+            setTimeout(() => overlay.remove(), 300);
+        });
+
+        document.getElementById('editorSubmitBtn').addEventListener('click', () => {
+            const content = document.getElementById('postContentInput').value.trim();
+            if (!content) {
+                alert('写点内容再发吧');
+                return;
+            }
+            const newPost = {
+                id: Date.now(),
+                author: currentUser.username,
+                content,
+                image: selectedImage || null,
+                time: new Date().toLocaleString(),
+                likes: 0,
+                comments: []
+            };
+            posts.unshift(newPost);
+            savePosts();
+            overlay.classList.remove('open');
+            setTimeout(() => {
+                overlay.remove();
+                renderForum();
+            }, 300);
+        });
+    }
+
+    // 预留个人主页跳转
+    window.viewProfile = (username) => {
+        alert(`跳转到 ${username} 的个人主页（预留）`);
+        // window.location.href = `profile.html?user=${username}`;
+    };
+
     function escapeHtml(str) {
-        return str.replace(/[&<>]/g, function(m) {
+        return str.replace(/[&<>]/g, (m) => {
             if (m === '&') return '&amp;';
             if (m === '<') return '&lt;';
             if (m === '>') return '&gt;';
             return m;
-        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-            return c;
         });
     }
 
-    // 更新UI显示当前用户
-    function updateCurrentUserUI() {
-        const usernameSpan = document.getElementById('currentUsername');
-        const badgeSpan = document.getElementById('currentBadge');
-        const user = users[currentUser];
-        
-        if (usernameSpan) usernameSpan.innerText = currentUser;
-        if (badgeSpan && user) {
-            badgeSpan.innerHTML = `<span class="badge ${user.badgeClass}">${user.badge}</span>`;
-        }
-        
-        // 切换按钮的高亮样式
-        document.querySelectorAll('.user-btn').forEach(btn => {
-            if (btn.getAttribute('data-user') === currentUser) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
+    // 初始化
+    function init() {
+        renderForum();
+        document.addEventListener('click', (e) => {
+            if (e.target.id === 'plusBtn') showPostEditor();
         });
     }
 
-    // 导航栏滚动隐藏
+    init();
+</script>
+
+<!-- 导航栏滚动隐藏脚本 -->
+<script>
     let lastScrollTop = 0;
     const header = document.querySelector('header');
     window.addEventListener('scroll', function() {
@@ -504,31 +635,6 @@ if (!currentUser) {
         }
         lastScrollTop = scrollTop;
     });
-
-    // 初始化
-    document.addEventListener('DOMContentLoaded', function() {
-        loadPosts();
-        updateCurrentUserUI();
-        
-        // 发布按钮事件
-        const submitBtn = document.getElementById('submitPost');
-        const postInput = document.getElementById('postContent');
-        
-        submitBtn.addEventListener('click', function() {
-            const content = postInput.value;
-            if (addPost(content)) {
-                postInput.value = '';
-            }
-        });
-        
-        // 按Ctrl+Enter快速发布
-        postInput.addEventListener('keydown', function(e) {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                submitBtn.click();
-            }
-        });
-    });
 </script>
-
 </body>
 </html>
