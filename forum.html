@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>铁汁窝 - 时代骏风</title>
-    <link rel="stylesheet" href="css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>铁汁窝论坛 - 开发者社区</title>
     <style>
-        /* ========== 铁汁窝专用样式 ========== */
+        /* ==================== 全局样式 ==================== */
         * {
             margin: 0;
             padding: 0;
@@ -14,86 +13,165 @@
         }
 
         body {
-            background: #f5f7fb;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            padding-top: 60px;
+            padding-bottom: 20px;
         }
 
-        /* 🔽 主容器顶部间距（避免被导航栏遮挡，可改） */
-        .forum-container {
-            max-width: 700px;
+        /* ==================== 顶部导航栏 ==================== */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        header.hide {
+            transform: translateY(-100%);
+        }
+
+        .header-content {
+            max-width: 800px;
             margin: 0 auto;
-            padding: 100px 16px 60px;  /* 👈 改第一个数字调整顶部距离 */
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        /* ===== 烧榜模块样式 ===== */
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .username {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            padding: 6px 12px;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        /* ==================== 主容器 ==================== */
+        #forumApp {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* ==================== 热词区域 ==================== */
         .hot-section {
-            background: #fff6ea;
-            border-radius: 28px;       /* 👈 圆角大小 */
-            padding: 16px;
-            margin-bottom: 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
             position: relative;
+            color: white;
         }
 
-        /* 🔽 发帖加号按钮（仅练习生可见）*/
+        .hot-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hot-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .hot-item {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .hot-item:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .hot-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .hot-count {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
         .plus-btn {
             position: absolute;
-            top: 12px;
-            left: 16px;
-            width: 32px;
-            height: 32px;
-            background: #ff7b5c;       /* 👈 按钮背景色 */
-            color: white;
+            bottom: 20px;
+            right: 20px;
+            width: 48px;
+            height: 48px;
+            background: white;
+            color: #667eea;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
-            cursor: pointer;
-        }
-
-        .hot-title {
-            text-align: center;
-            font-size: 20px;
             font-weight: bold;
-            margin-bottom: 16px;
-            color: #ff7b5c;            /* 👈 烧榜标题颜色 */
-        }
-
-        .hot-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .hot-item {
-            background: white;
-            border-radius: 20px;
-            padding: 12px 16px;
             cursor: pointer;
-            transition: background 0.15s;
-        }
-        .hot-item:active {
-            background: #f0e4d0;
-        }
-        .hot-name {
-            font-weight: 700;
-        }
-        .hot-count {
-            font-size: 13px;
-            color: #b97f4a;            /* 👈 热度数字颜色 */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
         }
 
-        /* ===== 帖子卡片样式 ===== */
-        .posts-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+        .plus-btn:hover {
+            transform: rotate(90deg);
         }
 
+        /* ==================== 帖子卡片 ==================== */
         .post-card {
             background: white;
-            border-radius: 24px;
+            border-radius: 12px;
             padding: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .post-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
         }
 
         .post-header {
@@ -103,522 +181,1505 @@
         }
 
         .post-avatar {
-            width: 44px;
-            height: 44px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             cursor: pointer;
             object-fit: cover;
         }
 
-        .author-name {
-            font-weight: bold;
-            cursor: pointer;
+        .post-author-info {
+            flex: 1;
         }
 
-        /* 🔽 官方认证徽章（可改文字、颜色） */
+        .post-author-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 4px;
+        }
+
+        .post-author-name > span {
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
         .verified-badge {
-            background-color: #1e90ff;  /* 👈 认证徽章背景色 */
-            color: white;               /* 👈 认证徽章文字颜色 */
+            background: #4caf50;
+            color: white;
             padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 11px;
-            margin-left: 8px;
-            display: inline-block;
+            border-radius: 12px;
+            font-size: 10px;
         }
 
         .post-time {
-            font-size: 11px;
-            color: #aaa;
-            margin-top: 4px;
+            font-size: 12px;
+            color: #999;
         }
 
         .post-content {
-            margin: 12px 0;
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            color: #333;
+            word-wrap: break-word;
         }
 
         .post-image {
-            max-width: 100%;
-            border-radius: 20px;
-            margin-top: 8px;
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            cursor: pointer;
         }
 
         .post-stats {
             display: flex;
-            gap: 24px;
-            margin-top: 12px;
-            padding-top: 10px;
-            border-top: 1px solid #eee;
+            gap: 16px;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
         }
 
-        .stat-btn {
-            background: none;
+        /* ==================== 按钮样式 ==================== */
+        .like-btn, .comment-btn {
+            background: #f5f5f5;
             border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
             cursor: pointer;
-            display: flex;
+            transition: all 0.3s;
+            display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             font-size: 14px;
-            color: #777;
         }
 
-        .stat-num {
-            cursor: pointer;
+        .like-btn:hover, .comment-btn:hover {
+            background: #e8e8e8;
         }
 
-        /* ===== 全屏模糊遮罩 ===== */
-        .modal-mask {
+        .like-btn.liked {
+            background: #ffebee;
+            color: #ff6b6b;
+        }
+
+        .like-btn.super-liked {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            color: white;
+        }
+
+        /* ==================== 点赞面板 ==================== */
+        .like-panel-overlay,
+        .comment-panel-overlay,
+        .comments-list-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(8px);  /* 🔽 模糊强度，可改 */
-            z-index: 3000;
             display: flex;
-            justify-content: center;
             align-items: center;
-            visibility: hidden;
+            justify-content: center;
+            z-index: 2000;
             opacity: 0;
-            transition: 0.2s;
+            transition: opacity 0.3s;
         }
 
-        .modal-mask.show {
-            visibility: visible;
+        .like-panel-overlay.show,
+        .comment-panel-overlay.show,
+        .comments-list-overlay.show {
             opacity: 1;
         }
 
-        /* 电脑端弹窗卡片（居中） */
-        .modal-card {
-            background: #1e1e2a;
-            color: white;
-            border-radius: 32px;
-            padding: 24px;
-            max-width: 400px;
+        .like-panel,
+        .comment-panel,
+        .comments-list-panel {
+            background: white;
+            border-radius: 16px;
             width: 90%;
-            max-height: 70vh;
+            max-width: 500px;
+            max-height: 80vh;
             overflow-y: auto;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s ease;
         }
 
-        .modal-card .modal-header {
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .like-panel-header,
+        .comment-panel-header,
+        .comments-list-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 20px;
-            font-weight: bold;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
         }
 
-        .modal-card .close-modal {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        /* 手机端底部抽屉 */
-        .drawer-modal {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #1e1e2a;
-            color: white;
-            border-radius: 32px 32px 0 0;
-            z-index: 3100;
-            transition: transform 0.3s ease, height 0.2s ease;
-            transform: translateY(100%);
-            height: 80vh;              /* 👈 抽屉初始高度 */
+        .like-panel-stats {
             display: flex;
-            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
         }
 
-        .drawer-modal.open {
-            transform: translateY(0);
-        }
-
-        .drag-bar {
-            width: 50px;
-            height: 5px;
-            background: #aaa;
-            border-radius: 10px;
-            margin: 14px auto;
-            cursor: pointer;
-        }
-
-        .drawer-content {
+        .like-total-count,
+        .like-user-count {
             flex: 1;
-            overflow-y: auto;
-            padding: 0 20px 30px;
+            text-align: center;
         }
 
-        .modal-list {
+        .like-count-number {
+            font-size: 32px;
+            font-weight: bold;
+            display: block;
+        }
+
+        .like-count-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .like-action-area {
+            padding: 20px;
+        }
+
+        .like-slider-container {
+            margin-bottom: 20px;
+        }
+
+        #likeSlider {
+            width: 100%;
+            height: 6px;
+            -webkit-appearance: none;
+            background: linear-gradient(to right, #ff6b6b, #ffd93d, #6bcf7f);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        #likeSlider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #ff6b6b;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .like-slider-labels {
             display: flex;
-            flex-direction: column;
-            gap: 16px;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #999;
         }
 
-        .modal-user-item {
+        .like-current-status {
+            margin-top: 20px;
+        }
+
+        .like-status-text {
+            text-align: center;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .like-submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: #e0e0e0;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .like-submit-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .like-history {
+            border-top: 1px solid #e0e0e0;
+            padding: 20px;
+        }
+
+        .like-history-title {
+            font-weight: bold;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .like-history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .like-history-user {
             display: flex;
             align-items: center;
-            gap: 12px;
-            cursor: pointer;
+            gap: 10px;
         }
 
-        .modal-avatar {
-            width: 40px;
-            height: 40px;
+        .like-history-avatar {
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             object-fit: cover;
         }
 
-        .modal-username {
-            font-weight: 500;
+        .like-history-name {
+            font-size: 14px;
         }
 
-        .modal-comment-text {
-            font-size: 13px;
-            opacity: 0.8;
-            margin-top: 4px;
+        .like-history-detail {
+            display: flex;
+            gap: 10px;
+            align-items: center;
         }
 
-        /* 发帖全屏层（动画）*/
-        .fullscreen-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .like-history-count {
+            font-size: 12px;
+            color: #ff6b6b;
+        }
+
+        .like-history-time {
+            font-size: 11px;
+            color: #999;
+        }
+
+        .like-history-empty {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+        }
+
+        /* ==================== 评论面板 ==================== */
+        .comment-textarea {
             width: 100%;
-            height: 100%;
-            background: white;
-            z-index: 4000;
-            transform: scale(0);
-            transition: transform 0.3s ease;
-            overflow: auto;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: vertical;
+            font-family: inherit;
         }
 
-        .fullscreen-overlay.open {
-            transform: scale(1);
+        .comment-textarea:focus {
+            outline: none;
+            border-color: #667eea;
         }
 
-        .post-editor {
-            padding: 60px 24px;
-            max-width: 600px;
-            margin: 0 auto;
+        .comment-input-area {
+            padding: 20px;
         }
 
-        .editor-header {
+        .comment-input-footer {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 24px;
+            align-items: center;
+            margin-top: 10px;
         }
 
-        .editor-close, .editor-submit {
-            font-size: 24px;
+        .comment-char-count {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .comment-toolbar {
+            display: flex;
+            gap: 8px;
+        }
+
+        .comment-tool-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #e0e0e0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .comment-tool-btn:hover {
+            background: #f5f5f5;
+        }
+
+        .comment-preview-area {
+            margin: 0 20px 20px 20px;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .comment-preview-title {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .comment-preview-content {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .comment-actions {
+            padding: 0 20px 20px 20px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .comment-preview-btn,
+        .comment-submit-btn,
+        .write-comment-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .comment-preview-btn {
+            background: #f0f0f0;
+        }
+
+        .comment-submit-btn,
+        .write-comment-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        /* ==================== 评论列表 ==================== */
+        .comments-list-content {
+            padding: 16px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .comment-item {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .comment-item:last-child {
+            border-bottom: none;
+        }
+
+        .comment-item-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .comment-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .comment-user-info {
+            flex: 1;
+        }
+
+        .comment-username {
+            font-weight: 600;
+            display: block;
+            font-size: 14px;
+        }
+
+        .comment-time {
+            font-size: 11px;
+            color: #999;
+        }
+
+        .comment-like-btn {
             background: none;
             border: none;
             cursor: pointer;
-        }
-
-        .editor-textarea {
-            width: 100%;
-            font-size: 18px;
-            border: none;
-            outline: none;
-            resize: none;
-        }
-
-        .image-picker {
-            width: 100%;
-            aspect-ratio: 1;
-            background: #f5f5f5;
-            border-radius: 24px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            margin-top: 24px;
+            gap: 4px;
+            font-size: 12px;
+            color: #999;
+            transition: all 0.2s;
+        }
+
+        .comment-like-btn:hover {
+            color: #ff6b6b;
+        }
+
+        .comment-content {
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .comment-mention {
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        .comment-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .comment-reply-btn {
+            background: none;
+            border: none;
+            font-size: 12px;
+            color: #999;
             cursor: pointer;
+            padding: 4px 8px;
+        }
+
+        .comment-reply-btn:hover {
+            color: #667eea;
+        }
+
+        .comments-empty {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .comments-list-footer {
+            padding: 16px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        /* ==================== Toast 提示 ==================== */
+        .custom-toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            z-index: 10000;
+            transition: transform 0.3s;
+            white-space: nowrap;
+        }
+
+        .custom-toast.success {
+            background: #4caf50;
+        }
+
+        .custom-toast.error {
+            background: #f44336;
+        }
+
+        .custom-toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ==================== 漂浮动画 ==================== */
+        .floating-heart {
+            position: fixed;
+            font-size: 20px;
+            pointer-events: none;
+            animation: floatUp 1s ease-out forwards;
+            z-index: 9999;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* ==================== 空状态 ==================== */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+            background: white;
+            border-radius: 12px;
+        }
+
+        /* ==================== 响应式 ==================== */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 56px;
+            }
+
+            .post-card {
+                padding: 12px;
+            }
+
+            .like-panel,
+            .comment-panel,
+            .comments-list-panel {
+                width: 95%;
+                max-height: 90vh;
+            }
+
+            .hot-section {
+                padding: 16px;
+            }
+
+            .hot-item {
+                font-size: 12px;
+            }
         }
     </style>
 </head>
 <body>
-
-<header>
-    <div class="header-container">
-        <a href="about.html">
-            <img src="images/logo.png" alt="公司Logo" class="logo">
-        </a>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="news.html">大事件</a>
-            <a href="forum.html" class="current">铁汁窝</a>
-        </nav>
-        <div class="user-area">
-            <a href="profile.html">
-                <img src="images/people.jpg" alt="个人中心" class="user-avatar">
-            </a>
+    <header>
+        <div class="header-content">
+            <div class="logo">🔥 铁汁窝论坛</div>
+            <div class="user-info" id="userInfo">
+                <!-- 动态加载用户信息 -->
+            </div>
         </div>
+    </header>
+
+    <div id="forumApp">
+        <!-- 论坛内容动态渲染 -->
     </div>
-</header>
 
-<div class="forum-container" id="forumApp"></div>
+    <script>
+        /* ===================================================
+           🔹 铁汁窝论坛核心脚本（完整版）
+           
+           功能列表：
+           1️⃣ 用户验证系统
+           2️⃣ 帖子数据管理（支持多次点赞）
+           3️⃣ 热词提取和渲染
+           4️⃣ 自定义点赞模块（无emoji）
+           5️⃣ 自定义评论模块（无emoji）
+           6️⃣ 帖子渲染和事件处理
+           7️⃣ 顶部导航滚动隐藏
+           8️⃣ Toast 提示系统
+        =================================================== */
 
-<script>
-    // ========== 🔽 可配置常量（改这里就能调整全局规则） ==========
-    const VERIFIED_BADGE_TEXT = "✓ 官方认证";      // 👈 官方认证显示文字
-    const HOT_POST_COUNT = 3;                     // 👈 烧榜展示词条数量
-    const MANUAL_TOP_WORDS = ["登顶计划"];        // 👈 手动置顶词条（不受热度影响）
+        /* ==================== 1️⃣ 用户验证 ==================== */
+        
+        // 获取当前登录用户
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        
+        // 未登录则跳转到登录页
+        if (!currentUser) {
+            location.href = 'login.html';
+        }
+        
+        // 判断是否为学员
+        const isTrainee = currentUser.role === 'trainee';
 
-    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (!currentUser) location.href = 'login.html';
-    const isTrainee = currentUser.role === 'trainee';
-
-    let posts = JSON.parse(localStorage.getItem('forum_posts')) || [];
-    if (posts.length === 0) {
-        posts = [
-            { id: 1, author: "李四", content: "第一位认证用户报到！大家好啊！", image: null, time: new Date(2026, 4, 20, 8, 56, 54).toLocaleString(), likes: 10, likedBy: ["张三"], comments: [] },
-            { id: 2, author: "张三", content: "契弟广场终于开了，开心！", image: null, time: new Date(2026, 4, 21, 6, 56, 54).toLocaleString(), likes: 3, likedBy: ["李四"], comments: [] }
-        ];
-        savePosts();
-    }
-
-    function savePosts() { localStorage.setItem('forum_posts', JSON.stringify(posts)); }
-
-    // ========== 词条提取（自动从帖子内容里找2~6个中文字符） ==========
-    function extractWords(content) {
-        const words = content.match(/[\u4e00-\u9fa5]{2,6}/g) || [];
-        return [...new Set(words)];
-    }
-
-    // 🔽 热度计算：引用次数 + 点赞数 + 评论数
-    function getHotWords() {
-        const wordStats = new Map();
-        posts.forEach(post => {
-            const words = extractWords(post.content);
-            words.forEach(word => {
-                if (!wordStats.has(word)) wordStats.set(word, { count: 0, likes: 0, comments: 0 });
-                const stat = wordStats.get(word);
-                stat.count++; stat.likes += post.likes || 0; stat.comments += (post.comments?.length || 0);
+        /* ==================== 2️⃣ 帖子数据初始化 ==================== */
+        
+        // 从 localStorage 读取帖子数据
+        let posts = JSON.parse(localStorage.getItem('forum_posts')) || [];
+        
+        // 如果没有数据，初始化示例数据
+        if (!posts.length) {
+            posts = [
+                { 
+                    id: 1, 
+                    author: "李四", 
+                    content: "第一位认证用户报到！大家好啊！", 
+                    image: null, 
+                    time: new Date(2026, 4, 20, 8, 56, 54).toISOString(),
+                    likes: {
+                        total: 10,
+                        users: {
+                            "张三": { count: 3, lastTime: new Date(2026, 4, 20, 9, 0, 0).toISOString(), firstTime: new Date(2026, 4, 20, 8, 30, 0).toISOString() },
+                            "李四": { count: 2, lastTime: new Date(2026, 4, 20, 10, 0, 0).toISOString(), firstTime: new Date(2026, 4, 20, 9, 0, 0).toISOString() },
+                            "王五": { count: 5, lastTime: new Date(2026, 4, 20, 11, 0, 0).toISOString(), firstTime: new Date(2026, 4, 20, 8, 0, 0).toISOString() }
+                        }
+                    },
+                    comments: [
+                        {
+                            id: "comment_1",
+                            username: "张三",
+                            text: "欢迎新人！大家一起学习进步！",
+                            time: new Date(2026, 4, 20, 9, 30, 0).toISOString(),
+                            likes: 5,
+                            likedBy: ["李四", "王五"]
+                        },
+                        {
+                            id: "comment_2",
+                            username: "王五",
+                            text: "**支持**！这个社区真不错 @李四",
+                            time: new Date(2026, 4, 20, 10, 15, 0).toISOString(),
+                            likes: 3,
+                            likedBy: ["张三"]
+                        }
+                    ]
+                },
+                { 
+                    id: 2, 
+                    author: "张三", 
+                    content: "契弟广场终于开了，开心！", 
+                    image: null, 
+                    time: new Date(2026, 4, 21, 6, 56, 54).toISOString(),
+                    likes: {
+                        total: 3,
+                        users: {
+                            "李四": { count: 1, lastTime: new Date(2026, 4, 21, 7, 0, 0).toISOString(), firstTime: new Date(2026, 4, 21, 7, 0, 0).toISOString() },
+                            "王五": { count: 2, lastTime: new Date(2026, 4, 21, 8, 0, 0).toISOString(), firstTime: new Date(2026, 4, 21, 7, 30, 0).toISOString() }
+                        }
+                    },
+                    comments: []
+                }
+            ];
+            localStorage.setItem('forum_posts', JSON.stringify(posts));
+        } else {
+            // 数据迁移：将旧格式转换为新格式
+            posts = posts.map(post => {
+                if (typeof post.likes === 'number' || !post.likes) {
+                    migrateLikeData(post);
+                }
+                if (!post.comments) post.comments = [];
+                return post;
             });
-        });
-        let list = Array.from(wordStats.entries()).map(([w, s]) => ({ word: w, heat: s.count + s.likes + s.comments }));
-        list.sort((a,b) => b.heat - a.heat);
-        const manual = MANUAL_TOP_WORDS.filter(w => list.some(i => i.word === w));
-        const auto = list.filter(i => !MANUAL_TOP_WORDS.includes(i.word));
-        return [...manual.map(w => ({ word: w, heat: list.find(i => i.word === w)?.heat || 0 })), ...auto].slice(0, HOT_POST_COUNT);
-    }
+            localStorage.setItem('forum_posts', JSON.stringify(posts));
+        }
 
-    function renderHotWords() {
-        const hot = getHotWords();
-        if (!hot.length) return '<div class="hot-item">暂无热门词条</div>';
-        return hot.map(h => `
-            <div class="hot-item" data-word="${h.word}">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
+        /* ==================== 3️⃣ 常量配置 ==================== */
+        
+        const VERIFIED_BADGE_TEXT = "✓ 官方认证";   // 认证徽章文字
+        const HOT_POST_COUNT = 5;                  // 热词展示数量
+        const MANUAL_TOP_WORDS = ["登顶计划"];      // 手动置顶词条
+
+        /* ==================== 4️⃣ 辅助函数 ==================== */
+        
+        // HTML 转义（防 XSS 攻击）
+        function escapeHtml(str = '') {
+            if (!str) return '';
+            return str.replace(/[&<>"']/g, m => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[m]));
+        }
+        
+        // JavaScript 字符串转义（用于 onclick 等属性）
+        function escapeJsString(str = '') {
+            if (!str) return '';
+            return str.replace(/\\/g, '\\\\')
+                      .replace(/'/g, "\\'")
+                      .replace(/"/g, '\\"')
+                      .replace(/\n/g, '\\n')
+                      .replace(/\r/g, '\\r');
+        }
+        
+        // 时间格式化（显示多久前）
+        function formatTimeAgo(time) {
+            if (!time) return '未知时间';
+            
+            const date = new Date(time);
+            const now = new Date();
+            const diff = Math.floor((now - date) / 1000); // 秒
+            
+            if (diff < 60) return '刚刚';
+            if (diff < 3600) return `${Math.floor(diff / 60)}分钟前`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)}小时前`;
+            if (diff < 604800) return `${Math.floor(diff / 86400)}天前`;
+            if (diff < 2592000) return `${Math.floor(diff / 604800)}周前`;
+            
+            return date.toLocaleDateString();
+        }
+        
+        // 获取用户头像
+        function getUserAvatar(username) {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.username === username);
+            return user?.avatar || 'images/people.jpg';
+        }
+        
+        // 迁移旧的点赞数据到新格式
+        function migrateLikeData(post) {
+            if (typeof post.likes === 'number') {
+                const oldCount = post.likes;
+                const oldLikedBy = post.likedBy || [];
+                
+                post.likes = {
+                    total: oldCount,
+                    users: {}
+                };
+                
+                // 为每个点赞用户分配次数（默认1次）
+                oldLikedBy.forEach(username => {
+                    post.likes.users[username] = {
+                        count: 1,
+                        lastTime: new Date().toISOString(),
+                        firstTime: new Date().toISOString()
+                    };
+                });
+                
+                delete post.likedBy;
+            } else if (!post.likes) {
+                post.likes = {
+                    total: 0,
+                    users: {}
+                };
+            }
+            return post;
+        }
+        
+        // 自定义 Toast 提示
+        let toastTimer = null;
+        function showCustomToast(message, type = 'info') {
+            const existingToast = document.querySelector('.custom-toast');
+            if (existingToast) existingToast.remove();
+            if (toastTimer) clearTimeout(toastTimer);
+            
+            const toast = document.createElement('div');
+            toast.className = `custom-toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.classList.add('show'), 10);
+            
+            toastTimer = setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
+        }
+
+        /* ==================== 5️⃣ 热词提取与渲染 ==================== */
+        
+        // 从文本中提取中文词汇（2-6个字）
+        function extractWords(content) {
+            const words = content.match(/[\u4e00-\u9fa5]{2,6}/g) || [];
+            return [...new Set(words)];
+        }
+        
+        // 计算热词热度
+        function getHotWords() {
+            const wordStats = new Map();
+            
+            posts.forEach(post => {
+                const words = extractWords(post.content);
+                words.forEach(word => {
+                    if (!wordStats.has(word)) {
+                        wordStats.set(word, { count: 0, likes: 0, comments: 0 });
+                    }
+                    const stat = wordStats.get(word);
+                    stat.count++;
+                    stat.likes += post.likes?.total || 0;
+                    stat.comments += (post.comments?.length || 0);
+                });
+            });
+            
+            // 计算热度（出现次数 + 点赞数 + 评论数）
+            let list = Array.from(wordStats.entries())
+                .map(([w, s]) => ({ word: w, heat: s.count + s.likes + s.comments }));
+            
+            list.sort((a, b) => b.heat - a.heat);
+            
+            // 手动置顶词条
+            const manual = MANUAL_TOP_WORDS.filter(w => list.some(i => i.word === w));
+            const auto = list.filter(i => !MANUAL_TOP_WORDS.includes(i.word));
+            
+            return [...manual.map(w => ({ word: w, heat: list.find(i => i.word === w)?.heat || 0 })), ...auto]
+                .slice(0, HOT_POST_COUNT);
+        }
+        
+        // 渲染热词区域
+        function renderHotWords() {
+            const hot = getHotWords();
+            if (!hot.length) return '<div class="hot-item">暂无热门词条</div>';
+            
+            return hot.map(h => `
+                <div class="hot-item" data-word="${escapeHtml(h.word)}">
                     <div class="hot-name">${escapeHtml(h.word)}</div>
                     <div class="hot-count">🔥 ${h.heat}</div>
                 </div>
-            </div>
-        `).join('');
-    }
+            `).join('');
+        }
 
-    function renderPosts() {
-        if (!posts.length) return '<div style="text-align:center;padding:40px;">暂无帖子</div>';
-        return posts.map(post => {
-            const user = JSON.parse(localStorage.getItem('users'))?.find(u => u.username === post.author) || {};
-            const showVerified = user.role === 'trainee' && user.isVerified;
-            return `
-                <div class="post-card">
-                    <div class="post-header">
-                        <img class="post-avatar" src="${user.avatar || 'images/people.jpg'}" onclick="viewProfile('${post.author}')">
-                        <div>
-                            <span class="author-name" onclick="viewProfile('${post.author}')">${escapeHtml(post.author)}</span>
-                            ${showVerified ? `<span class="verified-badge">${VERIFIED_BADGE_TEXT}</span>` : ''}
-                            <div class="post-time">${post.time}</div>
+        /* ==================== 6️⃣ 点赞模块（可多次点赞） ==================== */
+        
+        // 显示点赞操作面板
+        function showLikePanel(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+            
+            // 确保数据结构完整
+            if (!post.likes || typeof post.likes === 'number') {
+                migrateLikeData(post);
+            }
+            
+            const userLikeData = post.likes.users[currentUser.username];
+            const userLikeCount = userLikeData?.count || 0;
+            
+            // 创建自定义模态框
+            const panel = document.createElement('div');
+            panel.className = 'like-panel-overlay';
+            panel.innerHTML = `
+                <div class="like-panel">
+                    <div class="like-panel-header">
+                        <span class="like-panel-title">👍 支持作者</span>
+                        <button class="like-panel-close">✕</button>
+                    </div>
+                    
+                    <div class="like-panel-stats">
+                        <div class="like-total-count">
+                            <span class="like-count-number">${post.likes.total}</span>
+                            <span class="like-count-label">总点赞数</span>
+                        </div>
+                        <div class="like-user-count">
+                            <span class="like-count-number">${Object.keys(post.likes.users).length}</span>
+                            <span class="like-count-label">支持者</span>
                         </div>
                     </div>
-                    <div class="post-content">${escapeHtml(post.content)}</div>
-                    ${post.image ? `<img src="${post.image}" class="post-image">` : ''}
-                    <div class="post-stats">
-                        <button class="stat-btn">❤️ <span class="stat-num" data-type="likes" data-id="${post.id}">${post.likes || 0}</span></button>
-                        <button class="stat-btn">💬 <span class="stat-num" data-type="comments" data-id="${post.id}">${post.comments?.length || 0}</span></button>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    }
-
-    // ========== 弹窗逻辑（电脑端居中，手机端底部抽屉 + 拖拽调整高度） ==========
-    function showModal(title, list) {
-        const isMobile = window.innerWidth <= 768;
-        if (!isMobile) {
-            // 电脑端居中弹窗
-            const mask = document.createElement('div');
-            mask.className = 'modal-mask';
-            mask.innerHTML = `
-                <div class="modal-card">
-                    <div class="modal-header">
-                        <span>${title}</span>
-                        <button class="close-modal">✕</button>
-                    </div>
-                    <div class="modal-list">
-                        ${list.map(item => `
-                            <div class="modal-user-item" onclick="viewProfile('${item.username}')">
-                                <img class="modal-avatar" src="${item.avatar || 'images/people.jpg'}">
-                                <div>${escapeHtml(item.username)}${item.comment ? `<div class="modal-comment-text">${escapeHtml(item.comment)}</div>` : ''}</div>
+                    
+                    <div class="like-action-area">
+                        <div class="like-slider-container">
+                            <input type="range" id="likeSlider" min="0" max="10" value="${userLikeCount}" step="1">
+                            <div class="like-slider-labels">
+                                <span>取消</span>
+                                <span>❤️ 1</span>
+                                <span>❤️❤️ 5</span>
+                                <span>🔥🔥 10</span>
                             </div>
-                        `).join('')}
-                        ${!list.length ? '<div>暂无数据</div>' : ''}
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(mask);
-            setTimeout(() => mask.classList.add('show'), 10);
-            mask.querySelector('.close-modal').onclick = () => {
-                mask.classList.remove('show');
-                setTimeout(() => mask.remove(), 200);
-            };
-        } else {
-            // 手机端底部抽屉（支持向上拉高、向下关闭）
-            const mask = document.createElement('div');
-            mask.className = 'modal-mask';
-            mask.style.background = 'rgba(0,0,0,0.5)';
-            mask.style.backdropFilter = 'blur(8px)';
-            mask.style.visibility = 'visible';
-            mask.style.opacity = '1';
-            document.body.appendChild(mask);
-
-            const drawer = document.createElement('div');
-            drawer.className = 'drawer-modal';
-            drawer.innerHTML = `
-                <div class="drag-bar"></div>
-                <div class="drawer-content">
-                    <div style="font-weight:bold; margin-bottom:20px; font-size:18px;">${title}</div>
-                    <div class="modal-list">
-                        ${list.map(item => `
-                            <div class="modal-user-item" onclick="viewProfile('${item.username}')">
-                                <img class="modal-avatar" src="${item.avatar || 'images/people.jpg'}">
-                                <div>${escapeHtml(item.username)}${item.comment ? `<div class="modal-comment-text">${escapeHtml(item.comment)}</div>` : ''}</div>
+                        </div>
+                        
+                        <div class="like-current-status">
+                            <div class="like-status-text">
+                                ${userLikeCount > 0 ? 
+                                    `你已点赞 ${userLikeCount} 次` : 
+                                    '还未点赞，拖动滑块支持作者'}
                             </div>
-                        `).join('')}
-                        ${!list.length ? '<div style="text-align:center;padding:40px;">✨ 暂无数据 ✨</div>' : ''}
+                            <button class="like-submit-btn ${userLikeCount > 0 ? 'active' : ''}" 
+                                    data-current="${userLikeCount}">
+                                ${userLikeCount > 0 ? `更新点赞 (${userLikeCount})` : '确认点赞'}
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="like-history">
+                        <div class="like-history-title">📋 最近点赞记录</div>
+                        <div class="like-history-list">
+                            ${getLikeHistoryHTML(post)}
+                        </div>
                     </div>
                 </div>
             `;
-            document.body.appendChild(drawer);
-            setTimeout(() => drawer.classList.add('open'), 10);
-
-            let startY = 0;
-            let startHeight = 80;
-            const updateDrawer = (height) => {
-                drawer.style.height = `${height}vh`;
-            };
-
-            const onTouchStart = (e) => {
-                startY = e.touches[0].clientY;
-                startHeight = parseFloat(drawer.style.height) || 80;
-            };
-
-            const onTouchMove = (e) => {
-                const delta = startY - e.touches[0].clientY;
-                let newHeight = startHeight + delta / window.innerHeight * 100;
-                if (newHeight > 95) newHeight = 95;
-                if (newHeight < 50) newHeight = 50;
-                updateDrawer(newHeight);
-            };
-
-            const onTouchEnd = () => {
-                const currentHeight = parseFloat(drawer.style.height);
-                if (currentHeight < 60) {
-                    drawer.classList.remove('open');
-                    mask.style.opacity = '0';
-                    setTimeout(() => { drawer.remove(); mask.remove(); }, 300);
-                } else if (currentHeight > 85) {
-                    updateDrawer(95);
+            
+            document.body.appendChild(panel);
+            setTimeout(() => panel.classList.add('show'), 10);
+            
+            const slider = panel.querySelector('#likeSlider');
+            const submitBtn = panel.querySelector('.like-submit-btn');
+            const statusText = panel.querySelector('.like-status-text');
+            
+            // 滑块实时预览
+            slider.addEventListener('input', (e) => {
+                const value = parseInt(e.target.value);
+                if (value === 0) {
+                    statusText.innerHTML = '确认取消所有点赞';
+                    submitBtn.textContent = '取消点赞';
+                    submitBtn.classList.remove('active');
                 } else {
-                    updateDrawer(80);
+                    statusText.innerHTML = `准备点赞 ${value} 次`;
+                    submitBtn.textContent = `确认点赞 (${value})`;
+                    submitBtn.classList.add('active');
                 }
-            };
-
-            drawer.addEventListener('touchstart', onTouchStart);
-            drawer.addEventListener('touchmove', onTouchMove);
-            drawer.addEventListener('touchend', onTouchEnd);
-
-            drawer.querySelector('.drag-bar').addEventListener('click', () => {
-                drawer.classList.remove('open');
-                mask.style.opacity = '0';
-                setTimeout(() => { drawer.remove(); mask.remove(); }, 300);
             });
-
-            mask.addEventListener('click', () => {
-                drawer.classList.remove('open');
-                mask.style.opacity = '0';
-                setTimeout(() => { drawer.remove(); mask.remove(); }, 300);
+            
+            // 确认按钮
+            submitBtn.addEventListener('click', () => {
+                const newCount = parseInt(slider.value);
+                updateLikeCount(postId, newCount);
+                panel.remove();
+                showCustomToast(`✅ 点赞已更新为 ${newCount} 次`, 'success');
+            });
+            
+            // 关闭面板
+            const closePanel = () => panel.remove();
+            panel.querySelector('.like-panel-close').onclick = closePanel;
+            panel.addEventListener('click', (e) => {
+                if (e.target === panel) closePanel();
             });
         }
-    }
+        
+        // 获取点赞历史记录 HTML
+        function getLikeHistoryHTML(post) {
+            const history = Object.entries(post.likes.users)
+                .map(([username, data]) => ({ username, ...data }))
+                .sort((a, b) => new Date(b.lastTime) - new Date(a.lastTime))
+                .slice(0, 5); // 只显示最近5条
+            
+            if (history.length === 0) {
+                return '<div class="like-history-empty">暂无点赞记录</div>';
+            }
+            
+            return history.map(item => {
+                const heartCount = Math.min(item.count, 3);
+                const hearts = '❤️'.repeat(heartCount);
+                const countText = item.count > 3 ? ` x${item.count}` : '';
+                
+                return `
+                    <div class="like-history-item">
+                        <div class="like-history-user">
+                            <img src="${getUserAvatar(item.username)}" class="like-history-avatar" onerror="this.src='images/people.jpg'">
+                            <span class="like-history-name">${escapeHtml(item.username)}</span>
+                        </div>
+                        <div class="like-history-detail">
+                            <span class="like-history-count">${hearts}${countText}</span>
+                            <span class="like-history-time">${formatTimeAgo(item.lastTime)}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // 更新点赞次数
+        function updateLikeCount(postId, newCount) {
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+            
+            const username = currentUser.username;
+            const oldCount = post.likes.users[username]?.count || 0;
+            const delta = newCount - oldCount;
+            
+            if (delta === 0) return;
+            
+            // 更新总点赞数
+            post.likes.total += delta;
+            
+            if (newCount === 0) {
+                // 删除用户点赞记录
+                delete post.likes.users[username];
+            } else {
+                // 更新或创建点赞记录
+                const now = new Date().toISOString();
+                post.likes.users[username] = {
+                    count: newCount,
+                    lastTime: now,
+                    firstTime: post.likes.users[username]?.firstTime || now
+                };
+            }
+            
+            // 保存到 localStorage
+            localStorage.setItem('forum_posts', JSON.stringify(posts));
+            
+            // 更新 UI
+            updatePostLikeUI(postId);
+            
+            // 触发动画效果
+            animateLikeButton(postId, delta);
+        }
+        
+        // 更新帖子点赞 UI
+        function updatePostLikeUI(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+            
+            const likeBtn = document.querySelector(`.post-card[data-post-id="${postId}"] .like-btn`);
+            const likeCount = document.querySelector(`.post-card[data-post-id="${postId}"] .like-count`);
+            const likeText = document.querySelector(`.post-card[data-post-id="${postId}"] .like-text`);
+            const userLikeCount = post.likes.users[currentUser.username]?.count || 0;
+            
+            if (likeBtn && likeCount) {
+                // 更新显示数字
+                likeCount.textContent = post.likes.total;
+                
+                // 根据用户点赞次数改变按钮样式
+                likeBtn.classList.remove('liked', 'super-liked');
+                if (userLikeCount > 0) {
+                    likeBtn.classList.add('liked');
+                    if (userLikeCount >= 5) {
+                        likeBtn.classList.add('super-liked');
+                        if (likeText) likeText.textContent = '🔥 超赞';
+                    } else if (likeText) {
+                        likeText.textContent = `❤️ ${userLikeCount}`;
+                    }
+                } else if (likeText) {
+                    likeText.textContent = '点赞';
+                }
+            }
+        }
+        
+        // 点赞按钮动画
+        function animateLikeButton(postId, delta) {
+            const likeBtn = document.querySelector(`.post-card[data-post-id="${postId}"] .like-btn`);
+            if (!likeBtn) return;
+            
+            if (delta > 0) {
+                // 增加点赞的动画
+                likeBtn.style.transform = 'scale(1.2)';
+                likeBtn.style.backgroundColor = '#ffebee';
+                
+                // 创建飘浮的心形效果
+                for (let i = 0; i < Math.min(delta, 5); i++) {
+                    createFloatingHeart(likeBtn);
+                }
+            } else if (delta < 0) {
+                // 减少点赞的动画
+                likeBtn.style.transform = 'scale(0.9)';
+                likeBtn.style.backgroundColor = '#f5f5f5';
+            }
+            
+            setTimeout(() => {
+                likeBtn.style.transform = '';
+                likeBtn.style.backgroundColor = '';
+            }, 300);
+        }
+        
+        // 创建飘浮的心形效果
+        function createFloatingHeart(element) {
+            const rect = element.getBoundingClientRect();
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            heart.innerHTML = '❤️';
+            heart.style.left = `${rect.left + rect.width / 2}px`;
+            heart.style.top = `${rect.top}px`;
+            document.body.appendChild(heart);
+            
+            setTimeout(() => heart.remove(), 1000);
+        }
 
-    function showLikesModal(postId) {
-        const post = posts.find(p => p.id === postId);
-        if (!post) return;
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        const list = (post.likedBy || []).map(username => {
-            const u = users.find(u => u.username === username);
-            return { username, avatar: u?.avatar || 'images/people.jpg' };
-        });
-        showModal(`❤️ 点赞列表 (${list.length})`, list);
-    }
-
-    function showCommentsModal(postId) {
-        const post = posts.find(p => p.id === postId);
-        if (!post) return;
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        const list = (post.comments || []).map(c => {
-            const u = users.find(u => u.username === c.username);
-            return { username: c.username, avatar: u?.avatar || 'images/people.jpg', comment: c.text };
-        });
-        showModal(`💬 评论列表 (${list.length})`, list);
-    }
-
-    function renderForum() {
-        document.getElementById('forumApp').innerHTML = `
-            <div class="hot-section">
-                ${isTrainee ? '<div class="plus-btn" id="plusBtn">+</div>' : ''}
-                <div class="hot-title">🔥 烧榜</div>
-                <div class="hot-list">${renderHotWords()}</div>
-            </div>
-            <div class="posts-list">${renderPosts()}</div>
-        `;
-        document.querySelectorAll('.stat-num[data-type="likes"]').forEach(el => {
-            el.addEventListener('click', (e) => {
-                e.stopPropagation();
-                showLikesModal(parseInt(el.dataset.id));
+        /* ==================== 7️⃣ 评论模块（无emoji） ==================== */
+        
+        // 显示评论面板
+        function showCommentPanel(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+            
+            const panel = document.createElement('div');
+            panel.className = 'comment-panel-overlay';
+            panel.innerHTML = `
+                <div class="comment-panel">
+                    <div class="comment-panel-header">
+                        <span class="comment-panel-title">📝 发表评论</span>
+                        <button class="comment-panel-close">✕</button>
+                    </div>
+                    
+                    <div class="comment-input-area">
+                        <textarea class="comment-textarea" placeholder="写下你的想法..." maxlength="500" rows="4"></textarea>
+                        <div class="comment-input-footer">
+                            <span class="comment-char-count">0/500</span>
+                            <div class="comment-toolbar">
+                                <button class="comment-tool-btn" data-action="bold" title="加粗">B</button>
+                                <button class="comment-tool-btn" data-action="emoji" title="表情">😊</button>
+                                <button class="comment-tool-btn" data-action="at" title="提及">@</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="comment-preview-area" style="display:none;">
+                        <div class="comment-preview-title">预览</div>
+                        <div class="comment-preview-content"></div>
+                    </div>
+                    
+                    <div class="comment-actions">
+                        <button class="comment-preview-btn">预览</button>
+                        <button class="comment-submit-btn">发表评论</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(panel);
+            setTimeout(() => panel.classList.add('show'), 10);
+            
+            const textarea = panel.querySelector('.comment-textarea');
+            const charCount = panel.querySelector('.comment-char-count');
+            const previewArea = panel.querySelector('.comment-preview-area');
+            const previewContent = panel.querySelector('.comment-preview-content');
+            const previewBtn = panel.querySelector('.comment-preview-btn');
+            
+            // 字符计数
+            textarea.addEventListener('input', () => {
+                const len = textarea.value.length;
+                charCount.textContent = `${len}/500`;
+                charCount.style.color = len > 480 ? '#ff6b6b' : '#999';
+                
+                // 实时预览（如果预览区域打开）
+                if (previewArea.style.display !== 'none') {
+                    previewContent.innerHTML = formatCommentText(textarea.value);
+                }
             });
-        });
-        document.querySelectorAll('.stat-num[data-type="comments"]').forEach(el => {
-            el.addEventListener('click', (e) => {
-                e.stopPropagation();
-                showCommentsModal(parseInt(el.dataset.id));
+            
+            // 预览功能
+            previewBtn.addEventListener('click', () => {
+                if (previewArea.style.display === 'none') {
+                    previewContent.innerHTML = formatCommentText(textarea.value);
+                    previewArea.style.display = 'block';
+                    previewBtn.textContent = '取消预览';
+                } else {
+                    previewArea.style.display = 'none';
+                    previewBtn.textContent = '预览';
+                }
             });
+            
+            // 工具栏功能
+            panel.querySelectorAll('.comment-tool-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const action = btn.dataset.action;
+                    const start = textarea.selectionStart;
+                    const end = textarea.selectionEnd;
+                    const text = textarea.value;
+                    
+                    switch(action) {
+                        case 'bold':
+                            textarea.value = text.slice(0, start) + '**' + text.slice(start, end) + '**' + text.slice(end);
+                            break;
+                        case 'emoji':
+                            textarea.value = text.slice(0, start) + '😊' + text.slice(end);
+                            break;
+                        case 'at':
+                            textarea.value = text.slice(0, start) + '@' + text.slice(end);
+                            break;
+                    }
+                    textarea.focus();
+                });
+            });
+            
+            // 提交评论
+            const submitBtn = panel.querySelector('.comment-submit-btn');
+            submitBtn.addEventListener('click', () => {
+                const text = textarea.value.trim();
+                if (!text) {
+                    showCustomToast('评论内容不能为空', 'error');
+                    return;
+                }
+                if (text.length > 500) {
+                    showCustomToast('评论不能超过500字', 'error');
+                    return;
+                }
+                
+                addComment(postId, text);
+                panel.remove();
+                showCustomToast('评论发布成功', 'success');
+            });
+            
+            // 关闭面板
+            const closePanel = () => panel.remove();
+            panel.querySelector('.comment-panel-close').onclick = closePanel;
+            panel.addEventListener('click', (e) => {
+                if (e.target === panel) closePanel();
+            });
+        }
+        
+        // 格式化评论文本（支持简单 Markdown）
+        function formatCommentText(text) {
+            return text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/@(\w+)/g, '<span class="comment-mention">@$1</span>')
+                .replace(/\n/g, '<br>');
+        }
+        
+        // 显示评论列表面板
+        function showCommentsListPanel(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+            
+            const panel = document.createElement('div');
+            panel.className = 'comments-list-overlay';
+            panel.innerHTML = `
+                <div class="comments-list-panel">
+                    <div class="comments-list-header">
+                        <span class="comments-list-title">💬 评论列表 (${post.comments?.length || 0})</span>
+                        <button class="comments-list-close">✕</button>
+                    </div>
+                    
+                    <div class="comments-list-content">
+                        ${renderCommentsList(post)}
+                    </div>
+                    
+                    <div class="comments-list-footer">
+                        <button class="write-comment-btn">✏️ 写评论</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(panel);
+            setTimeout(() => panel.classList.add('show'), 10);
+            
+            // 写评论按钮
+            panel.querySelector('.write-comment-btn').addEventListener('click', () => {
+                panel.remove();
+                showCommentPanel(post.id);
+            });
+            
+            // 关闭面板
+            const closePanel = () => panel.remove();
+            panel.querySelector('.comments-list-close').onclick = closePanel;
+            panel.addEventListener('click', (e) => {
+                if (e.target === panel) closePanel();
+            });
+        }
+        
+        // 渲染评论列表
+        function renderCommentsList(post) {
+            if (!post.comments?.length) {
+                return '<div class="comments-empty">✨ 暂无评论，来抢沙发吧！</div>';
+            }
+            
+            return post.comments.map(comment => `
+                <div class="comment-item" data-comment-id="${comment.id}">
+                    <div class="comment-item-header">
+                        <img src="${getUserAvatar(comment.username)}" class="comment-avatar" onerror="this.src='images/people.jpg'">
+                        <div class="comment-user-info">
+                            <span class="comment-username">${escapeHtml(comment.username)}</span>
+                            <span class="comment-time">${formatTimeAgo(comment.time)}</span>
+                        </div>
+                        <button class="comment-like-btn" onclick="toggleCommentLike(${post.id}, '${comment.id}')">
+                            ❤️ <span class="comment-like-count">${comment.likes || 0}</span>
+                        </button>
+                    </div>
+                    <div class="comment-content">${formatCommentText(escapeHtml(comment.text))}</div>
+                    <div class="comment-actions">
+                        <button class="comment-reply-btn" onclick="replyToComment(${post.id}, '${comment.id}', '${escapeJsString(comment.username)}')">
+                            回复
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 添加评论
+        function addComment(postId, text) {
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+            
+            const newComment = {
+                id: `comment_${Date.now()}_${Math.random()}`,
+                username: currentUser.username,
+                text: text,
+                time: new Date().toISOString(),
+                likes: 0,
+                likedBy: []
+            };
+            
+            if (!post.comments) post.comments = [];
+            post.comments.unshift(newComment);
+            
+            localStorage.setItem('forum_posts', JSON.stringify(posts));
+            updateCommentsUI(postId);
+        }
+        
+        // 评论点赞切换
+        function toggleCommentLike(postId, commentId) {
+            const post = posts.find(p => p.id == postId);
+            if (!post) return;
+            
+            const comment = post.comments.find(c => c.id === commentId);
+            if (!comment) return;
+            
+            const username = currentUser.username;
+            const hasLiked = comment.likedBy?.includes(username);
+            
+            if (hasLiked) {
+                comment.likes--;
+                comment.likedBy = comment.likedBy.filter(u => u !== username);
+            } else {
+                comment.likes++;
+                if (!comment.likedBy) comment.likedBy = [];
+                comment.likedBy.push(username);
+            }
+            
+            localStorage.setItem('forum_posts', JSON.stringify(posts));
+            
+            // 更新 UI
+            const likeCount = document.querySelector(`.comment-item[data-comment-id="${commentId}"] .comment-like-count`);
+            if (likeCount) likeCount.textContent = comment.likes;
+        }
+        
+        // 回复评论
+        function replyToComment(postId, commentId, username) {
+            showCommentPanel(postId, `@${username} `);
+        }
+        
+        // 更新评论 UI
+        function updateCommentsUI(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+            
+            const commentCount = document.querySelector(`.post-card[data-post-id="${postId}"] .comment-count`);
+            if (commentCount) {
+                commentCount.textContent = post.comments?.length || 0;
+            }
+        }
+
+        /* ==================== 8️⃣ 帖子渲染 ==================== */
+        
+        // 渲染所有帖子
+        function renderPosts() {
+            if (!posts.length) {
+                return '<div class="empty-state">✨ 暂无帖子，来发布第一条吧 ✨</div>';
+            }
+            
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            
+            return posts.map(post => {
+                const user = users.find(u => u.username === post.author) || {};
+                const showVerified = user.role === 'trainee' && user.isVerified;
+                const userLikeCount = post.likes?.users?.[currentUser.username]?.count || 0;
+                const likeCount = post.likes?.total || 0;
+                const commentCount = post.comments?.length || 0;
+                
+                // 根据点赞次数决定按钮样式和文本
+                let likeButtonClass = 'like-btn';
+                let likeButtonText = '点赞';
+                
+                if (userLikeCount > 0) {
+                    likeButtonClass += ' liked';
+                    if (userLikeCount >= 5) {
+                        likeButtonClass += ' super-liked';
+                        likeButtonText = '🔥 超赞';
+                    } else if (userLikeCount > 0) {
+                        likeButtonText = `❤️ ${userLikeCount}`;
+                    }
+                }
+                
+                return `
+                    <div class="post-card" data-post-id="${post.id}">
+                        <div class="post-header">
+                            <img class="post-avatar" src="${user.avatar || 'images/people.jpg'}" 
+                                 onerror="this.src='https://via.placeholder.com/40'" 
+                                 onclick="viewProfile('${escapeJsString(post.author)}')">
+                            <div class="post-author-info">
+                                <div class="post-author-name">
+                                    <span onclick="viewProfile('${escapeJsString(post.author)}')">
+                                        ${escapeHtml(post.author)}
+                                    </span>
+                                    ${showVerified ? `<span class="verified-badge">${VERIFIED_BADGE_TEXT}</span>` : ''}
+                                </div>
+                                <div class="post-time">${formatTimeAgo(post.time)}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="post-content">${escapeHtml(post.content)}</div>
+                        ${post.image ? `<img src="${post.image}" class="post-image" loading="lazy" onclick="viewImage('${post.image}')">` : ''}
+                        
+                        <div class="post-stats">
+                            <button class="${likeButtonClass}" onclick="showLikePanel(${post.id})">
+                                <span class="like-text">${likeButtonText}</span>
+                                <span class="like-count">${likeCount}</span>
+                            </button>
+                            <button class="comment-btn" onclick="showCommentsListPanel(${post.id})">
+                                <span class="comment-text">评论</span>
+                                <span class="comment-count">${commentCount}</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // 渲染整个论坛
+        function renderForum() {
+            // 渲染用户信息
+            const userInfoHtml = `
+                <img class="user-avatar" src="${currentUser.avatar || 'images/people.jpg'}" 
+                     onerror="this.src='https://via.placeholder.com/36'" 
+                     onclick="viewProfile('${escapeJsString(currentUser.username)}')">
+                <span class="username">${escapeHtml(currentUser.username)}</span>
+                <button class="logout-btn" onclick="logout()">退出</button>
+            `;
+            document.getElementById('userInfo').innerHTML = userInfoHtml;
+            
+            // 渲染主内容
+            document.getElementById('forumApp').innerHTML = `
+                <div class="hot-section">
+                    ${isTrainee ? '<div class="plus-btn" id="plusBtn">+</div>' : ''}
+                    <div class="hot-title">🔥 烧榜</div>
+                    <div class="hot-list">${renderHotWords()}</div>
+                </div>
+                <div class="posts-list">${renderPosts()}</div>
+            `;
+            
+            // 发帖按钮事件
+            if (isTrainee) {
+                const plusBtn = document.getElementById('plusBtn');
+                if (plusBtn) {
+                    plusBtn.addEventListener('click', () => {
+                        showCustomToast('发帖功能开发中...', 'info');
+                    });
+                }
+            }
+        }
+
+        /* ==================== 9️⃣ 顶部导航滚动隐藏 ==================== */
+        
+        let lastScrollTop = 0;
+        let ticking = false;
+        const header = document.querySelector('header');
+        
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const st = window.scrollY || document.documentElement.scrollTop;
+                    if (st > lastScrollTop && st > 50) {
+                        header.classList.add('hide');
+                    } else {
+                        header.classList.remove('hide');
+                    }
+                    lastScrollTop = st <= 0 ? 0 : st;
+                    ticking = false;
+                });
+                ticking = true;
+            }
         });
-        if (isTrainee) document.getElementById('plusBtn')?.addEventListener('click', () => alert('发帖功能预留'));
-    }
 
-    window.viewProfile = (username) => alert(`跳转到 ${username} 的个人主页（预留）`);
+        /* ==================== 🔟 全局函数导出 ==================== */
+        
+        // 查看用户资料
+        window.viewProfile = (username) => {
+            showCustomToast(`查看 ${username} 的主页（开发中）`, 'info');
+        };
+        
+        // 查看大图
+        window.viewImage = (src) => {
+            window.open(src, '_blank');
+        };
+        
+        // 退出登录
+        window.logout = () => {
+            localStorage.removeItem('currentUser');
+            location.href = 'login.html';
+        };
+        
+        // 导出点赞和评论相关函数（供 onclick 调用）
+        window.showLikePanel = showLikePanel;
+        window.showCommentPanel = showCommentPanel;
+        window.showCommentsListPanel = showCommentsListPanel;
+        window.toggleCommentLike = toggleCommentLike;
+        window.replyToComment = replyToComment;
 
-    function escapeHtml(str) {
-        return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
-    }
-
-    renderForum();
-
-    // 导航栏滚动隐藏
-    let lastScrollTop = 0;
-    const header = document.querySelector('header');
-    window.addEventListener('scroll', () => {
-        let st = window.scrollY;
-        if (st > lastScrollTop && st > 50) header.classList.add('hide');
-        else header.classList.remove('hide');
-        lastScrollTop = st;
-    });
-</script>
+        /* ==================== 1️⃣1️⃣ 初始化渲染 ==================== */
+        
+        // 页面加载完成后渲染
+        renderForum();
+    </script>
 </body>
 </html>
