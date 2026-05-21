@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>登录 - 时代骏风</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+        }
+        .login-card {
+            background: white;
+            max-width: 400px;
+            width: 100%;
+            padding: 32px 24px;
+            border-radius: 32px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        .logo-icon {
+            width: 64px;
+            margin-bottom: 12px;
+        }
+        h2 {
+            margin-bottom: 24px;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .input-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #ddd;
+            border-radius: 24px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: 0.2s;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #ff7b5c;
+            box-shadow: 0 0 0 3px rgba(255, 123, 92, 0.1);
+        }
+        button {
+            background: #ff7b5c;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 32px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 8px;
+        }
+        button:hover {
+            background: #e55a3e;
+        }
+        .link-btn {
+            background: none;
+            color: #ff7b5c;
+            margin-top: 16px;
+            box-shadow: none;
+        }
+        .link-btn:hover {
+            background: rgba(255, 123, 92, 0.1);
+        }
+        .error-msg {
+            color: #e55a3e;
+            font-size: 13px;
+            margin-top: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <img src="images/logo.png" alt="时代骏风" class="logo-icon">
+        <h2>登 录</h2>
+        <div class="input-group">
+            <label>用户名</label>
+            <input type="text" id="loginUsername" placeholder="输入用户名">
+        </div>
+        <div class="input-group">
+            <label>密码</label>
+            <input type="password" id="loginPassword" placeholder="输入密码">
+        </div>
+        <button id="loginBtn">登录</button>
+        <button class="link-btn" id="toRegisterBtn">还没有账号？立即注册</button>
+        <div id="loginError" class="error-msg"></div>
+    </div>
+
+    <script>
+        // 初始化用户数据
+        if (!localStorage.getItem('users')) {
+            const defaultUsers = [
+                { id: 1, username: '粉丝1', password: '123', role: 'fan', isVerified: false, avatar: 'images/people.jpg' }
+            ];
+            localStorage.setItem('users', JSON.stringify(defaultUsers));
+        }
+
+        const loginBtn = document.getElementById('loginBtn');
+        const loginUsername = document.getElementById('loginUsername');
+        const loginPassword = document.getElementById('loginPassword');
+        const loginError = document.getElementById('loginError');
+
+        loginBtn.addEventListener('click', () => {
+            const username = loginUsername.value.trim();
+            const password = loginPassword.value.trim();
+
+            if (!username || !password) {
+                loginError.innerText = '请填写用户名和密码';
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users'));
+            const user = users.find(u => u.username === username && u.password === password);
+
+            if (!user) {
+                loginError.innerText = '用户名或密码错误';
+                return;
+            }
+
+            // 保存当前登录用户
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            window.location.href = 'index.html';
+        });
+
+        document.getElementById('toRegisterBtn').addEventListener('click', () => {
+            window.location.href = 'register.html';
+        });
+    </script>
+</body>
+</html>
