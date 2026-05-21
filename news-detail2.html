@@ -47,6 +47,12 @@
 </footer>
 
 <script>
+    // 强制登录检查
+const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+if (!currentUser) {
+    window.location.href = 'login.html';
+}
+    
 let lastScrollTop = 0;
 const header = document.querySelector('header');
 window.addEventListener('scroll', function() {
