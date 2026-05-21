@@ -290,6 +290,13 @@
 </footer>
 
 <script>
+    
+    // 强制登录检查
+const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+if (!currentUser) {
+    window.location.href = 'login.html';
+}
+    
     // ========== 模拟用户数据 ==========
     const users = {
         '张三': { role: 'user', badge: '🎤 练习生', badgeClass: 'badge-practicing' },
