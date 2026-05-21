@@ -17,28 +17,30 @@
             background: #f5f7fb;
         }
 
+        /* 🔽 主容器顶部间距（避免被导航栏遮挡，可改） */
         .forum-container {
             max-width: 700px;
             margin: 0 auto;
-            padding: 100px 16px 60px;
+            padding: 100px 16px 60px;  /* 👈 改第一个数字调整顶部距离 */
         }
 
-        /* 烧榜模块 */
+        /* ===== 烧榜模块样式 ===== */
         .hot-section {
             background: #fff6ea;
-            border-radius: 28px;
+            border-radius: 28px;       /* 👈 圆角大小 */
             padding: 16px;
             margin-bottom: 28px;
             position: relative;
         }
 
+        /* 🔽 发帖加号按钮（仅练习生可见）*/
         .plus-btn {
             position: absolute;
             top: 12px;
             left: 16px;
             width: 32px;
             height: 32px;
-            background: #ff7b5c;
+            background: #ff7b5c;       /* 👈 按钮背景色 */
             color: white;
             border-radius: 50%;
             display: flex;
@@ -53,7 +55,7 @@
             font-size: 20px;
             font-weight: bold;
             margin-bottom: 16px;
-            color: #ff7b5c;
+            color: #ff7b5c;            /* 👈 烧榜标题颜色 */
         }
 
         .hot-list {
@@ -69,21 +71,18 @@
             cursor: pointer;
             transition: background 0.15s;
         }
-
         .hot-item:active {
             background: #f0e4d0;
         }
-
         .hot-name {
             font-weight: 700;
         }
-
         .hot-count {
             font-size: 13px;
-            color: #b97f4a;
+            color: #b97f4a;            /* 👈 热度数字颜色 */
         }
 
-        /* 帖子列表 */
+        /* ===== 帖子卡片样式 ===== */
         .posts-list {
             display: flex;
             flex-direction: column;
@@ -116,9 +115,10 @@
             cursor: pointer;
         }
 
+        /* 🔽 官方认证徽章（可改文字、颜色） */
         .verified-badge {
-            background-color: #1e90ff;
-            color: white;
+            background-color: #1e90ff;  /* 👈 认证徽章背景色 */
+            color: white;               /* 👈 认证徽章文字颜色 */
             padding: 2px 8px;
             border-radius: 20px;
             font-size: 11px;
@@ -165,7 +165,7 @@
             cursor: pointer;
         }
 
-        /* ===== 弹窗遮罩（全屏模糊） ===== */
+        /* ===== 全屏模糊遮罩 ===== */
         .modal-mask {
             position: fixed;
             top: 0;
@@ -173,7 +173,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);  /* 🔽 模糊强度，可改 */
             z-index: 3000;
             display: flex;
             justify-content: center;
@@ -217,40 +217,40 @@
         }
 
         /* 手机端底部抽屉 */
-       .drawer-modal {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: #1e1e2a;
-    color: white;
-    border-radius: 32px 32px 0 0;    /* 👈 顶部圆角 32px */
-    z-index: 3100;
-    transition: transform 0.3s ease, height 0.2s ease;  /* 👈 加上 height 过渡 */
-    transform: translateY(100%);
-    height: 80vh;    /* 👈 高度 80% */
-    display: flex;
-    flex-direction: column;
-}
+        .drawer-modal {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1e1e2a;
+            color: white;
+            border-radius: 32px 32px 0 0;
+            z-index: 3100;
+            transition: transform 0.3s ease, height 0.2s ease;
+            transform: translateY(100%);
+            height: 80vh;              /* 👈 抽屉初始高度 */
+            display: flex;
+            flex-direction: column;
+        }
 
-.drawer-modal.open {
-    transform: translateY(0);
-}
+        .drawer-modal.open {
+            transform: translateY(0);
+        }
 
-.drag-bar {
-    width: 50px;
-    height: 5px;
-    background: #aaa;
-    border-radius: 10px;
-    margin: 14px auto;
-    cursor: pointer;
-}
+        .drag-bar {
+            width: 50px;
+            height: 5px;
+            background: #aaa;
+            border-radius: 10px;
+            margin: 14px auto;
+            cursor: pointer;
+        }
 
-.drawer-content {
-    flex: 1;
-    overflow-y: auto;
-    padding: 0 20px 30px;
-}
+        .drawer-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 20px 30px;
+        }
 
         .modal-list {
             display: flex;
@@ -282,7 +282,7 @@
             margin-top: 4px;
         }
 
-        /* 发帖全屏层 */
+        /* 发帖全屏层（动画）*/
         .fullscreen-overlay {
             position: fixed;
             top: 0;
@@ -363,10 +363,10 @@
 <div class="forum-container" id="forumApp"></div>
 
 <script>
-    // ========== 配置 ==========
-    const VERIFIED_BADGE_TEXT = "✓ 官方认证";
-    const HOT_POST_COUNT = 3;
-    const MANUAL_TOP_WORDS = ["登顶计划"];
+    // ========== 🔽 可配置常量（改这里就能调整全局规则） ==========
+    const VERIFIED_BADGE_TEXT = "✓ 官方认证";      // 👈 官方认证显示文字
+    const HOT_POST_COUNT = 3;                     // 👈 烧榜展示词条数量
+    const MANUAL_TOP_WORDS = ["登顶计划"];        // 👈 手动置顶词条（不受热度影响）
 
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (!currentUser) location.href = 'login.html';
@@ -383,12 +383,13 @@
 
     function savePosts() { localStorage.setItem('forum_posts', JSON.stringify(posts)); }
 
-    // 词条提取
+    // ========== 词条提取（自动从帖子内容里找2~6个中文字符） ==========
     function extractWords(content) {
         const words = content.match(/[\u4e00-\u9fa5]{2,6}/g) || [];
         return [...new Set(words)];
     }
 
+    // 🔽 热度计算：引用次数 + 点赞数 + 评论数
     function getHotWords() {
         const wordStats = new Map();
         posts.forEach(post => {
@@ -409,12 +410,14 @@
     function renderHotWords() {
         const hot = getHotWords();
         if (!hot.length) return '<div class="hot-item">暂无热门词条</div>';
-        return hot.map(h => `<div class="hot-item" data-word="${h.word}">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <div class="hot-name">${escapeHtml(h.word)}</div>
-        <div class="hot-count">🔥 ${h.heat}</div>
-    </div>
-</div>`).join('');
+        return hot.map(h => `
+            <div class="hot-item" data-word="${h.word}">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="hot-name">${escapeHtml(h.word)}</div>
+                    <div class="hot-count">🔥 ${h.heat}</div>
+                </div>
+            </div>
+        `).join('');
     }
 
     function renderPosts() {
@@ -443,7 +446,7 @@
         }).join('');
     }
 
-    // 弹窗逻辑（电脑端居中卡片，手机端底部抽屉）
+    // ========== 弹窗逻辑（电脑端居中，手机端底部抽屉 + 拖拽调整高度） ==========
     function showModal(title, list) {
         const isMobile = window.innerWidth <= 768;
         if (!isMobile) {
@@ -473,91 +476,82 @@
                 mask.classList.remove('show');
                 setTimeout(() => mask.remove(), 200);
             };
-} else {
-    // 手机端底部抽屉（向上滑增加高度，向下滑关闭）
-    const mask = document.createElement('div');
-    mask.className = 'modal-mask';
-    mask.style.background = 'rgba(0,0,0,0.5)';
-    mask.style.backdropFilter = 'blur(8px)';
-    mask.style.visibility = 'visible';
-    mask.style.opacity = '1';
-    document.body.appendChild(mask);
+        } else {
+            // 手机端底部抽屉（支持向上拉高、向下关闭）
+            const mask = document.createElement('div');
+            mask.className = 'modal-mask';
+            mask.style.background = 'rgba(0,0,0,0.5)';
+            mask.style.backdropFilter = 'blur(8px)';
+            mask.style.visibility = 'visible';
+            mask.style.opacity = '1';
+            document.body.appendChild(mask);
 
-    const drawer = document.createElement('div');
-    drawer.className = 'drawer-modal';
-    drawer.innerHTML = `
-        <div class="drag-bar"></div>
-        <div class="drawer-content">
-            <div style="font-weight:bold; margin-bottom:20px; font-size:18px;">${title}</div>
-            <div class="modal-list">
-                ${list.map(item => `
-                    <div class="modal-user-item" onclick="viewProfile('${item.username}')">
-                        <img class="modal-avatar" src="${item.avatar || 'images/people.jpg'}">
-                        <div>${escapeHtml(item.username)}${item.comment ? `<div class="modal-comment-text">${escapeHtml(item.comment)}</div>` : ''}</div>
+            const drawer = document.createElement('div');
+            drawer.className = 'drawer-modal';
+            drawer.innerHTML = `
+                <div class="drag-bar"></div>
+                <div class="drawer-content">
+                    <div style="font-weight:bold; margin-bottom:20px; font-size:18px;">${title}</div>
+                    <div class="modal-list">
+                        ${list.map(item => `
+                            <div class="modal-user-item" onclick="viewProfile('${item.username}')">
+                                <img class="modal-avatar" src="${item.avatar || 'images/people.jpg'}">
+                                <div>${escapeHtml(item.username)}${item.comment ? `<div class="modal-comment-text">${escapeHtml(item.comment)}</div>` : ''}</div>
+                            </div>
+                        `).join('')}
+                        ${!list.length ? '<div style="text-align:center;padding:40px;">✨ 暂无数据 ✨</div>' : ''}
                     </div>
-                `).join('')}
-                ${!list.length ? '<div style="text-align:center;padding:40px;">✨ 暂无数据 ✨</div>' : ''}
-            </div>
-        </div>
-    `;
-    document.body.appendChild(drawer);
-    setTimeout(() => drawer.classList.add('open'), 10);
-
-    let startY = 0;
-    let currentHeight = 80;
-
-    const onTouchStart = (e) => {
-        startY = e.touches[0].clientY;
-    };
-
-    const onTouchMove = (e) => {
-        const delta = e.touches[0].clientY - startY;
-        if (delta < -30) {
-            if (currentHeight < 95) {
-                currentHeight = 95;
-                drawer.style.height = '95vh';
-            }
-        } else if (delta > 40) {
-            drawer.classList.remove('open');
-            mask.style.opacity = '0';
-            setTimeout(() => { drawer.remove(); mask.remove(); }, 300);
-            window.removeEventListener('touchstart', onTouchStart);
-            window.removeEventListener('touchmove', onTouchMove);
-        }
-    };
-
-    drawer.addEventListener('touchstart', onTouchStart);
-    drawer.addEventListener('touchmove', onTouchMove);
-
-    drawer.querySelector('.drag-bar').addEventListener('click', () => {
-        drawer.classList.remove('open');
-        mask.style.opacity = '0';
-        setTimeout(() => { drawer.remove(); mask.remove(); }, 300);
-    });
-
-    mask.addEventListener('click', () => {
-        drawer.classList.remove('open');
-        mask.style.opacity = '0';
-        setTimeout(() => { drawer.remove(); mask.remove(); }, 300);
-    });
-}
+                </div>
+            `;
+            document.body.appendChild(drawer);
+            setTimeout(() => drawer.classList.add('open'), 10);
 
             let startY = 0;
-            const onTouchStart = (e) => { startY = e.touches[0].clientY; };
+            let startHeight = 80;
+            const updateDrawer = (height) => {
+                drawer.style.height = `${height}vh`;
+            };
+
+            const onTouchStart = (e) => {
+                startY = e.touches[0].clientY;
+                startHeight = parseFloat(drawer.style.height) || 80;
+            };
+
             const onTouchMove = (e) => {
-                const delta = e.touches[0].clientY - startY;
-                if (delta > 50) {
+                const delta = startY - e.touches[0].clientY;
+                let newHeight = startHeight + delta / window.innerHeight * 100;
+                if (newHeight > 95) newHeight = 95;
+                if (newHeight < 50) newHeight = 50;
+                updateDrawer(newHeight);
+            };
+
+            const onTouchEnd = () => {
+                const currentHeight = parseFloat(drawer.style.height);
+                if (currentHeight < 60) {
                     drawer.classList.remove('open');
-                    setTimeout(() => drawer.remove(), 300);
-                    window.removeEventListener('touchstart', onTouchStart);
-                    window.removeEventListener('touchmove', onTouchMove);
+                    mask.style.opacity = '0';
+                    setTimeout(() => { drawer.remove(); mask.remove(); }, 300);
+                } else if (currentHeight > 85) {
+                    updateDrawer(95);
+                } else {
+                    updateDrawer(80);
                 }
             };
+
             drawer.addEventListener('touchstart', onTouchStart);
             drawer.addEventListener('touchmove', onTouchMove);
+            drawer.addEventListener('touchend', onTouchEnd);
+
             drawer.querySelector('.drag-bar').addEventListener('click', () => {
                 drawer.classList.remove('open');
-                setTimeout(() => drawer.remove(), 300);
+                mask.style.opacity = '0';
+                setTimeout(() => { drawer.remove(); mask.remove(); }, 300);
+            });
+
+            mask.addEventListener('click', () => {
+                drawer.classList.remove('open');
+                mask.style.opacity = '0';
+                setTimeout(() => { drawer.remove(); mask.remove(); }, 300);
             });
         }
     }
@@ -609,9 +603,14 @@
     }
 
     window.viewProfile = (username) => alert(`跳转到 ${username} 的个人主页（预留）`);
-    function escapeHtml(str) { return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
+
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
+    }
 
     renderForum();
+
+    // 导航栏滚动隐藏
     let lastScrollTop = 0;
     const header = document.querySelector('header');
     window.addEventListener('scroll', () => {
