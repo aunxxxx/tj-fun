@@ -198,8 +198,8 @@
     align-items: center;
   }
   .like-action-btn svg {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     stroke: #777;
     stroke-width: 2;
     fill: none;
@@ -218,17 +218,31 @@
   }
   .stat-num { font-size: 14px; color: #777; }
 
-  /* 爱心动画 */
+  /* 爱心动画 - 单个爱心飞出 */
   .heart-animation {
     position: absolute;
     font-size: 20px;
     color: #ff4d4f;
     pointer-events: none;
     animation: fly 0.8s ease-out forwards;
+    z-index: 1000;
+  }
+  /* 蔓延动画 - 多个小爱心随机方向 */
+  .spread-heart {
+    position: absolute;
+    font-size: 14px;
+    color: #ff4d4f;
+    pointer-events: none;
+    animation: spread 0.8s ease-out forwards;
+    z-index: 1000;
   }
   @keyframes fly {
     0% { transform: scale(0.5) translateY(0); opacity: 1; }
     100% { transform: scale(1.5) translateY(-50px); opacity: 0; }
+  }
+  @keyframes spread {
+    0% { transform: scale(0.3) translate(0, 0); opacity: 0.9; }
+    100% { transform: scale(1.2) translate(var(--tx, 30px), var(--ty, -40px)); opacity: 0; }
   }
 
   /* 发帖页面动画 */
@@ -361,22 +375,21 @@
     .modal-mask.show .drawer-modal {
       transform: translateY(0);
     }
-    /* 拖拽条：明显可见，橙色 + 阴影 */
+    /* 拖拽条：宽60px，高4px，黑色 */
     .drag-bar {
       width: 60px;
-      height: 6px;
-      background: #ff7b5c;
-      border-radius: 20px;
+      height: 4px;
+      background: #333;
+      border-radius: 4px;
       margin: 14px auto;
       cursor: grab;
       touch-action: pan-y;
       position: relative;
       z-index: 10;
-      padding: 12px 0;
+      padding: 10px 0;  /* 扩大触摸区域 */
       margin-top: 0;
       margin-bottom: 0;
       background-clip: content-box;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
     .drawer-content {
       flex: 1;
@@ -414,12 +427,15 @@
     .drawer-modal { display: none; }
   }
 
-  /* 评论列表样式 - 干净无边框 */
+  /* 评论 + 嵌套回复样式（独立无遮盖） */
   .comment-item {
-    padding: 12px 0;
-    border-bottom: 1px solid #f0f2f5;
+    margin-bottom: 16px;
+  }
+  .comment-main {
     display: flex;
     gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f2f5;
   }
   .comment-avatar {
     width: 40px;
@@ -433,7 +449,9 @@
     cursor: pointer;
     flex-shrink: 0;
   }
-  .comment-right { flex: 1; }
+  .comment-right {
+    flex: 1;
+  }
   .comment-user {
     font-weight: 700;
     color: #ff7b5c;
@@ -446,61 +464,122 @@
     margin-left: 8px;
   }
   .comment-text {
-    margin-top: 8px;
+    margin-top: 6px;
     color: #333;
     font-size: 14px;
     line-height: 1.4;
+    word-break: break-word;
   }
   .reply-btn {
     background: none;
     border: none;
     color: #888;
-    font-size: 13px;
-    margin-top: 8px;
+    font-size: 12px;
+    margin-top: 6px;
     cursor: pointer;
   }
-  /* 评论输入区 - 毛玻璃效果，无边框，独立悬浮 */
+  /* 嵌套回复区（楼中楼） */
+  .replies-area {
+    margin-left: 52px;
+    margin-top: 8px;
+    padding-left: 12px;
+    border-left: 2px solid #e9ecef;
+  }
+  .reply-item {
+    padding: 8px 0;
+    display: flex;
+    gap: 10px;
+    font-size: 13px;
+  }
+  .reply-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .reply-content {
+    flex: 1;
+  }
+  .reply-user {
+    font-weight: 600;
+    color: #ff7b5c;
+    cursor: pointer;
+  }
+  .reply-text {
+    margin-top: 2px;
+    color: #555;
+  }
+  .reply-time {
+    font-size: 10px;
+    color: #aaa;
+    margin-left: 8px;
+  }
+
+  /* 独立的评论输入区（无外框，下方透明可见） */
   .comment-input-fixed {
     display: flex;
     gap: 12px;
     padding: 16px 20px 24px 20px;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: transparent;
     position: sticky;
     bottom: 0;
     z-index: 10;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
-    border: none;
-    border-radius: 32px 32px 0 0;
+    border-top: none;
+    backdrop-filter: none;
   }
   .comment-input-fixed input {
     flex: 1;
-    padding: 14px 18px;
-    border: none;
-    border-radius: 40px;
-    font-size: 15px;
+    padding: 12px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 30px;
+    font-size: 14px;
     outline: none;
-    background: rgba(248, 250, 252, 0.9);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    transition: 0.1s;
+    background: rgba(255,255,255,0.95);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   }
   .comment-input-fixed input:focus {
+    border-color: #ff7b5c;
     background: white;
-    box-shadow: 0 2px 12px rgba(255, 123, 92, 0.15);
   }
   .comment-input-fixed button {
     background: #ff7b5c;
     border: none;
-    padding: 0 24px;
-    border-radius: 40px;
+    padding: 0 20px;
+    border-radius: 30px;
     color: white;
     font-weight: 600;
     cursor: pointer;
-    font-size: 15px;
-    box-shadow: 0 2px 8px rgba(255,123,92,0.3);
+    font-size: 14px;
   }
   .comment-input-fixed button:active { transform: scale(0.96); }
+
+  /* 艾特弹出层 */
+  .at-suggest {
+    position: absolute;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    width: 160px;
+    list-style: none;
+    padding: 8px 0;
+    margin: 0;
+  }
+  .at-suggest li {
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .at-suggest li:hover {
+    background: #f5f5f5;
+  }
 </style>
 </head>
 <body>
@@ -527,7 +606,10 @@
   const currentUser = { username: "时代骏风仔", avatar: "🐯", bio: "热爱骑行，喜欢分享", role: userRole };
 
   let posts = [
-    { id: 1, author: "李铁汁", avatar: "🔥", content: "第一位认证用户报到！大家好啊！🏆 #登顶计划", image: null, likes: 12, likedBy: [{ username: "张三" }, { username: "时代骏风仔" }], comments: [{ username: "小旋风", avatar: "🌀", text: "欢迎大佬！", createdAt: Date.now() - 7200000 }, { username: "路人甲", avatar: "👤", text: "支持支持", createdAt: Date.now() - 3600000 }], createdAt: Date.now() - 86400000 },
+    { id: 1, author: "李铁汁", avatar: "🔥", content: "第一位认证用户报到！大家好啊！🏆 #登顶计划", image: null, likes: 12, likedBy: [{ username: "张三" }, { username: "时代骏风仔" }], comments: [
+        { id: 101, username: "小旋风", avatar: "🌀", text: "欢迎大佬！", createdAt: Date.now() - 7200000, replies: [] },
+        { id: 102, username: "路人甲", avatar: "👤", text: "支持支持", createdAt: Date.now() - 3600000, replies: [] }
+      ], createdAt: Date.now() - 86400000 },
     { id: 2, author: "张三", avatar: "😎", content: "契弟广场终于开了，开心！🎉 #登顶计划", image: null, likes: 5, likedBy: [{ username: "李铁汁" }], comments: [], createdAt: Date.now() - 172800000 },
     { id: 3, author: "骏风车神", avatar: "🚴", content: "有没有周末一起骑行的？集合点老地方！ #周末骑行", image: null, likes: 8, likedBy: [], comments: [], createdAt: Date.now() - 3600000 }
   ];
@@ -636,7 +718,7 @@
     reader.readAsDataURL(file);
   }
 
-  // ========== 弹窗管理（下滑关闭 + 上滑增高 + 关闭动画） ==========
+  // ========== 弹窗管理 ==========
   let activeMask = null;
   let activeDrawer = null;
   function closeModal() {
@@ -767,6 +849,7 @@
   function showLikesModal(postId) {
     const post = posts.find(p => p.id === postId);
     if (!post) return;
+    // 点赞列表使用 likedBy（去重用户）
     const listHtml = (post.likedBy || []).map(u => `<div style="padding:8px 0;">❤️ ${escapeHtml(u.username)}</div>`).join('') || '<div>暂无点赞</div>';
     const isMobile = window.innerWidth <= 768;
     const modal = document.createElement('div');
@@ -775,6 +858,69 @@
     openModal(modal, isMobile);
   }
 
+  // 创建多个爱心蔓延动画
+  function createSpreadHearts(btn, e) {
+    const rect = btn.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const heartCount = 8; // 8个小爱心蔓延
+    for (let i = 0; i < heartCount; i++) {
+      const heart = document.createElement('span');
+      heart.className = 'spread-heart';
+      heart.innerText = '❤️';
+      // 随机偏移方向
+      const angle = Math.random() * Math.PI * 2;
+      const distance = 30 + Math.random() * 40;
+      const tx = Math.cos(angle) * distance;
+      const ty = Math.sin(angle) * distance - 20; // 向上偏移
+      heart.style.setProperty('--tx', tx + 'px');
+      heart.style.setProperty('--ty', ty + 'px');
+      heart.style.left = (e.clientX - rect.left) + 'px';
+      heart.style.top = (e.clientY - rect.top) + 'px';
+      heart.style.position = 'absolute';
+      btn.style.position = 'relative';
+      btn.appendChild(heart);
+      setTimeout(() => heart.remove(), 800);
+    }
+  }
+
+  // 点赞逻辑：可多次点赞（次数累加），点赞列表去重
+  function handleLike(postId, btn, e) {
+    const post = posts.find(p => p.id === postId);
+    if (post) {
+      // 每次点击都增加点赞数
+      post.likes++;
+      // 点赞列表去重：只有当前用户未点赞过时才添加到 likedBy
+      const alreadyLiked = post.likedBy.some(u => u.username === currentUser.username);
+      if (!alreadyLiked) {
+        post.likedBy.push({ username: currentUser.username, avatar: currentUser.avatar });
+      }
+      savePosts();
+      // 更新显示
+      const likeSpan = document.querySelector(`.like-num[data-id="${postId}"]`);
+      if (likeSpan) likeSpan.innerText = post.likes;
+      const svg = btn.querySelector('svg');
+      if (svg && !svg.classList.contains('liked')) {
+        svg.classList.add('liked');
+      }
+      // 爱心动画：单个飞出 + 多个蔓延
+      // 单个飞出
+      const rect = btn.getBoundingClientRect();
+      const heart = document.createElement('span');
+      heart.className = 'heart-animation';
+      heart.innerText = '❤️';
+      heart.style.left = (e.clientX - rect.left) + 'px';
+      heart.style.top = (e.clientY - rect.top) + 'px';
+      btn.style.position = 'relative';
+      btn.appendChild(heart);
+      setTimeout(() => heart.remove(), 800);
+      // 蔓延动画
+      createSpreadHearts(btn, e);
+      renderForum(); // 刷新热搜榜
+    }
+  }
+
+  // 评论弹窗（支持嵌套回复、艾特）
   function showCommentsModal(postId) {
     const post = posts.find(p => p.id === postId);
     if (!post) return;
@@ -791,30 +937,61 @@
         <button id="sendCommentModal">发送</button>
       </div>
     `;
+    // 获取所有可艾特的用户列表（帖子作者 + 所有评论用户 + 当前用户）
+    function getMentionableUsers() {
+      const users = new Set();
+      users.add(post.author);
+      post.comments.forEach(c => {
+        users.add(c.username);
+        if (c.replies) c.replies.forEach(r => users.add(r.username));
+      });
+      users.add(currentUser.username);
+      return Array.from(users);
+    }
+
+    // 渲染评论和嵌套回复
     function renderComments() {
       const container = modal.querySelector('#commentListModal');
       if (!container) return;
       if (!post.comments.length) { container.innerHTML = '<div style="text-align:center;padding:24px;">暂无评论</div>'; return; }
-      container.innerHTML = post.comments.map(c => `
-        <div class="comment-item">
-          <div class="comment-avatar" data-username="${escapeHtml(c.username)}" data-avatar="${escapeHtml(c.avatar || '👤')}">${escapeHtml(c.avatar || c.username.charAt(0))}</div>
-          <div class="comment-right">
-            <div><span class="comment-user" data-username="${escapeHtml(c.username)}" data-avatar="${escapeHtml(c.avatar || '👤')}">${escapeHtml(c.username)}</span><span class="comment-time">${formatRelativeTime(c.createdAt)}</span></div>
-            <div class="comment-text">${escapeHtml(c.text)}</div>
-            <button class="reply-btn" data-reply-user="${escapeHtml(c.username)}">💬 回复</button>
+      container.innerHTML = post.comments.map(comment => `
+        <div class="comment-item" data-comment-id="${comment.id}">
+          <div class="comment-main">
+            <div class="comment-avatar" data-username="${escapeHtml(comment.username)}" data-avatar="${escapeHtml(comment.avatar || '👤')}">${escapeHtml(comment.avatar || comment.username.charAt(0))}</div>
+            <div class="comment-right">
+              <div><span class="comment-user" data-username="${escapeHtml(comment.username)}" data-avatar="${escapeHtml(comment.avatar || '👤')}">${escapeHtml(comment.username)}</span><span class="comment-time">${formatRelativeTime(comment.createdAt)}</span></div>
+              <div class="comment-text">${escapeHtml(comment.text)}</div>
+              <button class="reply-btn" data-comment-id="${comment.id}" data-username="${escapeHtml(comment.username)}">💬 回复</button>
+            </div>
+          </div>
+          <div class="replies-area" id="replies-${comment.id}">
+            ${(comment.replies || []).map(reply => `
+              <div class="reply-item">
+                <div class="reply-avatar" data-username="${escapeHtml(reply.username)}">${escapeHtml(reply.avatar || reply.username.charAt(0))}</div>
+                <div class="reply-content">
+                  <div><span class="reply-user" data-username="${escapeHtml(reply.username)}">${escapeHtml(reply.username)}</span><span class="reply-time">${formatRelativeTime(reply.createdAt)}</span></div>
+                  <div class="reply-text">${escapeHtml(reply.text)}</div>
+                </div>
+              </div>
+            `).join('')}
           </div>
         </div>
       `).join('');
+      // 绑定回复按钮事件（不带自动填入@）
       modal.querySelectorAll('.reply-btn').forEach(btn => {
         btn.onclick = (e) => {
           e.stopPropagation();
-          const replyUser = btn.dataset.replyUser;
+          const commentId = parseInt(btn.dataset.commentId);
+          const commentUsername = btn.dataset.username;
+          // 仅设置回复目标，不自动填入@，但保留艾特功能在输入框手动触发
+          modal._replyTarget = { commentId, replyToUsername: commentUsername };
           const input = modal.querySelector('#commentInputModal');
-          if (input) input.value = `@${replyUser} `;
           input.focus();
+          input.placeholder = `回复 ${commentUsername}...`;
         };
       });
-      modal.querySelectorAll('.comment-avatar, .comment-user').forEach(el => {
+      // 头像点击个人界面
+      modal.querySelectorAll('.comment-avatar, .comment-user, .reply-avatar, .reply-user').forEach(el => {
         el.onclick = (e) => {
           e.stopPropagation();
           const username = el.dataset.username;
@@ -823,48 +1000,85 @@
       });
     }
     renderComments();
+
     const input = modal.querySelector('#commentInputModal');
     const sendBtn = modal.querySelector('#sendCommentModal');
+    let atSuggest = null;
+
+    // 艾特功能
+    input.addEventListener('input', (e) => {
+      const value = input.value;
+      const lastAtIndex = value.lastIndexOf('@');
+      if (lastAtIndex !== -1 && lastAtIndex === value.length - 1) {
+        // 刚输入@，弹出候选
+        if (atSuggest) atSuggest.remove();
+        const users = getMentionableUsers();
+        const ul = document.createElement('ul');
+        ul.className = 'at-suggest';
+        users.forEach(user => {
+          const li = document.createElement('li');
+          li.textContent = user;
+          li.onclick = () => {
+            input.value = value.slice(0, lastAtIndex) + '@' + user + ' ';
+            ul.remove();
+            atSuggest = null;
+            input.focus();
+          };
+          ul.appendChild(li);
+        });
+        const rect = input.getBoundingClientRect();
+        ul.style.position = 'absolute';
+        ul.style.bottom = '100%';
+        ul.style.left = rect.left + 'px';
+        document.body.appendChild(ul);
+        atSuggest = ul;
+      } else {
+        if (atSuggest) { atSuggest.remove(); atSuggest = null; }
+      }
+    });
+    input.addEventListener('blur', () => {
+      setTimeout(() => { if (atSuggest) { atSuggest.remove(); atSuggest = null; } }, 200);
+    });
+
     sendBtn.onclick = () => {
       let val = input.value.trim();
       if (!val) return;
-      post.comments.push({ username: currentUser.username, avatar: currentUser.avatar, text: val, createdAt: Date.now() });
+      const replyTarget = modal._replyTarget;
+      if (replyTarget) {
+        // 添加嵌套回复
+        const comment = post.comments.find(c => c.id === replyTarget.commentId);
+        if (comment) {
+          if (!comment.replies) comment.replies = [];
+          comment.replies.push({
+            username: currentUser.username,
+            avatar: currentUser.avatar,
+            text: val,
+            createdAt: Date.now()
+          });
+        }
+        delete modal._replyTarget;
+      } else {
+        // 普通评论
+        post.comments.push({
+          id: Date.now(),
+          username: currentUser.username,
+          avatar: currentUser.avatar,
+          text: val,
+          createdAt: Date.now(),
+          replies: []
+        });
+      }
       savePosts();
       renderComments();
       input.value = '';
-      renderForum();
+      input.placeholder = "写评论... 可回复 @他人";
+      renderForum(); // 更新外部评论数
     };
     openModal(modal, isMobile);
   }
 
   function gotoProfile(username) {
     alert(`个人主页开发中，即将开放（用户：${username}）`);
-  }
-
-  function handleLike(postId, btn, e) {
-    const post = posts.find(p => p.id === postId);
-    if (post) {
-      const hasLiked = post.likedBy.some(u => u.username === currentUser.username);
-      if (!hasLiked) {
-        post.likes++;
-        post.likedBy.push({ username: currentUser.username });
-        savePosts();
-        const likeSpan = document.querySelector(`.like-num[data-id="${postId}"]`);
-        if (likeSpan) likeSpan.innerText = post.likes;
-        const svg = btn.querySelector('svg');
-        if (svg) svg.classList.add('liked');
-        const rect = btn.getBoundingClientRect();
-        const heart = document.createElement('span');
-        heart.className = 'heart-animation';
-        heart.innerText = '❤️';
-        heart.style.left = (e.clientX - rect.left) + 'px';
-        heart.style.top = (e.clientY - rect.top) + 'px';
-        btn.style.position = 'relative';
-        btn.appendChild(heart);
-        setTimeout(() => heart.remove(), 800);
-        renderForum();
-      }
-    }
   }
 
   function renderForum() {
@@ -971,7 +1185,7 @@
   }
 
   loadData();
-  posts.forEach(p => { if (!p.image) p.image = null; if (!p.comments) p.comments = []; });
+  posts.forEach(p => { if (!p.image) p.image = null; if (!p.comments) p.comments = p.comments || []; });
   savePosts();
   initEditorOverlay();
   renderForum();
