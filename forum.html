@@ -18,45 +18,42 @@
     overflow-x: hidden;
   }
 
-  /* 黑色背景层 */
-  .bg-black {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #000;
-    z-index: -1;
-  }
-
   /* 整个页面内容（包含导航栏）一起缩放 */
   .page-wrapper {
     background: #f5f7fb;
     min-height: 100vh;
-    will-change: transform, filter, border-radius;
-    transition: transform 0.35s cubic-bezier(0.25, 1.25, 0.5, 1),
-                filter 0.35s ease,
-                border-radius 0.35s ease;
+    transition: transform 0.3s ease, filter 0.3s ease, border-radius 0.3s ease;
   }
 
-  /* 🔽 手机端弹窗时：页面整体缩小 + 模糊 + 圆角 */
+  /* 手机端弹窗时：页面整体缩小 + 模糊 + 圆角 */
   .page-wrapper.modal-open {
     transform: scale(0.92);
     filter: blur(3px);
     border-radius: 28px;
   }
 
-  /* 🔽 弹窗弹性放大动画（不干扰原有 transform） */
-  @keyframes modalPop {
-    0%   { transform: scale(0.8) translateY(0); opacity: 0; }
-    60%  { transform: scale(1.02); opacity: 1; }
-    100% { transform: scale(1); }
-  }
-
   .forum-container {
     max-width: 700px;
     margin: 0 auto;
-    padding: 100px 16px 60px;
+    padding: 20px 16px 60px;
+  }
+
+  /* 导航栏（在 page-wrapper 内部，会一起缩放） */
+  header {
+    background: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    max-width: 700px;
+    margin: 0 auto;
   }
 
   /* 热门词条 */
@@ -177,14 +174,11 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: transparent;
     z-index: 3000;
     visibility: hidden;
     opacity: 0;
     transition: 0.2s;
     display: flex;
-    justify-content: center;
-    align-items: flex-end;
   }
 
   .modal-mask.show {
@@ -192,22 +186,53 @@
     opacity: 1;
   }
 
-  /* 手机端底部抽屉 */
-  .drawer-modal {
-    background: #1e1e2a;
-    color: white;
-    border-radius: 32px 32px 0 0;
-    width: 100%;
-    max-width: 700px;
-    max-height: 85vh;
-    overflow-y: auto;
-    transform: translateY(100%);
-    transition: transform 0.3s ease;
-    animation: modalPop 0.3s cubic-bezier(0.25, 1.25, 0.5, 1) forwards;
+  /* 手机端：底部抽屉 */
+  @media (max-width: 768px) {
+    .modal-mask {
+      align-items: flex-end;
+      justify-content: center;
+      background: transparent;
+    }
+    .drawer-modal {
+      background: #1e1e2a;
+      color: white;
+      border-radius: 32px 32px 0 0;
+      width: 100%;
+      max-width: 700px;
+      max-height: 85vh;
+      overflow-y: auto;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+    }
+    .modal-mask.show .drawer-modal {
+      transform: translateY(0);
+    }
+    .modal-card {
+      display: none;
+    }
   }
 
-  .modal-mask.show .drawer-modal {
-    transform: translateY(0);
+  /* 电脑端：居中卡片 */
+  @media (min-width: 769px) {
+    .modal-mask {
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.6);
+    }
+    .modal-card {
+      background: #1e1e2a;
+      color: white;
+      border-radius: 32px;
+      padding: 24px;
+      max-width: 400px;
+      width: 90%;
+      max-height: 70vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    .drawer-modal {
+      display: none;
+    }
   }
 
   .drag-bar {
@@ -247,6 +272,15 @@
     cursor: pointer;
   }
 
+  .close-modal {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    float: right;
+  }
+
   /* 爱心动画 */
   .heart-animation {
     position: absolute;
@@ -257,83 +291,12 @@
   }
 
   @keyframes fly {
-    0% {
-      transform: scale(0.5) translateY(0);
-      opacity: 1;
-    }
-    100% {
-      transform: scale(1.5) translateY(-50px);
-      opacity: 0;
-    }
-  }
-
-  /* 导航栏（现在在 page-wrapper 内部，会一起缩放） */
-  header {
-    background: white;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 20px;
-    max-width: 700px;
-    margin: 0 auto;
-  }
-
-  /* 电脑端弹窗（居中卡片） */
-  .modal-card {
-    background: #1e1e2a;
-    color: white;
-    border-radius: 32px;
-    padding: 24px;
-    max-width: 400px;
-    width: 90%;
-    max-height: 70vh;
-    overflow-y: auto;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 3100;
-    animation: modalPop 0.3s cubic-bezier(0.25, 1.25, 0.5, 1) forwards;
-  }
-
-  .modal-card .close-modal {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-    float: right;
-  }
-
-  /* 电脑端遮罩半透明 */
-  @media (min-width: 769px) {
-    .modal-mask {
-      background: rgba(0, 0, 0, 0.6);
-      align-items: center;
-    }
-    .modal-mask .drawer-modal {
-      display: none;
-    }
-  }
-
-  /* 手机端不显示居中卡片 */
-  @media (max-width: 768px) {
-    .modal-card {
-      display: none;
-    }
+    0% { transform: scale(0.5) translateY(0); opacity: 1; }
+    100% { transform: scale(1.5) translateY(-50px); opacity: 0; }
   }
 </style>
 </head>
 <body>
-
-<div class="bg-black"></div>
 
 <div class="page-wrapper" id="pageWrapper">
   <header>
@@ -352,7 +315,7 @@
 </div>
 
 <script>
-  // ======================== 🟢 可修改数据 ========================
+  // 数据
   let currentUser = { username: "测试用户", avatar: "images/people.jpg" };
   let posts = [
     { id: 1, author: "李四", content: "第一位认证用户报到！大家好啊！", likes: 10, likedBy: [], comments: [] },
@@ -362,7 +325,6 @@
   function savePosts() { localStorage.setItem('forum_posts', JSON.stringify(posts)); }
   function escapeHtml(str) { return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
 
-  // 爱心动画
   function createHeartAnimation(btn, e) {
     const rect = btn.getBoundingClientRect();
     const heart = document.createElement('span');
@@ -386,23 +348,22 @@
     const mask = document.createElement('div');
     mask.className = 'modal-mask show';
     document.body.appendChild(mask);
-    document.body.appendChild(modalEl);
+    mask.appendChild(modalEl);
     document.body.style.overflow = 'hidden';
     activeMask = mask;
 
     const close = () => {
       if (isMobile) wrapper.classList.remove('modal-open');
       mask.remove();
-      modalEl.remove();
       document.body.style.overflow = '';
       activeMask = null;
     };
 
-    mask.onclick = close;
-    if (modalEl.querySelector('.close-modal')) {
-      modalEl.querySelector('.close-modal').onclick = close;
-    }
+    mask.onclick = (e) => { if (e.target === mask) close(); };
+    const closeBtn = modalEl.querySelector('.close-modal');
+    if (closeBtn) closeBtn.onclick = close;
 
+    // 手机端滑动关闭
     if (isMobile && modalEl.classList.contains('drawer-modal')) {
       let startY = 0, startTransform = 0;
       const drawer = modalEl;
@@ -448,7 +409,7 @@
     } else {
       const modal = document.createElement('div');
       modal.className = 'modal-card';
-      modal.innerHTML = `<div style="text-align:right;"><button class="close-modal">×</button></div><div style="font-weight:bold;margin-bottom:16px;">❤️ 点赞列表</div><div>${listHtml}</div>`;
+      modal.innerHTML = `<div class="close-modal">×</div><div style="font-weight:bold;margin-bottom:16px;">❤️ 点赞列表</div><div>${listHtml}</div>`;
       openModal(modal, false);
     }
   }
@@ -458,25 +419,20 @@
     if (!post) return;
     const isMobile = window.innerWidth <= 768;
 
-    const createModal = (isMobile) => {
-      const modal = document.createElement('div');
-      modal.className = isMobile ? 'drawer-modal' : 'modal-card';
-      modal.innerHTML = `
-        <div class="drag-bar"></div>
-        <div class="drawer-content">
-          <div style="text-align:right;"><button class="close-modal">×</button></div>
-          <div style="font-weight:bold;margin-bottom:16px;">💬 评论列表</div>
-          <div id="commentList"></div>
-          <div class="comment-input-fixed">
-            <input type="text" id="newCommentInput" placeholder="写评论...">
-            <button id="sendCommentBtn">发送</button>
-          </div>
+    const modal = document.createElement('div');
+    modal.className = isMobile ? 'drawer-modal' : 'modal-card';
+    modal.innerHTML = `
+      <div class="drag-bar"></div>
+      <div class="drawer-content">
+        <div class="close-modal">×</div>
+        <div style="font-weight:bold;margin-bottom:16px;">💬 评论列表</div>
+        <div id="commentList"></div>
+        <div class="comment-input-fixed">
+          <input type="text" id="newCommentInput" placeholder="写评论...">
+          <button id="sendCommentBtn">发送</button>
         </div>
-      `;
-      return modal;
-    };
-
-    const modal = createModal(isMobile);
+      </div>
+    `;
     const listDiv = modal.querySelector('#commentList');
     const render = () => {
       listDiv.innerHTML = post.comments.map(c => `<div><strong>${escapeHtml(c.username)}</strong>: ${escapeHtml(c.text)}</div>`).join('') || '<div>暂无评论</div>';
