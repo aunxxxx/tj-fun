@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>铁汁窝1.3</title>
+<title>铁汁窝 - 时代骏风</title>
 <style>
   * {
     margin: 0;
@@ -475,13 +475,15 @@
     line-height: 1.4;
     word-break: break-word;
   }
-  /* 操作栏：点赞显示在右侧 */
+  /* 操作栏：点赞+回复 靠右，但留出合适间距 */
   .action-bar {
     display: flex;
     justify-content: flex-end;
+    gap: 16px;
     margin-top: 6px;
+    padding-right: 8px;  /* 避免紧贴边缘 */
   }
-  .like-btn {
+  .action-btn {
     background: none;
     border: none;
     color: #888;
@@ -491,6 +493,13 @@
     align-items: center;
     gap: 4px;
   }
+  .action-btn svg {
+    width: 16px;
+    height: 16px;
+    stroke: #888;
+    stroke-width: 2;
+    fill: none;
+  }
   .nested-replies {
     margin-left: 48px;
     padding-left: 12px;
@@ -498,7 +507,7 @@
     margin-top: 8px;
   }
 
-  /* 电脑端回复预览（紧贴输入框上方，右侧有叉） */
+  /* 电脑端回复预览（紧贴输入框上方） */
   .pc-reply-preview {
     display: flex;
     justify-content: space-between;
@@ -706,7 +715,7 @@
     }
   }
 
-  // 帖子点赞（累加次数，列表去重）
+  // 帖子点赞
   function handleLike(postId, btn, e) {
     const post = posts.find(p => p.id === postId);
     if (post) {
@@ -966,7 +975,6 @@
       const container = modal.querySelector('#commentListModal');
       if (container) container.innerHTML = generateCommentsHtml(post);
       attachCommentEvents(modal, post, isMobile);
-      // 更新预览框
       const previewDiv = modal.querySelector('.pc-reply-preview');
       if (!isMobile && previewDiv) {
         if (activeReplyTarget) {
@@ -1026,7 +1034,14 @@
   function generateCommentsHtml(post) {
     function renderItem(item, level = 0, parentId = null) {
       const likeCount = item.likes || 0;
-      const likeBtn = `<button class="like-btn" data-id="${item.id}" data-type="${item.replies ? 'comment' : 'reply'}" data-parent="${parentId || ''}">❤️ ${likeCount}</button>`;
+      const likeSvg = `<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M20.8 4.6c-1.6-1.6-4.1-1.6-5.7 0l-.5.5-.5-.5c-1.6-1.6-4.1-1.6-5.7 0-1.6 1.6-1.6 4.1 0 5.7l6.2 6.2 6.2-6.2c1.6-1.6 1.6-4.1 0-5.7z"/></svg>`;
+      const replySvg = `<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`;
+      const actions = `
+        <div class="action-bar">
+          <button class="action-btn reply-btn" data-id="${item.id}" data-type="${item.replies ? 'comment' : 'reply'}" data-parent="${parentId || ''}" data-username="${item.username}">${replySvg}</button>
+          <button class="action-btn like-btn" data-id="${item.id}" data-type="${item.replies ? 'comment' : 'reply'}" data-parent="${parentId || ''}">${likeSvg} ${likeCount}</button>
+        </div>
+      `;
       const nestedHtml = (item.replies && item.replies.length) ? `
         <div class="nested-replies">
           ${item.replies.map(r => renderItem(r, level + 1, item.id)).join('')}
@@ -1039,9 +1054,7 @@
             <div class="${item.replies ? 'comment-right' : 'reply-right'}">
               <div><span class="${item.replies ? 'comment-user' : 'reply-user'}" data-username="${escapeHtml(item.username)}">${escapeHtml(item.username)}</span><span class="${item.replies ? 'comment-time' : 'reply-time'}">${formatRelativeTime(item.createdAt)}</span></div>
               <div class="${item.replies ? 'comment-text' : 'reply-text'}">${escapeHtml(item.text)}</div>
-              <div class="action-bar">
-                ${likeBtn}
-              </div>
+              ${actions}
             </div>
           </div>
           ${nestedHtml}
@@ -1063,41 +1076,31 @@
         handleContentLike(post.id, id, type, parentId);
       };
     });
-    // 手机端：点击评论/回复的文本区域触发回复
-    if (isMobile) {
-      modal.querySelectorAll('.comment-text, .reply-text').forEach(el => {
-        el.onclick = (e) => {
-          e.stopPropagation();
-          const commentDiv = el.closest('.comment-item, .reply-item');
-          let targetId, targetType, parentId, targetUsername;
-          const likeBtn = commentDiv.querySelector('.like-btn');
-          if (likeBtn) {
-            targetId = parseInt(likeBtn.dataset.id);
-            targetType = likeBtn.dataset.type;
-            parentId = likeBtn.dataset.parent ? parseInt(likeBtn.dataset.parent) : null;
-          }
-          const userSpan = commentDiv.querySelector('.comment-user, .reply-user');
-          if (userSpan) targetUsername = userSpan.dataset.username;
-          if (targetId) {
-            setReplyTarget(post.id, targetType, targetId, parentId, targetUsername);
-          }
+    // 回复按钮（电脑端手机端都保留）
+    modal.querySelectorAll('.reply-btn').forEach(btn => {
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        const id = parseInt(btn.dataset.id);
+        const type = btn.dataset.type;
+        const parentId = btn.dataset.parent ? parseInt(btn.dataset.parent) : null;
+        const username = btn.dataset.username;
+        setReplyTarget(post.id, type, id, parentId, username);
+        if (isMobile) {
           const input = modal.querySelector('#commentInputModal');
           if (input) {
             input.focus();
-            // 滚动到该评论位置，使其显示在键盘上方
-            setTimeout(() => {
-              commentDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 100);
+            // 滚动到该评论
+            const targetEl = btn.closest('.comment-item, .reply-item');
+            if (targetEl) {
+              setTimeout(() => {
+                targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }, 100);
+            }
           }
-        };
-      });
-      // 点击空白区域收起键盘
-      modal.querySelector('.drawer-content').addEventListener('touchstart', (e) => {
-        const input = modal.querySelector('#commentInputModal');
-        if (document.activeElement === input) input.blur();
-      });
-    }
-    // 发送逻辑（电脑/手机共用）
+        }
+      };
+    });
+    // 发送逻辑
     const input = modal.querySelector('#commentInputModal');
     const sendBtn = modal.querySelector('#sendCommentModal');
     if (sendBtn) {
@@ -1133,6 +1136,21 @@
             input.blur();
           }
         }
+      });
+    }
+    // 手机端点击评论/回复文本区域也可触发回复
+    if (isMobile) {
+      modal.querySelectorAll('.comment-text, .reply-text').forEach(el => {
+        el.onclick = (e) => {
+          e.stopPropagation();
+          const commentDiv = el.closest('.comment-item, .reply-item');
+          const replyBtn = commentDiv.querySelector('.reply-btn');
+          if (replyBtn) replyBtn.click();
+        };
+      });
+      // 点击空白区域收起键盘
+      modal.querySelector('.drawer-content').addEventListener('touchstart', (e) => {
+        if (document.activeElement === input) input.blur();
       });
     }
     // 头像点击个人主页
@@ -1181,7 +1199,7 @@
               <span class="stat-num like-num" data-id="${post.id}">${post.likes}</span>
             </div>
             <div class="stat-group comment-group" data-id="${post.id}">
-              <button class="comment-action-btn"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/></svg></button>
+              <button class="comment-action-btn"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
               <span class="stat-num comment-num" data-id="${post.id}">${post.comments.length}</span>
             </div>
           </div>
