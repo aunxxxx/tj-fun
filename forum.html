@@ -90,6 +90,25 @@ body.modal-open .forum-container {
     padding:8px 20px;border-radius:40px;border:none;
     background:#667eea;color:white;font-weight:bold;cursor:pointer;
 }
+    /* 电脑端：评论框与弹窗一体，无阴影、无分离感 */
+@media (min-width: 769px) {
+    .comment-input-fixed {
+        margin: 0;
+        border-radius: 0;
+        box-shadow: none;
+        background: #1e1e2a;
+        padding: 12px 20px;
+        border-top: 1px solid #333;
+    }
+    .comment-input-fixed input {
+        background: #2a2a36;
+        border-radius: 40px;
+        padding: 10px 16px;
+    }
+    .comment-input-fixed button {
+        background: #667eea;
+    }
+}
 </style>
 </head>
 <body>
@@ -255,27 +274,112 @@ function showCommentsModal(postId){
 
 // 🔵 点赞弹窗（完全修复）
 function showLikesModal(postId){
-    const post=posts.find(p=>p.id===postId);
+    const post = posts.find(p => p.id === postId);
     if(!post) return;
-    const users=JSON.parse(localStorage.getItem('users'))||[];
-    const list=(post.likedBy||[]).map(username=>{
-        const u=users.find(u=>u.username===username);
-        return {username,avatar:u?.avatar||'images/people.jpg'};
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const list = (post.likedBy || []).map(username => {
+        const u = users.find(u => u.username === username);
+        return { username, avatar: u?.avatar || 'images/people.jpg' };
     });
-    const mask=document.createElement('div');
-    mask.className='modal-mask';
-    mask.innerHTML=`<div class="modal-card"><div class="modal-header"><span>❤️ 点赞列表 (${list.length})</span><button class="close-modal">✕</button></div>
-    <div class="modal-list">${list.map(item=>`<div class="modal-user-item" onclick="viewProfile('${item.username}')"><img class="modal-avatar" src="${item.avatar}"><div>${escapeHtml(item.username)}</div></div>`).join('')}${!list.length?'<div>暂无点赞</div>':''}</div></div>`;
+
+    // 锁滚动 + 缩放背景
+    document.body.style.overflow = 'hidden';
+    openModalWithScale();
+
+    const mask = document.createElement('div');
+    mask.className = 'modal-mask';
+    mask.style.visibility = 'visible';
+    mask.style.opacity = '1';
     document.body.appendChild(mask);
-    setTimeout(()=>mask.classList.add('show'),10);
-    mask.querySelector('.close-modal').onclick=()=>mask.remove();
-    mask.onclick=(e)=>{if(e.target===mask) mask.remove();};
+
+    const isMobile = window.innerWidth <= 768;
+    let modal;
+
+    if (!isMobile) {
+        // 电脑端：居中卡片（不变）
+        modal = document.createElement('div');
+        modal.className = 'modal-card';
+        modal.innerHTML = `
+            <div class="modal-header">
+                <span>❤️ 点赞列表 (${list.length})</span>
+                <button class="close-modal">✕</button>
+            </div>
+            <div class="modal-list">
+                ${list.map(item => `
+                    <div class="modal-user-item" onclick="viewProfile('${item.username}')">
+                        <img class="modal-avatar" src="${item.avatar}">
+                        <div>${escapeHtml(item.username)}</div>
+                    </div>
+                `).join('')}
+                ${!list.length ? '<div>暂无点赞</div>' : ''}
+            </div>
+        `;
+        document.body.appendChild(modal);
+    } else {
+        // 手机端：底部抽屉（和评论弹窗一样）
+        modal = document.createElement('div');
+        modal.className = 'drawer-modal';
+        modal.innerHTML = `
+            <div class="drag-bar"></div>
+            <div class="drawer-content">
+                <div style="font-weight:bold;margin-bottom:20px;">❤️ 点赞列表 (${list.length})</div>
+                <div class="modal-list">
+                    ${list.map(item => `
+                        <div class="modal-user-item" onclick="viewProfile('${item.username}')">
+                            <img class="modal-avatar" src="${item.avatar}">
+                            <div>${escapeHtml(item.username)}</div>
+                        </div>
+                    `).join('')}
+                    ${!list.length ? '<div>暂无点赞</div>' : ''}
+                </div>
+            </div>
+            <div class="comment-input-fixed" style="justify-content:center;">
+                <span style="color:#aaa;">👆 向上滑动查看</span>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        setTimeout(() => modal.classList.add('open'), 10);
+
+        let startY = 0, startH = 0;
+        const bar = modal.querySelector('.drag-bar');
+        bar.addEventListener('touchstart', (e) => {
+            startY = e.touches[0].clientY;
+            startH = parseFloat(modal.style.height) || 75;
+        });
+        bar.addEventListener('touchmove', (e) => {
+            let delta = startY - e.touches[0].clientY;
+            let newH = Math.min(85, Math.max(50, startH + delta / window.innerHeight * 100));
+            modal.style.height = `${newH}vh`;
+            if (newH === 50 && delta < -20) closeModal();
+        });
+    }
+
+    const closeModal = () => {
+        document.body.style.overflow = '';
+        closeModalWithScale();
+        mask.remove();
+        modal.remove();
+    };
+    mask.onclick = closeModal;
+    modal.querySelector('.close-modal')?.addEventListener('click', closeModal);
 }
 
 function renderForum(){
     document.getElementById('forumApp').innerHTML=`<div class="hot-section">${isTrainee?'<div class="plus-btn" id="plusBtn">+</div>':''}<div class="hot-title">🔥 烧榜</div><div class="hot-list">${renderHotWords()}</div></div><div class="posts-list">${renderPosts()}</div>`;
+    
+    // 点赞
     document.querySelectorAll('.stat-num[data-type="likes"]').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();showLikesModal(parseInt(el.dataset.id));}));
-    document.querySelectorAll('.stat-num[data-type="comments"]').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();showCommentsModal(parseInt(el.dataset.id));}));
+    
+    // 🔽 评论：点击整个按钮区域都触发
+    document.querySelectorAll('.stat-btn').forEach(btn => {
+        const commentsSpan = btn.querySelector('.stat-num[data-type="comments"]');
+        if (commentsSpan) {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showCommentsModal(parseInt(commentsSpan.dataset.id));
+            });
+        }
+    });
     if(isTrainee) document.getElementById('plusBtn')?.addEventListener('click',()=>alert('发帖功能预留'));
 }
 window.viewProfile=username=>alert(`跳转到 ${username} 的个人主页（预留）`);
