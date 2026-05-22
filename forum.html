@@ -33,7 +33,7 @@
     padding: 20px 16px 60px;
   }
 
-  /* 导航栏 */
+  /* 导航栏（占位，后续您可替换） */
   header {
     background: white;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -41,7 +41,6 @@
     top: 0;
     z-index: 100;
   }
-
   .header-container {
     display: flex;
     justify-content: space-between;
@@ -50,7 +49,6 @@
     max-width: 700px;
     margin: 0 auto;
   }
-
   nav a {
     margin: 0 10px;
     text-decoration: none;
@@ -58,7 +56,6 @@
     font-weight: 500;
     font-size: 15px;
   }
-
   nav a.active {
     font-weight: bold;
     color: #ff7b5c;
@@ -77,13 +74,11 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 16px;
-    position: relative;
   }
   .hot-header .hot-title {
     font-size: 20px;
     font-weight: bold;
     color: #ff7b5c;
-    margin-bottom: 0;
     flex: 1;
     text-align: center;
   }
@@ -97,13 +92,10 @@
     justify-content: center;
     color: white;
     font-size: 20px;
-    font-weight: bold;
     cursor: pointer;
     box-shadow: 0 2px 6px rgba(255,123,92,0.3);
   }
-  .publish-trigger:active {
-    transform: scale(0.92);
-  }
+  .publish-trigger:active { transform: scale(0.92); }
   .hot-list {
     display: flex;
     flex-direction: column;
@@ -118,17 +110,9 @@
     justify-content: space-between;
     align-items: center;
   }
-  .hot-item:active {
-    background: #ffe2d4;
-  }
-  .hot-tag {
-    font-weight: 600;
-    color: #333;
-  }
-  .hot-count {
-    color: #ff7b5c;
-    font-weight: bold;
-  }
+  .hot-item:active { background: #ffe2d4; }
+  .hot-tag { font-weight: 600; color: #333; }
+  .hot-count { color: #ff7b5c; font-weight: bold; }
   .clear-filter {
     background: #eee;
     border-radius: 20px;
@@ -226,10 +210,7 @@
     stroke-width: 2;
     fill: none;
   }
-  .stat-num {
-    font-size: 14px;
-    color: #777;
-  }
+  .stat-num { font-size: 14px; color: #777; }
 
   /* 爱心动画 */
   .heart-animation {
@@ -244,7 +225,7 @@
     100% { transform: scale(1.5) translateY(-50px); opacity: 0; }
   }
 
-  /* ========== 发帖页面（全屏扩散动画） ========== */
+  /* ========== 发帖页面动画 ========== */
   .post-editor-overlay {
     position: fixed;
     top: 0;
@@ -289,12 +270,8 @@
     cursor: pointer;
     padding: 8px 12px;
   }
-  .send-btn {
-    color: #ff7b5c;
-  }
-  .close-editor {
-    color: #888;
-  }
+  .send-btn { color: #ff7b5c; }
+  .close-editor { color: #888; }
   .editor-content {
     flex: 1;
     padding: 20px;
@@ -311,9 +288,7 @@
     resize: none;
     outline: none;
   }
-  .editor-textarea:focus {
-    border-color: #ff7b5c;
-  }
+  .editor-textarea:focus { border-color: #ff7b5c; }
   .image-picker {
     margin-top: 30px;
     display: flex;
@@ -333,9 +308,7 @@
     cursor: pointer;
     border: 2px dashed #cbd5e1;
   }
-  .square-image-btn:active {
-    background: #e2e8f0;
-  }
+  .square-image-btn:active { background: #e2e8f0; }
   .image-preview {
     margin-top: 16px;
     max-width: 200px;
@@ -343,11 +316,8 @@
     border-radius: 16px;
     display: none;
   }
-  .image-preview.show {
-    display: block;
-  }
 
-  /* ========== 弹窗（底部抽屉，下滑关闭已修复） ========== */
+  /* ========== 弹窗（底部抽屉） - 下滑关闭修复 ========== */
   .modal-mask {
     position: fixed;
     top: 0;
@@ -358,9 +328,7 @@
     visibility: hidden;
     display: flex;
   }
-  .modal-mask.show {
-    visibility: visible;
-  }
+  .modal-mask.show { visibility: visible; }
   @media (max-width: 768px) {
     .modal-mask {
       align-items: flex-end;
@@ -373,7 +341,6 @@
       border-radius: 28px 28px 0 0;
       width: 100%;
       max-width: 700px;
-      overflow-y: hidden;
       display: flex;
       flex-direction: column;
       pointer-events: auto;
@@ -386,6 +353,7 @@
     .modal-mask.show .drawer-modal {
       transform: translateY(0);
     }
+    /* 拖拽条 - 只在它上面滑动关闭 */
     .drag-bar {
       width: 50px;
       height: 5px;
@@ -393,15 +361,16 @@
       border-radius: 10px;
       margin: 14px auto;
       cursor: grab;
+      touch-action: pan-x; /* 限制垂直拖拽 */
     }
+    .drag-bar:active { cursor: grabbing; }
     .drawer-content {
       flex: 1;
       overflow-y: auto;
       padding: 0 20px 20px;
+      -webkit-overflow-scrolling: touch;
     }
-    .modal-card {
-      display: none;
-    }
+    .modal-card { display: none; }
   }
   @media (min-width: 769px) {
     .modal-mask {
@@ -427,12 +396,10 @@
       cursor: pointer;
       float: right;
     }
-    .drawer-modal {
-      display: none;
-    }
+    .drawer-modal { display: none; }
   }
 
-  /* 评论列表样式 + 优化后的输入框（大圆角、阴影、分离感） */
+  /* 评论列表 + 优化输入框（大圆角、阴影、底部留白、固定） */
   .comment-item {
     padding: 12px 0;
     border-bottom: 1px solid #f0f2f5;
@@ -450,9 +417,7 @@
     font-weight: bold;
     cursor: pointer;
   }
-  .comment-right {
-    flex: 1;
-  }
+  .comment-right { flex: 1; }
   .comment-user {
     font-weight: 700;
     color: #ff7b5c;
@@ -476,13 +441,13 @@
     margin-top: 6px;
     cursor: pointer;
   }
-  /* 评论输入框：大圆角、阴影、底部留白、固定在底部 */
+  /* 评论输入区：大圆角、阴影、与内容分离 */
   .comment-input-fixed {
     display: flex;
     gap: 12px;
-    padding: 16px 20px 24px 20px;  /* 底部留白增加分离感 */
-    background: transparent;        /* 透明背景，让抽屉背景透出 */
-    border-top: none;
+    padding: 16px 20px 24px 20px;
+    background: transparent;
+    border-top: 1px solid rgba(0,0,0,0.05);
     position: sticky;
     bottom: 0;
     z-index: 10;
@@ -491,12 +456,11 @@
     flex: 1;
     padding: 14px 18px;
     border: 1px solid #e2e8f0;
-    border-radius: 40px;           /* 大圆角 */
+    border-radius: 40px;
     font-size: 15px;
     outline: none;
     background: white;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* 添加阴影 */
-    transition: 0.1s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   }
   .comment-input-fixed input:focus {
     border-color: #ff7b5c;
@@ -506,16 +470,14 @@
     background: #ff7b5c;
     border: none;
     padding: 0 24px;
-    border-radius: 40px;           /* 大圆角 */
+    border-radius: 40px;
     color: white;
     font-weight: 600;
     cursor: pointer;
     font-size: 14px;
     box-shadow: 0 2px 6px rgba(255,123,92,0.3);
   }
-  .comment-input-fixed button:active {
-    transform: scale(0.96);
-  }
+  .comment-input-fixed button:active { transform: scale(0.96); }
 </style>
 </head>
 <body>
@@ -537,8 +499,8 @@
 </div>
 
 <script>
-  // ========== 角色权限：'trainee' 练习生 或 'fan' 粉丝 ==========
-  const userRole = 'trainee';  // 改为 'fan' 则看不到加号
+  // ========== 角色权限 ==========
+  const userRole = 'trainee';  // 'trainee' 练习生 可见加号；'fan' 不可见
   const currentUser = { username: "时代骏风仔", avatar: "🐯", bio: "热爱骑行，喜欢分享", role: userRole };
 
   // ========== 帖子数据 ==========
@@ -555,7 +517,6 @@
   }
   function escapeHtml(str) { return String(str).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
 
-  // 相对时间
   function formatRelativeTime(timestamp) {
     const seconds = Math.floor((Date.now() - timestamp) / 1000);
     if (seconds < 0) return '刚刚';
@@ -572,7 +533,7 @@
     posts.forEach(p => { p.timeStr = formatRelativeTime(p.createdAt); });
   }
 
-  // 动态热搜词（最多3条）
+  // 动态热搜词（3条）
   function extractHotKeywords() {
     const wordMap = new Map();
     const stopWords = new Set(['的', '了', '是', '在', '我', '有', '和', '就', '不', '人', '都', '一', '个', '上', '也', '很', '到', '说', '去', '会', '这', '那', '吧', '吗', '啊']);
@@ -623,10 +584,7 @@
   }
   function publishNewPost() {
     const text = document.getElementById('postText').value.trim();
-    if (!text) {
-      alert('请填写内容');
-      return;
-    }
+    if (!text) { alert('请填写内容'); return; }
     const imageBase64 = window.selectedImageBase64 || null;
     const newPost = {
       id: Date.now(),
@@ -645,10 +603,8 @@
     renderForum();
     closePostEditor();
   }
-
   function triggerImageUpload() {
-    const input = document.getElementById('imageUploadInput');
-    input.click();
+    document.getElementById('imageUploadInput').click();
   }
   function handleImageSelect(e) {
     const file = e.target.files[0];
@@ -663,7 +619,7 @@
     reader.readAsDataURL(file);
   }
 
-  // ========== 全局弹窗（评论/点赞）- 修复下滑关闭 ==========
+  // ========== 弹窗管理（下滑关闭仅作用于 drag-bar） ==========
   let activeMask = null;
   let activeDrawer = null;
   function closeModal() {
@@ -699,7 +655,12 @@
     if (isMobile) {
       activeDrawer = modalElement;
       const drawer = modalElement;
-      let startY = 0, startHeight = 0, dragging = false;
+      const dragBar = drawer.querySelector('.drag-bar');
+      if (!dragBar) return;
+
+      let startY = 0;
+      let startHeight = 0;
+      let dragging = false;
       const initHeight = window.innerHeight * 0.7;
       drawer.style.height = `${initHeight}px`;
       drawer.style.transform = 'translateY(0)';
@@ -709,7 +670,6 @@
         startHeight = drawer.offsetHeight;
         dragging = true;
         drawer.style.transition = 'none';
-        // 防止页面滚动
         e.preventDefault();
       };
       const onTouchMove = (e) => {
@@ -729,13 +689,11 @@
         if (!dragging) return;
         dragging = false;
         const currentH = drawer.offsetHeight;
-        const threshold = window.innerHeight * 0.4; // 低于40%关闭
+        const threshold = window.innerHeight * 0.4;
         if (currentH < threshold) {
           closeModal();
         } else {
-          let targetH;
-          if (currentH > window.innerHeight * 0.8) targetH = window.innerHeight * 0.82;
-          else targetH = window.innerHeight * 0.7;
+          let targetH = currentH > window.innerHeight * 0.8 ? window.innerHeight * 0.82 : window.innerHeight * 0.7;
           drawer.style.transition = 'height 0.2s ease-out';
           drawer.style.height = `${targetH}px`;
           const t = (targetH - window.innerHeight*0.32) / (window.innerHeight*0.5);
@@ -744,15 +702,15 @@
           setTimeout(() => { if(drawer) drawer.style.transition = ''; }, 200);
         }
       };
-      drawer.addEventListener('touchstart', onTouchStart, { passive: false });
-      drawer.addEventListener('touchmove', onTouchMove, { passive: false });
-      drawer.addEventListener('touchend', onTouchEnd);
-      drawer.addEventListener('touchcancel', onTouchEnd);
+      dragBar.addEventListener('touchstart', onTouchStart, { passive: false });
+      dragBar.addEventListener('touchmove', onTouchMove, { passive: false });
+      dragBar.addEventListener('touchend', onTouchEnd);
+      dragBar.addEventListener('touchcancel', onTouchEnd);
       drawer.cleanup = () => {
-        drawer.removeEventListener('touchstart', onTouchStart);
-        drawer.removeEventListener('touchmove', onTouchMove);
-        drawer.removeEventListener('touchend', onTouchEnd);
-        drawer.removeEventListener('touchcancel', onTouchEnd);
+        dragBar.removeEventListener('touchstart', onTouchStart);
+        dragBar.removeEventListener('touchmove', onTouchMove);
+        dragBar.removeEventListener('touchend', onTouchEnd);
+        dragBar.removeEventListener('touchcancel', onTouchEnd);
       };
     } else {
       const closeBtn = modalElement.querySelector('.close-modal');
@@ -801,7 +759,7 @@
           </div>
         </div>
       `).join('');
-      document.querySelectorAll('.reply-btn').forEach(btn => {
+      modal.querySelectorAll('.reply-btn').forEach(btn => {
         btn.onclick = (e) => {
           e.stopPropagation();
           const replyUser = btn.dataset.replyUser;
@@ -810,7 +768,7 @@
           input.focus();
         };
       });
-      document.querySelectorAll('.comment-avatar, .comment-user').forEach(el => {
+      modal.querySelectorAll('.comment-avatar, .comment-user').forEach(el => {
         el.onclick = (e) => {
           e.stopPropagation();
           const username = el.dataset.username;
