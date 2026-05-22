@@ -2,14 +2,15 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>铁汁窝 - 时代骏风</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+<title>铁汁窝 - 动态热搜榜 | 回复艾特 | 个人主页</title>
 <style>
   /* ========== 全局样式 ========== */
   * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
@@ -18,12 +19,18 @@
     overflow-x: hidden;
   }
 
-  /* 页面包裹层（用于缩放+模糊） */
   .page-wrapper {
     background: #f5f7fb;
     min-height: 100vh;
-    transition: transform 0.05s linear, filter 0.05s linear; /* 快速响应触摸移动 */
+    transition: transform 0.05s linear, filter 0.05s linear;
     will-change: transform, filter;
+    transform-origin: center top;
+    border-radius: 0;
+  }
+
+  .page-wrapper.modal-open {
+    border-radius: 24px 24px 0 0;
+    overflow: hidden;
   }
 
   .forum-container {
@@ -32,10 +39,10 @@
     padding: 20px 16px 60px;
   }
 
-  /* 导航栏样式 */
+  /* 导航栏 */
   header {
     background: white;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     position: sticky;
     top: 0;
     z-index: 100;
@@ -50,12 +57,44 @@
     margin: 0 auto;
   }
 
-  /* 热门词条等其余样式保持不变（省略，与之前相同） */
+  nav a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    font-size: 15px;
+  }
+
+  nav a.active {
+    color: #ff7b5c;
+    font-weight: bold;
+  }
+
+  .user-avatar-small {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ffb88c, #ff7b5c);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.1s;
+  }
+  .user-avatar-small:active {
+    transform: scale(0.96);
+  }
+
+  /* 热搜区域 */
   .hot-section {
     background: #fff6ea;
     border-radius: 28px;
     padding: 16px;
     margin-bottom: 28px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
   }
   .hot-title {
     text-align: center;
@@ -63,21 +102,95 @@
     font-weight: bold;
     margin-bottom: 16px;
     color: #ff7b5c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
   }
   .hot-list {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 12px;
   }
   .hot-item {
     background: white;
-    border-radius: 20px;
-    padding: 12px 16px;
+    border-radius: 40px;
+    padding: 8px 18px;
     cursor: pointer;
-    display: flex;
-    justify-content: space-between;
+    display: inline-flex;
     align-items: center;
+    gap: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
+    font-size: 14px;
   }
+  .hot-item:active {
+    background: #ffe2d4;
+    transform: scale(0.96);
+  }
+  .hot-tag {
+    font-weight: 600;
+    color: #333;
+  }
+  .hot-count {
+    color: #ff7b5c;
+    font-weight: bold;
+    font-size: 12px;
+  }
+  .clear-filter {
+    margin-left: 8px;
+    background: #f0f0f0;
+    border-radius: 30px;
+    padding: 4px 12px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  /* 发布区 */
+  .publish-area {
+    background: white;
+    border-radius: 28px;
+    padding: 16px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+  .publish-input {
+    width: 100%;
+    border: 1px solid #eee;
+    border-radius: 30px;
+    padding: 12px 18px;
+    font-size: 15px;
+    resize: none;
+    font-family: inherit;
+    background: #f9f9fc;
+    transition: all 0.2s;
+  }
+  .publish-input:focus {
+    outline: none;
+    border-color: #ffb347;
+    background: white;
+  }
+  .publish-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+  }
+  .publish-btn {
+    background: #ff7b5c;
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 8px 24px;
+    border-radius: 40px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .publish-btn:active {
+    transform: scale(0.96);
+  }
+
+  /* 帖子列表 */
   .posts-list {
     display: flex;
     flex-direction: column;
@@ -87,7 +200,7 @@
     background: white;
     border-radius: 24px;
     padding: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
   }
   .post-header {
     display: flex;
@@ -98,10 +211,24 @@
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    background: #ddd;
+    background: linear-gradient(135deg, #ffb88c, #ff7b5c);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .author-info {
+    flex: 1;
   }
   .author-name {
     font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    display: inline-block;
   }
   .post-time {
     font-size: 11px;
@@ -109,11 +236,13 @@
     margin-top: 4px;
   }
   .post-content {
-    margin: 12px 0;
+    margin: 12px 0 8px;
+    line-height: 1.45;
+    color: #1f2937;
   }
   .post-stats {
     display: flex;
-    gap: 24px;
+    gap: 28px;
     margin-top: 12px;
     padding-top: 10px;
     border-top: 1px solid #eee;
@@ -124,29 +253,54 @@
     gap: 6px;
     cursor: pointer;
   }
-  .like-action-btn,
-  .comment-action-btn {
+  .like-action-btn, .comment-action-btn {
     background: none;
     border: none;
     cursor: pointer;
     display: flex;
     align-items: center;
+    padding: 4px;
   }
-  .like-action-btn svg,
+  .like-action-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke: #777;
+    stroke-width: 2;
+    fill: none;
+    transition: all 0.15s ease;
+  }
+  .like-action-btn svg.liked {
+    fill: #ff4d4f;
+    stroke: #ff4d4f;
+  }
   .comment-action-btn svg {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     stroke: #777;
     stroke-width: 2;
     fill: none;
   }
   .stat-num {
     font-size: 14px;
-    color: #777;
-    margin-left: 4px;
+    color: #666;
+    font-weight: 500;
   }
 
-  /* ========== 弹窗样式 ========== */
+  /* 爱心动画 */
+  .heart-animation {
+    position: absolute;
+    font-size: 22px;
+    color: #ff4d4f;
+    pointer-events: none;
+    animation: fly 0.7s ease-out forwards;
+    z-index: 2000;
+  }
+  @keyframes fly {
+    0% { transform: scale(0.6) translateY(0); opacity: 1; }
+    100% { transform: scale(1.4) translateY(-50px); opacity: 0; }
+  }
+
+  /* ========== 弹窗 ========== */
   .modal-mask {
     position: fixed;
     top: 0;
@@ -157,12 +311,10 @@
     visibility: hidden;
     display: flex;
   }
-
   .modal-mask.show {
     visibility: visible;
   }
 
-  /* 手机端：底部抽屉（丝滑滑动、边界锁定） */
   @media (max-width: 768px) {
     .modal-mask {
       align-items: flex-end;
@@ -171,29 +323,29 @@
       pointer-events: none;
     }
     .drawer-modal {
-      background: #1e1e2a;
-      color: white;
-      border-radius: 32px 32px 0 0;
+      background: #ffffff;
+      color: #1e293b;
+      border-radius: 28px 28px 0 0;
       width: 100%;
       max-width: 700px;
-      overflow-y: hidden; /* 禁用内部滚动，让整个抽屉滑动 */
+      overflow-y: hidden;
       display: flex;
       flex-direction: column;
       pointer-events: auto;
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
-      transition: none; /* 由JS控制transform */
+      box-shadow: 0 -8px 30px rgba(0,0,0,0.2);
+      transition: none;
       transform: translateY(100%);
-      height: 75vh;      /* 🔽 初始高度提高 */
-      min-height: 360px;
+      height: 70vh;
+      min-height: 320px;
     }
     .modal-mask.show .drawer-modal {
       transform: translateY(0);
     }
     .drag-bar {
-      width: 50px;
+      width: 48px;
       height: 5px;
-      background: #aaa;
-      border-radius: 10px;
+      background: #cbd5e1;
+      border-radius: 20px;
       margin: 14px auto;
       cursor: grab;
     }
@@ -202,87 +354,179 @@
       overflow-y: auto;
       padding: 0 20px 20px;
     }
-    .modal-card {
-      display: none;
-    }
+    .modal-card { display: none; }
   }
 
-  /* 电脑端：居中卡片，只保留❌关闭 */
   @media (min-width: 769px) {
     .modal-mask {
       align-items: center;
       justify-content: center;
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(4px);
       pointer-events: auto;
     }
     .modal-card {
-      background: #1e1e2a;
-      color: white;
+      background: #ffffff;
+      color: #1e293b;
       border-radius: 32px;
-      padding: 24px;
-      max-width: 400px;
-      width: 90%;
-      max-height: 70vh;
-      overflow-y: auto;
-      position: relative;
+      width: 500px;
+      max-width: 90%;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 45px rgba(0,0,0,0.25);
+    }
+    .modal-card .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 24px 12px;
+      border-bottom: 1px solid #eef2f6;
+    }
+    .modal-card .modal-header h3 {
+      font-size: 18px;
+      font-weight: 600;
     }
     .modal-card .close-modal {
-      background: none;
+      background: #f1f5f9;
       border: none;
-      color: white;
-      font-size: 24px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 20px;
       cursor: pointer;
-      float: right;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .drawer-modal {
-      display: none;
+    .modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 24px;
     }
+    .drawer-modal { display: none; }
   }
 
-  /* 评论输入框固定在底部（手机端） */
-  .comment-input-fixed {
+  /* 评论列表样式 */
+  .comment-item {
+    padding: 14px 0;
+    border-bottom: 1px solid #f0f2f5;
     display: flex;
-    gap: 8px;
-    margin: 16px 16px 20px 16px;
-    padding: 6px 6px 6px 18px;
-    background: #2a2a36;
-    border-radius: 60px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    backdrop-filter: blur(4px);
-    position: sticky;
-    bottom: 0;
-    z-index: 10;
+    gap: 12px;
   }
-  .comment-input-fixed input {
-    flex: 1;
-    padding: 10px 0;
-    border: none;
-    outline: none;
-    background: transparent;
-    color: white;
-    font-size: 15px;
-  }
-  .comment-input-fixed button {
-    padding: 8px 20px;
-    border-radius: 40px;
-    border: none;
-    background: #667eea;
-    color: white;
+  .comment-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #ffd966;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-weight: bold;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .comment-right {
+    flex: 1;
+  }
+  .comment-user-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+  }
+  .comment-username {
+    font-weight: 700;
+    color: #ff7b5c;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .comment-time {
+    font-size: 10px;
+    color: #94a3b8;
+  }
+  .comment-text {
+    margin-top: 6px;
+    color: #334155;
+    line-height: 1.4;
+    font-size: 14px;
+    word-break: break-word;
+  }
+  .reply-btn {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    font-size: 12px;
+    margin-top: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .empty-comment {
+    text-align: center;
+    padding: 30px 0;
+    color: #94a3b8;
+  }
+  .comment-input-area {
+    display: flex;
+    gap: 12px;
+    padding: 16px 20px;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+  }
+  .comment-input-area input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 60px;
+    font-size: 14px;
+    outline: none;
+  }
+  .comment-input-area input:focus {
+    border-color: #ff7b5c;
+  }
+  .comment-input-area button {
+    background: #ff7b5c;
+    border: none;
+    padding: 0 22px;
+    border-radius: 60px;
+    color: white;
+    font-weight: 600;
     cursor: pointer;
   }
 
-  /* 爱心动画（不变） */
-  .heart-animation {
-    position: absolute;
-    font-size: 20px;
-    color: #ff4d4f;
-    pointer-events: none;
-    animation: fly 0.8s ease-out forwards;
+  /* 个人资料卡片（轻量级弹窗） */
+  .profile-card {
+    text-align: center;
+    padding: 20px;
   }
-  @keyframes fly {
-    0% { transform: scale(0.5) translateY(0); opacity: 1; }
-    100% { transform: scale(1.5) translateY(-50px); opacity: 0; }
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ffb88c, #ff7b5c);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    margin: 0 auto 12px;
+  }
+  .profile-name {
+    font-size: 20px;
+    font-weight: bold;
+  }
+  .profile-bio {
+    color: #666;
+    margin: 12px 0;
+  }
+  .follow-btn {
+    background: #ff7b5c;
+    border: none;
+    padding: 8px 24px;
+    border-radius: 40px;
+    color: white;
+    cursor: pointer;
   }
 </style>
 </head>
@@ -291,13 +535,13 @@
 <div class="page-wrapper" id="pageWrapper">
   <header>
     <div class="header-container">
-      <a href="about.html"><img src="images/logo.png" style="height:40px;"></a>
+      <div style="font-weight:bold; font-size:20px; color:#ff7b5c;">🐾 铁汁窝</div>
       <nav>
-        <a href="index.html">Home</a>
-        <a href="news.html">大事件</a>
-        <a href="forum.html" style="font-weight:bold;">铁汁窝</a>
+        <a href="#" class="active">首页</a>
+        <a href="#">大事件</a>
+        <a href="#">铁汁窝</a>
       </nav>
-      <a href="profile.html"><img src="images/people.jpg" style="width:40px;height:40px;border-radius:50%;"></a>
+      <div class="user-avatar-small" id="globalAvatar">🐯</div>
     </div>
   </header>
 
@@ -305,249 +549,96 @@
 </div>
 
 <script>
-  // ======================== 数据（保持不变） ========================
-  let currentUser = { username: "测试用户", avatar: "images/people.jpg" };
+  // ========== 当前用户 ==========
+  let currentUser = { username: "时代骏风仔", avatar: "🐯", bio: "热爱骑行，喜欢分享" };
+  
+  // ========== 帖子数据（带时间戳） ==========
   let posts = [
-    { id: 1, author: "李四", content: "第一位认证用户报到！大家好啊！", likes: 10, likedBy: [], comments: [] },
-    { id: 2, author: "张三", content: "契弟广场终于开了，开心！", likes: 3, likedBy: [], comments: [] }
+    { id: 1, author: "李铁汁", avatar: "🔥", content: "第一位认证用户报到！大家好啊！🏆", likes: 12, likedBy: [{ username: "张三" }, { username: "时代骏风仔" }], comments: [{ username: "小旋风", avatar: "🌀", text: "欢迎大佬！", createdAt: Date.now() - 3600000, replyTo: null }, { username: "路人甲", avatar: "👤", text: "支持支持", createdAt: Date.now() - 1800000, replyTo: null }], createdAt: Date.now() - 86400000, timeStr: null },
+    { id: 2, author: "张三", avatar: "😎", content: "契弟广场终于开了，开心！🎉 #登顶计划", likes: 5, likedBy: [{ username: "李铁汁" }], comments: [{ username: "热心网友", avatar: "⭐", text: "一起嗨", createdAt: Date.now() - 7200000, replyTo: null }], createdAt: Date.now() - 172800000, timeStr: null },
+    { id: 3, author: "骏风车神", avatar: "🚴", content: "有没有周末一起骑行的？集合点老地方！ #周末骑行", likes: 8, likedBy: [], comments: [], createdAt: Date.now() - 3600000, timeStr: null }
   ];
+
+  // 辅助函数
   function savePosts() { localStorage.setItem('forum_posts', JSON.stringify(posts)); }
-  function escapeHtml(str) { return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
-
-  function createHeartAnimation(btn, e) {
-    const rect = btn.getBoundingClientRect();
-    const heart = document.createElement('span');
-    heart.className = 'heart-animation';
-    heart.innerText = '❤️';
-    heart.style.left = (e.clientX - rect.left) + 'px';
-    heart.style.top = (e.clientY - rect.top) + 'px';
-    btn.style.position = 'relative';
-    btn.appendChild(heart);
-    setTimeout(() => heart.remove(), 800);
+  function loadData() {
+    const stored = localStorage.getItem('forum_posts');
+    if (stored) { try { const p = JSON.parse(stored); if (Array.isArray(p)) posts = p; } catch(e) {} }
   }
+  function escapeHtml(str) { return String(str).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
 
-  // ======================== 弹窗核心（丝滑滑动、边界锁定、下滑关闭） ========================
-  let activeMask = null;
-  let activeDrawer = null;
-  let startY = 0;
-  let startHeight = 0;
-  let isDragging = false;
-
-  function updateBackgroundScale(drawer) {
-    const wrapper = document.getElementById('pageWrapper');
-    if (!wrapper) return;
-    const currentHeight = drawer.offsetHeight;
-    const minH = window.innerHeight * 0.35;
-    const maxH = window.innerHeight * 0.85;
-    let t = (currentHeight - minH) / (maxH - minH);
-    t = Math.min(1, Math.max(0, t));
-    // t=0 时即将关闭，页面最大(scale=1, blur=0)；t=1 时页面最小(scale=0.92, blur=3)
-    const scale = 1 - t * 0.08;
-    const blur = t * 3;
-    wrapper.style.transform = `scale(${scale})`;
-    wrapper.style.filter = `blur(${blur}px)`;
-  }
-
-  function closeModal() {
-    if (!activeMask) return;
-    const wrapper = document.getElementById('pageWrapper');
-    wrapper.style.transform = '';
-    wrapper.style.filter = '';
-    activeMask.remove();
-    activeMask = null;
-    activeDrawer = null;
-    document.body.style.overflow = '';
-  }
-
-  function openModal(modalEl, isMobile) {
-    if (activeMask) return;
-
-    const wrapper = document.getElementById('pageWrapper');
-    if (isMobile) {
-      // 初始背景缩放
-      wrapper.style.transform = `scale(0.92)`;
-      wrapper.style.filter = `blur(3px)`;
+  // 相对时间格式化
+  function formatRelativeTime(timestamp) {
+    const seconds = Math.floor((Date.now() - timestamp) / 1000);
+    if (seconds < 0) return '刚刚';
+    const intervals = [
+      { label: '年', seconds: 31536000 }, { label: '月', seconds: 2592000 }, { label: '天', seconds: 86400 },
+      { label: '小时', seconds: 3600 }, { label: '分钟', seconds: 60 }, { label: '秒', seconds: 1 }
+    ];
+    for (let i of intervals) {
+      const count = Math.floor(seconds / i.seconds);
+      if (count >= 1) return count + i.label + '前';
     }
+    return '刚刚';
+  }
 
-    const mask = document.createElement('div');
-    mask.className = 'modal-mask show';
-    document.body.appendChild(mask);
-    mask.appendChild(modalEl);
-    document.body.style.overflow = 'hidden';
-    activeMask = mask;
+  // 更新所有帖子的显示时间
+  function updateTimeStrings() {
+    posts.forEach(p => { p.timeStr = formatRelativeTime(p.createdAt); });
+  }
 
-    if (isMobile && modalEl.classList.contains('drawer-modal')) {
-      activeDrawer = modalEl;
-      const drawer = modalEl;
-      // 设置初始高度为 75vh
-      const initHeight = window.innerHeight * 0.75;
-      drawer.style.height = `${initHeight}px`;
-      drawer.style.transform = 'translateY(0)';
-
-      // 触摸滑动逻辑
-      const onTouchStart = (e) => {
-        startY = e.touches[0].clientY;
-        startHeight = drawer.offsetHeight;
-        isDragging = true;
-        drawer.style.transition = 'none';
-      };
-
-      const onTouchMove = (e) => {
-        if (!isDragging) return;
-        const delta = startY - e.touches[0].clientY; // 向上为正
-        let newHeight = startHeight + delta;
-        const maxHeight = window.innerHeight * 0.9;
-        const minHeight = window.innerHeight * 0.35;
-        // 限制范围
-        if (newHeight > maxHeight) newHeight = maxHeight;
-        if (newHeight < minHeight) newHeight = minHeight;
-        drawer.style.height = `${newHeight}px`;
-        // 实时更新背景缩放
-        updateBackgroundScale(drawer);
-      };
-
-      const onTouchEnd = () => {
-        if (!isDragging) return;
-        isDragging = false;
-        const currentHeight = drawer.offsetHeight;
-        const closeThreshold = window.innerHeight * 0.4; // 低于40%关闭
-        if (currentHeight < closeThreshold) {
-          closeModal();
-        } else {
-          // 回弹到最近的舒适高度：如果当前高度 > 80% 则固定到 85%，否则固定到 75%
-          let targetHeight;
-          if (currentHeight > window.innerHeight * 0.8) {
-            targetHeight = window.innerHeight * 0.85;
-          } else {
-            targetHeight = window.innerHeight * 0.75;
-          }
-          drawer.style.transition = 'height 0.2s ease-out';
-          drawer.style.height = `${targetHeight}px`;
-          updateBackgroundScale(drawer);
-          setTimeout(() => {
-            drawer.style.transition = '';
-          }, 200);
-        }
-      };
-
-      drawer.addEventListener('touchstart', onTouchStart);
-      drawer.addEventListener('touchmove', onTouchMove);
-      drawer.addEventListener('touchend', onTouchEnd);
-      drawer.addEventListener('touchcancel', onTouchEnd);
-
-      // 保存清理函数
-      drawer.cleanup = () => {
-        drawer.removeEventListener('touchstart', onTouchStart);
-        drawer.removeEventListener('touchmove', onTouchMove);
-        drawer.removeEventListener('touchend', onTouchEnd);
-        drawer.removeEventListener('touchcancel', onTouchEnd);
-      };
-    } else {
-      // 电脑端：只保留❌关闭
-      const closeBtn = modalEl.querySelector('.close-modal');
-      if (closeBtn) {
-        closeBtn.onclick = () => closeModal();
+  // 提取热搜词（包括普通词和#话题，去除停用词）
+  function extractHotKeywords() {
+    const wordMap = new Map();
+    const stopWords = new Set(['的', '了', '是', '在', '我', '有', '和', '就', '不', '人', '都', '一', '一个', '上', '也', '很', '到', '说', '去', '会', '这', '那', '吧', '吗', '啊', '哦', '呢', '啦', '~', '！', '？', '...']);
+    for (let post of posts) {
+      let text = post.content;
+      // 提取 #话题
+      const hashtags = text.match(/#[\u4e00-\u9fa5a-zA-Z0-9]+/g) || [];
+      for (let tag of hashtags) {
+        const key = tag;
+        let score = 1 + Math.floor(post.likes / 3) + post.comments.length;
+        wordMap.set(key, (wordMap.get(key) || 0) + score);
       }
-      // 禁止点击遮罩关闭
-      mask.onclick = null;
+      // 提取普通词（2~6个中文字符或英文单词）
+      const words = text.match(/[\u4e00-\u9fa5]{2,6}|[a-zA-Z]{3,8}/g) || [];
+      for (let w of words) {
+        if (stopWords.has(w) || w.length < 2) continue;
+        if (hashtags.includes('#' + w)) continue;
+        let score = 1 + Math.floor(post.likes / 5);
+        wordMap.set(w, (wordMap.get(w) || 0) + score);
+      }
     }
+    const sorted = Array.from(wordMap.entries()).sort((a,b) => b[1] - a[1]);
+    return sorted.slice(0, 8).map(([word, heat]) => ({ word, heat }));
   }
 
-  // ======================== 点赞/评论弹窗（调用 openModal） ========================
-  function showLikesModal(postId) {
-    const post = posts.find(p => p.id === postId);
-    if (!post) return;
-    const listHtml = post.likedBy.map(u => `<div class="modal-user-item">❤️ ${escapeHtml(u.username || u)}</div>`).join('') || '<div>暂无点赞</div>';
-    const isMobile = window.innerWidth <= 768;
+  // 当前筛选关键词
+  let currentFilterKeyword = null;
 
-    if (isMobile) {
-      const modal = document.createElement('div');
-      modal.className = 'drawer-modal';
-      modal.innerHTML = `<div class="drag-bar"></div><div class="drawer-content"><div style="font-weight:bold;margin-bottom:16px;">❤️ 点赞列表</div><div>${listHtml}</div></div>`;
-      openModal(modal, true);
-    } else {
-      const modal = document.createElement('div');
-      modal.className = 'modal-card';
-      modal.innerHTML = `<div class="close-modal">×</div><div style="font-weight:bold;margin-bottom:16px;">❤️ 点赞列表</div><div>${listHtml}</div>`;
-      openModal(modal, false);
+  // 渲染主界面（带筛选）
+  function renderForum() {
+    const container = document.getElementById('forumApp');
+    if (!container) return;
+    updateTimeStrings();
+    const hotKeywords = extractHotKeywords();
+    let filteredPosts = posts;
+    if (currentFilterKeyword) {
+      filteredPosts = posts.filter(p => p.content.includes(currentFilterKeyword));
     }
-  }
-
-  function showCommentsModal(postId) {
-    const post = posts.find(p => p.id === postId);
-    if (!post) return;
-    const isMobile = window.innerWidth <= 768;
-
-    const modal = document.createElement('div');
-    modal.className = isMobile ? 'drawer-modal' : 'modal-card';
-    modal.innerHTML = `
-      <div class="drag-bar"></div>
-      <div class="drawer-content">
-        <div style="font-weight:bold;margin-bottom:16px;">💬 评论列表</div>
-        <div id="commentList"></div>
-        <div class="comment-input-fixed">
-          <input type="text" id="newCommentInput" placeholder="写评论...">
-          <button id="sendCommentBtn">发送</button>
-        </div>
-      </div>
-    `;
-    if (!isMobile) {
-      // 电脑端添加关闭按钮
-      const headerDiv = modal.querySelector('.drawer-content');
-      const closeBtn = document.createElement('div');
-      closeBtn.className = 'close-modal';
-      closeBtn.innerHTML = '×';
-      closeBtn.style.float = 'right';
-      closeBtn.style.cursor = 'pointer';
-      headerDiv.insertBefore(closeBtn, headerDiv.firstChild);
-    }
-    const listDiv = modal.querySelector('#commentList');
-    const render = () => {
-      listDiv.innerHTML = post.comments.map(c => `<div><strong>${escapeHtml(c.username)}</strong>: ${escapeHtml(c.text)}</div>`).join('') || '<div>暂无评论</div>';
-    };
-    render();
-
-    modal.querySelector('#sendCommentBtn').onclick = () => {
-      const val = modal.querySelector('#newCommentInput').value.trim();
-      if (!val) return;
-      post.comments.push({ username: currentUser.username, text: val });
-      savePosts();
-      render();
-      modal.querySelector('#newCommentInput').value = '';
-    };
-
-    openModal(modal, isMobile);
-  }
-
-  // ======================== 点赞动作 ========================
-  function handleLike(postId, btn, e) {
-    const post = posts.find(p => p.id === postId);
-    if (post) {
-      post.likes++;
-      if (!post.likedBy) post.likedBy = [];
-      post.likedBy.push({ username: currentUser.username });
-      savePosts();
-      const likeSpan = document.querySelector(`.like-group[data-id="${postId}"] .like-num`);
-      if (likeSpan) likeSpan.innerText = post.likes;
-      createHeartAnimation(btn, e);
-    }
-  }
-
-  // ======================== 渲染帖子列表 ========================
-  function renderPosts() {
-    return posts.map(post => `
-      <div class="post-card" data-id="${post.id}">
+    const postsHtml = filteredPosts.map(post => `
+      <div class="post-card" data-post-id="${post.id}">
         <div class="post-header">
-          <div class="post-avatar"></div>
-          <div>
-            <div class="author-name">${escapeHtml(post.author)}</div>
-            <div class="post-time">${post.time || '刚刚'}</div>
+          <div class="post-avatar" data-username="${escapeHtml(post.author)}" data-avatar="${escapeHtml(post.avatar || '👤')}">${escapeHtml(post.avatar || post.author.charAt(0))}</div>
+          <div class="author-info">
+            <div class="author-name" data-username="${escapeHtml(post.author)}" data-avatar="${escapeHtml(post.avatar || '👤')}">${escapeHtml(post.author)}</div>
+            <div class="post-time">${post.timeStr}</div>
           </div>
         </div>
         <div class="post-content">${escapeHtml(post.content)}</div>
         <div class="post-stats">
           <div class="stat-group like-group" data-id="${post.id}">
-            <button class="like-action-btn"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M20.8 4.6c-1.6-1.6-4.1-1.6-5.7 0l-.5.5-.5-.5c-1.6-1.6-4.1-1.6-5.7 0-1.6 1.6-1.6 4.1 0 5.7l6.2 6.2 6.2-6.2c1.6-1.6 1.6-4.1 0-5.7z"/></svg></button>
+            <button class="like-action-btn" data-id="${post.id}"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M20.8 4.6c-1.6-1.6-4.1-1.6-5.7 0l-.5.5-.5-.5c-1.6-1.6-4.1-1.6-5.7 0-1.6 1.6-1.6 4.1 0 5.7l6.2 6.2 6.2-6.2c1.6-1.6 1.6-4.1 0-5.7z"/></svg></button>
             <span class="stat-num like-num" data-id="${post.id}">${post.likes}</span>
           </div>
           <div class="stat-group comment-group" data-id="${post.id}">
@@ -557,43 +648,283 @@
         </div>
       </div>
     `).join('');
-  }
-
-  function renderForum() {
-    const container = document.getElementById('forumApp');
+    
+    const filterChip = currentFilterKeyword ? `<span class="clear-filter" id="clearFilterBtn">✖ 清除筛选</span>` : '';
     container.innerHTML = `
       <div class="hot-section">
-        <div class="hot-title">🔥 热门词条</div>
-        <div class="hot-list"><div class="hot-item"><span>登顶计划</span><span>🔥 3</span></div></div>
+        <div class="hot-title">🔥 实时热搜榜 ${filterChip}</div>
+        <div class="hot-list" id="hotList">
+          ${hotKeywords.map(kw => `<div class="hot-item" data-word="${escapeHtml(kw.word)}"><span class="hot-tag">${escapeHtml(kw.word)}</span><span class="hot-count">🔥 ${kw.heat}</span></div>`).join('')}
+        </div>
       </div>
-      <div class="posts-list">${renderPosts()}</div>
+      <div class="publish-area">
+        <textarea class="publish-input" id="newPostInput" rows="2" placeholder="分享你的铁汁时刻... 支持 #话题"></textarea>
+        <div class="publish-actions"><button class="publish-btn" id="publishPostBtn">🐾 发布帖子</button></div>
+      </div>
+      <div class="posts-list">${postsHtml || '<div style="text-align:center; padding:40px;">暂无相关帖子</div>'}</div>
     `;
-
+    
+    // 热搜点击筛选
+    document.querySelectorAll('.hot-item').forEach(el => {
+      el.onclick = () => {
+        currentFilterKeyword = el.dataset.word;
+        renderForum();
+        renderPostEvents();
+      };
+    });
+    if (document.getElementById('clearFilterBtn')) {
+      document.getElementById('clearFilterBtn').onclick = () => { currentFilterKeyword = null; renderForum(); renderPostEvents(); };
+    }
+    // 发布帖子
+    document.getElementById('publishPostBtn')?.addEventListener('click', () => {
+      const input = document.getElementById('newPostInput');
+      if (input.value.trim()) {
+        const newPost = {
+          id: Date.now(),
+          author: currentUser.username,
+          avatar: currentUser.avatar,
+          content: input.value.trim(),
+          likes: 0,
+          likedBy: [],
+          comments: [],
+          createdAt: Date.now(),
+          timeStr: '刚刚'
+        };
+        posts.unshift(newPost);
+        savePosts();
+        renderForum();
+        renderPostEvents();
+        input.value = '';
+      }
+    });
+    renderPostEvents();
+  }
+  
+  // 绑定帖子交互（点赞、评论、头像点击）
+  function renderPostEvents() {
+    // 点赞逻辑（次数累加，列表去重，svg变红）
     document.querySelectorAll('.like-group').forEach(group => {
-      const btn = group.querySelector('.like-action-btn');
       const id = parseInt(group.dataset.id);
+      const btn = group.querySelector('.like-action-btn');
+      const svg = btn.querySelector('svg');
+      const post = posts.find(p => p.id === id);
+      if (post && post.likedBy.some(u => u.username === currentUser.username)) {
+        svg.classList.add('liked');
+      } else {
+        svg.classList.remove('liked');
+      }
       btn.onclick = (e) => {
         e.stopPropagation();
-        handleLike(id, btn, e);
+        const post = posts.find(p => p.id === id);
+        if (post) {
+          const hasLiked = post.likedBy.some(u => u.username === currentUser.username);
+          if (!hasLiked) {
+            post.likes++;
+            post.likedBy.push({ username: currentUser.username, avatar: currentUser.avatar });
+            savePosts();
+            const likeSpan = document.querySelector(`.like-num[data-id="${id}"]`);
+            if (likeSpan) likeSpan.innerText = post.likes;
+            svg.classList.add('liked');
+            // 爱心动画
+            const rect = btn.getBoundingClientRect();
+            const heart = document.createElement('span');
+            heart.className = 'heart-animation';
+            heart.innerText = '❤️';
+            heart.style.left = (e.clientX - rect.left) + 'px';
+            heart.style.top = (e.clientY - rect.top) + 'px';
+            btn.style.position = 'relative';
+            btn.appendChild(heart);
+            setTimeout(() => heart.remove(), 700);
+            renderForum(); // 更新热搜榜
+          }
+        }
       };
     });
-
+    // 查看点赞列表
     document.querySelectorAll('.like-num').forEach(el => {
-      el.onclick = (e) => {
-        e.stopPropagation();
-        showLikesModal(parseInt(el.dataset.id));
-      };
+      el.onclick = (e) => { e.stopPropagation(); showLikesModal(parseInt(el.dataset.id)); };
     });
-
+    // 打开评论弹窗
     document.querySelectorAll('.comment-group').forEach(group => {
       const id = parseInt(group.dataset.id);
-      group.onclick = (e) => {
+      group.onclick = (e) => { e.stopPropagation(); showCommentsModal(id); };
+    });
+    // 头像/用户名点击个人界面
+    document.querySelectorAll('.post-avatar, .author-name').forEach(el => {
+      el.onclick = (e) => {
         e.stopPropagation();
-        showCommentsModal(id);
+        const username = el.dataset.username;
+        const avatar = el.dataset.avatar || '👤';
+        if (username) showProfileModal(username, avatar);
       };
     });
   }
-
+  
+  // ========== 弹窗管理 ==========
+  let activeMask = null, activeDrawer = null;
+  function closeModal() {
+    if (!activeMask) return;
+    const wrapper = document.getElementById('pageWrapper');
+    wrapper.style.transform = ''; wrapper.style.filter = ''; wrapper.classList.remove('modal-open');
+    if (activeDrawer?.cleanup) activeDrawer.cleanup();
+    activeMask.remove(); activeMask = null; activeDrawer = null;
+    document.body.style.overflow = ''; document.body.style.position = '';
+  }
+  
+  function openModal(contentElement, isMobile, initialHeight = 0.7) {
+    if (activeMask) closeModal();
+    const wrapper = document.getElementById('pageWrapper');
+    if (isMobile) { wrapper.style.transform = `scale(0.93)`; wrapper.style.filter = `blur(2.5px)`; wrapper.classList.add('modal-open'); }
+    const mask = document.createElement('div'); mask.className = 'modal-mask show';
+    document.body.appendChild(mask); document.body.style.overflow = 'hidden'; document.body.style.position = 'fixed';
+    mask.appendChild(contentElement); activeMask = mask;
+    if (isMobile) {
+      activeDrawer = contentElement;
+      const drawer = contentElement;
+      drawer.style.height = `${window.innerHeight * initialHeight}px`;
+      let startY = 0, startH = 0, dragging = false;
+      const onStart = (e) => { startY = e.touches[0].clientY; startH = drawer.offsetHeight; dragging = true; drawer.style.transition = 'none'; };
+      const onMove = (e) => {
+        if (!dragging) return;
+        const delta = startY - e.touches[0].clientY;
+        let newH = startH + delta;
+        newH = Math.min(window.innerHeight * 0.88, Math.max(window.innerHeight * 0.32, newH));
+        drawer.style.height = `${newH}px`;
+        const t = (newH - window.innerHeight*0.32) / (window.innerHeight*0.56);
+        wrapper.style.transform = `scale(${1 - t*0.08})`; wrapper.style.filter = `blur(${t*3}px)`;
+      };
+      const onEnd = () => {
+        if (!dragging) return;
+        dragging = false;
+        const cur = drawer.offsetHeight;
+        if (cur < window.innerHeight * 0.4) closeModal();
+        else { const target = cur > window.innerHeight*0.8 ? 0.85 : 0.7; drawer.style.transition = 'height 0.2s'; drawer.style.height = `${window.innerHeight * target}px`; setTimeout(() => drawer.style.transition = '', 200); }
+      };
+      drawer.addEventListener('touchstart', onStart, { passive: false });
+      drawer.addEventListener('touchmove', onMove, { passive: false });
+      drawer.addEventListener('touchend', onEnd);
+      drawer.cleanup = () => { drawer.removeEventListener('touchstart', onStart); drawer.removeEventListener('touchmove', onMove); drawer.removeEventListener('touchend', onEnd); };
+    } else {
+      contentElement.querySelector('.close-modal')?.addEventListener('click', () => closeModal());
+    }
+  }
+  
+  // 显示点赞列表
+  function showLikesModal(postId) {
+    const post = posts.find(p => p.id === postId);
+    if (!post) return;
+    const isMobile = window.innerWidth <= 768;
+    const listHtml = (post.likedBy || []).map(u => `<div style="padding:8px 0;">❤️ ${escapeHtml(u.username)}</div>`).join('') || '<div>暂无点赞</div>';
+    if (isMobile) {
+      const modal = document.createElement('div'); modal.className = 'drawer-modal';
+      modal.innerHTML = `<div class="drag-bar"></div><div class="drawer-content"><div style="font-weight:bold;margin-bottom:16px;">❤️ 点赞列表</div>${listHtml}</div>`;
+      openModal(modal, true, 0.6);
+    } else {
+      const modal = document.createElement('div'); modal.className = 'modal-card';
+      modal.innerHTML = `<div class="modal-header"><h3>❤️ 点赞列表</h3><button class="close-modal">✕</button></div><div class="modal-body">${listHtml}</div>`;
+      openModal(modal, false);
+    }
+  }
+  
+  // 显示评论弹窗（带回复/艾特功能）
+  function showCommentsModal(postId) {
+    const post = posts.find(p => p.id === postId);
+    if (!post) return;
+    const isMobile = window.innerWidth <= 768;
+    const modal = document.createElement('div'); modal.className = isMobile ? 'drawer-modal' : 'modal-card';
+    modal.innerHTML = `
+      ${isMobile ? '<div class="drag-bar"></div>' : `<div class="modal-header"><h3>💬 评论 · ${post.comments.length}</h3><button class="close-modal">✕</button></div>`}
+      <div class="drawer-content" style="flex:1; overflow-y:auto; padding:0 20px;">
+        <div id="commentListArea"></div>
+      </div>
+      <div class="comment-input-area">
+        <input type="text" id="replyInput" placeholder="写评论... 可回复 @他人">
+        <button id="sendCommentBtn">发送</button>
+      </div>
+    `;
+    if (!isMobile) modal.querySelector('.close-modal').onclick = () => closeModal();
+    
+    const renderComments = () => {
+      const container = modal.querySelector('#commentListArea');
+      if (!container) return;
+      if (!post.comments.length) { container.innerHTML = '<div class="empty-comment">💬 暂无评论，来抢沙发～</div>'; return; }
+      container.innerHTML = post.comments.map((c, idx) => `
+        <div class="comment-item">
+          <div class="comment-avatar" data-username="${escapeHtml(c.username)}" data-avatar="${escapeHtml(c.avatar || '👤')}">${escapeHtml(c.avatar || c.username.charAt(0))}</div>
+          <div class="comment-right">
+            <div class="comment-user-row">
+              <span class="comment-username" data-username="${escapeHtml(c.username)}" data-avatar="${escapeHtml(c.avatar || '👤')}">${escapeHtml(c.username)}</span>
+              <span class="comment-time">${formatRelativeTime(c.createdAt)}</span>
+            </div>
+            <div class="comment-text">${escapeHtml(c.text)}</div>
+            <button class="reply-btn" data-reply-user="${escapeHtml(c.username)}">💬 回复</button>
+          </div>
+        </div>
+      `).join('');
+      // 回复按钮事件
+      document.querySelectorAll('.reply-btn').forEach(btn => {
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          const replyUser = btn.dataset.replyUser;
+          const input = modal.querySelector('#replyInput');
+          if (input) input.value = `@${replyUser} `;
+          input.focus();
+        };
+      });
+      // 头像点击个人界面
+      document.querySelectorAll('.comment-avatar, .comment-username').forEach(el => {
+        el.onclick = (e) => {
+          e.stopPropagation();
+          const username = el.dataset.username;
+          const avatar = el.dataset.avatar;
+          if (username) showProfileModal(username, avatar);
+        };
+      });
+    };
+    renderComments();
+    
+    const sendBtn = modal.querySelector('#sendCommentBtn');
+    const input = modal.querySelector('#replyInput');
+    sendBtn.onclick = () => {
+      let val = input.value.trim();
+      if (!val) return;
+      post.comments.push({ username: currentUser.username, avatar: currentUser.avatar, text: val, createdAt: Date.now(), replyTo: null });
+      savePosts();
+      renderComments();
+      input.value = '';
+      if (!isMobile) { const header = modal.querySelector('.modal-header h3'); if(header) header.innerText = `💬 评论 · ${post.comments.length}`; }
+      renderForum(); // 刷新外部评论数
+    };
+    openModal(modal, isMobile, 0.75);
+  }
+  
+  // 个人资料弹窗
+  function showProfileModal(username, avatar) {
+    const isMobile = window.innerWidth <= 768;
+    const modal = document.createElement('div'); modal.className = isMobile ? 'drawer-modal' : 'modal-card';
+    modal.innerHTML = `
+      ${isMobile ? '<div class="drag-bar"></div>' : `<div class="modal-header"><h3>个人主页</h3><button class="close-modal">✕</button></div>`}
+      <div class="profile-card">
+        <div class="profile-avatar">${avatar || '👤'}</div>
+        <div class="profile-name">${escapeHtml(username)}</div>
+        <div class="profile-bio">${username === currentUser.username ? currentUser.bio : '这个人很懒，还没写介绍～'}</div>
+        ${username !== currentUser.username ? '<button class="follow-btn" id="followBtn">+ 关注</button>' : '<button class="follow-btn" disabled style="opacity:0.5;"> 这是你</button>'}
+      </div>
+    `;
+    if (!isMobile) modal.querySelector('.close-modal').onclick = () => closeModal();
+    openModal(modal, isMobile, 0.5);
+    if (username !== currentUser.username) {
+      modal.querySelector('#followBtn')?.addEventListener('click', () => alert(`关注了 ${username}（演示功能）`));
+    }
+  }
+  
+  // 初始化全局头像点击
+  document.getElementById('globalAvatar')?.addEventListener('click', () => showProfileModal(currentUser.username, currentUser.avatar));
+  
+  loadData();
+  // 兼容旧数据：若无createdAt则补一个
+  posts.forEach(p => { if (!p.createdAt) p.createdAt = Date.now() - Math.random() * 86400000; p.comments?.forEach(c => { if (!c.createdAt) c.createdAt = Date.now() - Math.random() * 86400000; if (!c.avatar) c.avatar = c.username.charAt(0); }); if (!p.avatar) p.avatar = p.author.charAt(0); });
+  savePosts();
   renderForum();
 </script>
 </body>
