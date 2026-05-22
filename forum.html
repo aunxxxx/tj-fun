@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>铁汁窝 - 时代骏风</title>
 <style>
+  /* ==========================================
+     模块1：全局重置 & 基础样式
+     作用：重置边距盒模型，设置默认字体与背景
+  ========================================== */
   * {
     margin: 0;
     padding: 0;
@@ -17,6 +21,10 @@
     overflow-x: hidden;
   }
 
+  /* ==========================================
+     模块2：页面主容器特效 (弹窗打开时缩放+模糊)
+     作用：当模态窗打开时，page-wrapper产生缩放和模糊背景效果
+  ========================================== */
   .page-wrapper {
     background: #f5f7fb;
     min-height: 100vh;
@@ -28,15 +36,19 @@
     overflow: hidden;
   }
   .page-wrapper.modal-open {
-    border-radius: 28px 28px 0 0;
+    border-radius: 28px 28px 0 0;   /* 圆角配合抽屉滑动效果 */
   }
 
+  /* 论坛容器 - 最大宽度居中 */
   .forum-container {
     max-width: 700px;
     margin: 0 auto;
     padding: 20px 16px 60px;
   }
 
+  /* ==========================================
+     模块3：顶部导航栏 (粘性头部)
+  ========================================== */
   header {
     background: white;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -64,7 +76,10 @@
     color: #ff7b5c;
   }
 
-  /* 热门词条 (保持不变) */
+  /* ==========================================
+     模块4：热门词条区域 (热度卡片、筛选功能)
+     作用：展示热度前三关键词，点击筛选帖子，支持清除筛选
+  ========================================== */
   .hot-section {
     background: #fff6ea;
     border-radius: 28px;
@@ -122,7 +137,10 @@
     cursor: pointer;
   }
 
-  /* 帖子卡片 (不变) */
+  /* ==========================================
+     模块5：帖子卡片样式 (内容区)
+     作用：展示帖子作者、内容、图片、点赞评论栏
+  ========================================== */
   .posts-list {
     display: flex;
     flex-direction: column;
@@ -213,7 +231,10 @@
   }
   .stat-num { font-size: 14px; color: #777; }
 
-  /* 爱心动画 */
+  /* ==========================================
+     模块6：点赞爱心粒子动画效果 (点击爱心飘散❤️)
+     作用：点赞时在按钮位置生成多个爱心飞散动画
+  ========================================== */
   .heart-particle {
     position: fixed;
     font-size: 18px;
@@ -226,7 +247,10 @@
     100% { transform: translate(var(--dx, 40px), var(--dy, -60px)) scale(1.2); opacity: 0; }
   }
 
-  /* 发帖编辑器 (不变) */
+  /* ==========================================
+     模块7：发帖编辑器 (圆形展开/收缩动画)
+     作用：全屏编辑器 + 图片上传 + 话题输入，带缩放过渡效果
+  ========================================== */
   .post-editor-overlay {
     position: fixed;
     top: 0;
@@ -317,7 +341,10 @@
     display: none;
   }
 
-  /* 弹窗抽屉 (保留下滑功能) */
+  /* ==========================================
+     模块8：全局模态窗抽屉系统 (评论弹窗/点赞列表)
+     作用：手机端下滑抽屉+拖拽关闭，PC端居中卡片，带背景模糊缩放
+  ========================================== */
   .modal-mask {
     position: fixed;
     top: 0;
@@ -330,6 +357,7 @@
   }
   .modal-mask.show { visibility: visible; }
 
+  /* 移动端抽屉样式 */
   @media (max-width: 768px) {
     .modal-mask {
       align-items: flex-end;
@@ -351,6 +379,7 @@
       height: 80vh;
       min-height: 400px;
       overflow: hidden;
+     position: relative;
     }
     .modal-mask.show .drawer-modal {
       transform: translateY(0);
@@ -374,6 +403,7 @@
     .modal-card { display: none; }
   }
 
+  /* PC端卡片样式 */
   @media (min-width: 769px) {
     .modal-mask {
       align-items: center;
@@ -418,7 +448,10 @@
     .drawer-modal { display: none; }
   }
 
-  /* ========== 评论/回复列表样式 (保留楼中楼) ========== */
+  /* ==========================================
+     模块9：评论 & 楼中楼回复样式 (嵌套结构)
+     作用：展示主评论以及回复列表，支持点赞和回复按钮
+  ========================================== */
   .comment-item, .reply-item {
     margin-bottom: 12px;
   }
@@ -492,7 +525,7 @@
     margin-top: 8px;
   }
 
-  /* PC端预览框 (紧贴输入框上方) */
+  /* PC端回复预览条 */
   .pc-reply-preview {
     display: none;
     justify-content: space-between;
@@ -512,7 +545,7 @@
     color: #888;
   }
 
-  /* 评论输入框 (完全采用事例样式：固定底部，圆角，发送按钮为 ➤ ) */
+  /* 底部评论输入框 (固定在抽屉底部) */
   .comment-input-fixed {
     display: flex;
     align-items: center;
@@ -566,12 +599,14 @@
       <a href="#"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23ffb88c'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='20'%3E🐯%3C/text%3E%3C/svg%3E" style="width:40px;height:40px;border-radius:50%;"></a>
     </div>
   </header>
-
   <div class="forum-container" id="forumApp"></div>
 </div>
 
 <script>
-  // 角色权限
+  // ============================================================
+  // 模块10：全局数据与角色权限配置
+  // 功能：定义用户角色（控制发帖按钮）、存储帖子数据、本地存储持久化
+  // ============================================================
   const userRole = 'trainee';
   const currentUser = { username: "时代骏风仔", avatar: "🐯", bio: "热爱骑行，喜欢分享", role: userRole };
 
@@ -590,6 +625,10 @@
   }
   function escapeHtml(str) { return String(str).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
 
+  // ============================================================
+  // 模块11：时间格式化工具 (相对时间)
+  // 作用：将时间戳转成“几分钟前/几小时前”
+  // ============================================================
   function formatRelativeTime(timestamp) {
     const seconds = Math.floor((Date.now() - timestamp) / 1000);
     if (seconds < 0) return '刚刚';
@@ -606,6 +645,10 @@
     posts.forEach(p => { p.timeStr = formatRelativeTime(p.createdAt); });
   }
 
+  // ============================================================
+  // 模块12：热门词条提取逻辑
+  // 功能：分析帖子内容、话题标签和点赞评论权重，提取热度TOP3关键词
+  // ============================================================
   function extractHotKeywords() {
     const wordMap = new Map();
     const stopWords = new Set(['的', '了', '是', '在', '我', '有', '和', '就', '不', '人', '都', '一', '个', '上', '也', '很', '到', '说', '去', '会', '这', '那', '吧', '吗', '啊']);
@@ -634,7 +677,10 @@
     renderForum();
   }
 
-  // 发帖页面 (不变)
+  // ============================================================
+  // 模块13：发帖编辑器全流程 (打开、关闭、图片上传、发布)
+  // 效果：圆形缩放动画、图片base64预览
+  // ============================================================
   function openPostEditor() {
     const overlay = document.getElementById('postEditorOverlay');
     if (!overlay) return;
@@ -687,6 +733,10 @@
     reader.readAsDataURL(file);
   }
 
+  // ============================================================
+  // 模块14：点赞动画特效 (爱心粒子爆炸)
+  // 效果：点击点赞时从按钮位置飘散多个红心
+  // ============================================================
   function createHeartExplosion(x, y) {
     for (let i = 0; i < 8; i++) {
       const heart = document.createElement('div');
@@ -705,6 +755,10 @@
     }
   }
 
+  // ============================================================
+  // 模块15：帖子点赞逻辑 + 爱心动画触发
+  // 功能：记录点赞用户及次数，更新UI
+  // ============================================================
   function handleLike(postId, btn, e) {
     const post = posts.find(p => p.id === postId);
     if (post) {
@@ -719,10 +773,11 @@
       if (svg && !existing) svg.classList.add('liked');
       const rect = btn.getBoundingClientRect();
       createHeartExplosion(rect.left + rect.width/2, rect.top + rect.height/2);
-      renderForum();
+      renderForum();  // 刷新整个论坛确保最新点赞状态
     }
   }
 
+  // 评论/回复点赞统一逻辑
   function handleContentLike(postId, itemId, type, parentId) {
     const post = posts.find(p => p.id === postId);
     if (!post) return;
@@ -741,7 +796,10 @@
     }
   }
 
-  // 弹窗管理 (下滑逻辑保留)
+  // ============================================================
+  // 模块16：全局模态窗管理器 (含拖拽关闭、缩放模糊效果)
+  // 功能：统一控制点赞列表弹窗 / 评论弹窗，支持手机下拉关闭
+  // ============================================================
   let activeMask = null, activeDrawer = null, scrollPosition = 0;
   function closeModal() {
     if (!activeMask) return;
@@ -839,7 +897,10 @@
     openModal(modal, isMobile);
   }
 
-  // ========== 严格按照事例逻辑实现的回复 ==========
+  // ============================================================
+  // 模块17：楼中楼回复系统 (支持嵌套回复、@预览、提交)
+  // 功能：activeReplyTarget 管理当前回复目标，支持评论内回复
+  // ============================================================
   let activeReplyTarget = null; // { postId, targetId, targetType, parentId, targetUsername }
 
   function setReplyTarget(postId, targetId, targetType, parentId, username) {
@@ -895,6 +956,7 @@
     return count;
   }
 
+  // 递归渲染评论和嵌套回复
   function generateCommentsHtml(post) {
     const renderItem = (item, level=0, parentId=null) => {
       const likeCount = item.likes || 0;
@@ -928,8 +990,8 @@
     return post.comments.map(c => renderItem(c)).join('');
   }
 
+  // 绑定评论弹窗内的事件 (点赞/回复/发送)
   function attachCommentEvents(modal, post, isMobile) {
-    // 点赞
     modal.querySelectorAll('.like-btn').forEach(btn => {
       btn.onclick = (e) => {
         e.stopPropagation();
@@ -939,7 +1001,6 @@
         handleContentLike(post.id, id, type, parentId);
       };
     });
-    // 回复按钮 (PC端显示预览框，手机端滚动并聚焦)
     modal.querySelectorAll('.reply-btn').forEach(btn => {
       btn.onclick = (e) => {
         e.stopPropagation();
@@ -961,7 +1022,6 @@
         }
       };
     });
-    // 发送逻辑
     const input = modal.querySelector('#commentInputModal');
     const sendBtn = modal.querySelector('#sendCommentModal');
     if (sendBtn) {
@@ -988,7 +1048,6 @@
         }
       });
     }
-    // 头像跳转
     modal.querySelectorAll('.comment-avatar, .reply-avatar, .comment-user, .reply-user').forEach(el => {
       el.onclick = (e) => {
         e.stopPropagation();
@@ -1013,9 +1072,7 @@
         if (activeReplyTarget) {
           previewDiv.style.display = 'flex';
           previewDiv.querySelector('span').innerText = `回复 @${activeReplyTarget.targetUsername}：`;
-        } else {
-          previewDiv.style.display = 'none';
-        }
+        } else previewDiv.style.display = 'none';
       }
       const inp = modal.querySelector('#commentInputModal');
       if (inp && !isMobile && activeReplyTarget) inp.placeholder = `回复 ${activeReplyTarget.targetUsername}...`;
@@ -1066,6 +1123,10 @@
     alert(`个人主页开发中，即将开放（用户：${username}）`);
   }
 
+  // ============================================================
+  // 模块18：主渲染引擎 (渲染热门词条 + 帖子列表 + 事件绑定)
+  // 功能：整合所有模块生成UI，绑定交互事件
+  // ============================================================
   function renderForum() {
     updatePostTimes();
     const hotKeywords = extractHotKeywords();
@@ -1140,6 +1201,9 @@
     });
   }
 
+  // ============================================================
+  // 模块19：初始化 (编辑器DOM注入，数据加载)
+  // ============================================================
   function initEditorOverlay() {
     const overlay = document.createElement('div');
     overlay.id = 'postEditorOverlay';
