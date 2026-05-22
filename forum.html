@@ -198,8 +198,8 @@
     align-items: center;
   }
   .like-action-btn svg {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     stroke: #777;
     stroke-width: 2;
     fill: none;
@@ -210,8 +210,8 @@
     stroke: #ff4d4f;
   }
   .comment-action-btn svg {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     stroke: #777;
     stroke-width: 2;
     fill: none;
@@ -379,7 +379,7 @@
     .drawer-content {
       flex: 1;
       overflow-y: auto;
-      padding: 0 20px 12px 20px;
+      padding: 16px 20px 12px 20px;
       -webkit-overflow-scrolling: touch;
     }
     .modal-card { display: none; }
@@ -412,7 +412,7 @@
       top: 0;
       background: white;
       border-radius: 32px 32px 0 0;
-      z-index: 1;
+      z-index: 2;
     }
     .modal-card .modal-header h3 {
       font-size: 18px;
@@ -443,8 +443,8 @@
     padding: 8px 0;
   }
   .comment-avatar, .reply-avatar {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background: #ffd966;
     display: flex;
@@ -475,13 +475,13 @@
     line-height: 1.4;
     word-break: break-word;
   }
-  /* 操作栏：点赞+回复 靠右，但留出合适间距 */
+  /* 操作栏：垂直居中，右侧留空，图标放大 */
   .action-bar {
     display: flex;
     justify-content: flex-end;
     gap: 16px;
-    margin-top: 6px;
-    padding-right: 8px;  /* 避免紧贴边缘 */
+    margin-top: 8px;
+    align-items: center;
   }
   .action-btn {
     background: none;
@@ -494,14 +494,18 @@
     gap: 4px;
   }
   .action-btn svg {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     stroke: #888;
     stroke-width: 2;
     fill: none;
   }
+  .action-btn.like-btn svg.liked {
+    fill: #ff4d4f;
+    stroke: #ff4d4f;
+  }
   .nested-replies {
-    margin-left: 48px;
+    margin-left: 52px;
     padding-left: 12px;
     border-left: 2px solid #e9ecef;
     margin-top: 8px;
@@ -975,6 +979,7 @@
       const container = modal.querySelector('#commentListModal');
       if (container) container.innerHTML = generateCommentsHtml(post);
       attachCommentEvents(modal, post, isMobile);
+      // 更新预览框（位置在 draw-content 末尾，输入框之前）
       const previewDiv = modal.querySelector('.pc-reply-preview');
       if (!isMobile && previewDiv) {
         if (activeReplyTarget) {
@@ -994,12 +999,13 @@
       modal = document.createElement('div');
       modal.className = isMobile ? 'drawer-modal' : 'modal-card';
       modal.classList.add('active-comments-modal');
+      // 预览框放在 drawer-content 内末尾（输入框前面）
       const replyPreviewHtml = !isMobile ? `<div class="pc-reply-preview" style="display:none;"><span></span><button class="cancel-reply">✕</button></div>` : '';
       modal.innerHTML = `
         ${isMobile ? '<div class="drag-bar"></div>' : '<div class="modal-header"><h3>💬 评论 · 0</h3><button class="close-modal">×</button></div>'}
-        ${replyPreviewHtml}
         <div class="drawer-content" style="flex:1; overflow-y:auto;">
           <div id="commentListModal" style="margin-bottom:12px;"></div>
+          ${replyPreviewHtml}
         </div>
         <div class="comment-input-fixed">
           <input type="text" id="commentInputModal" placeholder="写评论...">
@@ -1031,14 +1037,24 @@
     }
   }
 
+  function getReplyCount(item) {
+    if (!item.replies) return 0;
+    let count = item.replies.length;
+    for (let r of item.replies) {
+      count += getReplyCount(r);
+    }
+    return count;
+  }
+
   function generateCommentsHtml(post) {
     function renderItem(item, level = 0, parentId = null) {
       const likeCount = item.likes || 0;
+      const replyCount = getReplyCount(item);
       const likeSvg = `<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M20.8 4.6c-1.6-1.6-4.1-1.6-5.7 0l-.5.5-.5-.5c-1.6-1.6-4.1-1.6-5.7 0-1.6 1.6-1.6 4.1 0 5.7l6.2 6.2 6.2-6.2c1.6-1.6 1.6-4.1 0-5.7z"/></svg>`;
       const replySvg = `<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`;
       const actions = `
         <div class="action-bar">
-          <button class="action-btn reply-btn" data-id="${item.id}" data-type="${item.replies ? 'comment' : 'reply'}" data-parent="${parentId || ''}" data-username="${item.username}">${replySvg}</button>
+          <button class="action-btn reply-btn" data-id="${item.id}" data-type="${item.replies ? 'comment' : 'reply'}" data-parent="${parentId || ''}" data-username="${item.username}">${replySvg} ${replyCount > 0 ? replyCount : ''}</button>
           <button class="action-btn like-btn" data-id="${item.id}" data-type="${item.replies ? 'comment' : 'reply'}" data-parent="${parentId || ''}">${likeSvg} ${likeCount}</button>
         </div>
       `;
@@ -1076,7 +1092,7 @@
         handleContentLike(post.id, id, type, parentId);
       };
     });
-    // 回复按钮（电脑端手机端都保留）
+    // 回复按钮
     modal.querySelectorAll('.reply-btn').forEach(btn => {
       btn.onclick = (e) => {
         e.stopPropagation();
@@ -1089,7 +1105,6 @@
           const input = modal.querySelector('#commentInputModal');
           if (input) {
             input.focus();
-            // 滚动到该评论
             const targetEl = btn.closest('.comment-item, .reply-item');
             if (targetEl) {
               setTimeout(() => {
