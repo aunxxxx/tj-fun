@@ -2,8 +2,8 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<title>铁汁窝1.1</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>铁汁窝1.2</title>
 <style>
   * {
     margin: 0;
@@ -475,12 +475,16 @@
     line-height: 1.4;
     word-break: break-word;
   }
-  .reply-like-btn {
+  .action-buttons {
+    display: flex;
+    gap: 16px;
+    margin-top: 6px;
+  }
+  .like-btn, .reply-btn {
     background: none;
     border: none;
     color: #888;
     font-size: 12px;
-    margin-top: 4px;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -493,37 +497,17 @@
     margin-top: 8px;
   }
 
-  /* 电脑端回复输入区 */
+  /* 电脑端回复预览（紧贴输入框上方） */
   .pc-reply-preview {
     padding: 8px 12px;
     background: #f8f9fa;
     border-radius: 20px;
-    margin-bottom: 8px;
+    margin: 0 20px 8px 20px;
     font-size: 13px;
     color: #555;
   }
-  .inline-reply-input {
-    display: flex;
-    gap: 8px;
-    margin: 8px 0 8px 48px;
-  }
-  .inline-reply-input input {
-    flex: 1;
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    font-size: 13px;
-  }
-  .inline-reply-input button {
-    background: #ff7b5c;
-    border: none;
-    padding: 0 12px;
-    border-radius: 20px;
-    color: white;
-    cursor: pointer;
-  }
 
-  /* 独立评论输入框（手机端透明独立，电脑端独立） */
+  /* 独立评论输入框（透明独立，无外框） */
   .comment-input-fixed {
     display: flex;
     gap: 12px;
@@ -711,7 +695,7 @@
     }
   }
 
-  // 点赞逻辑：次数累加，列表去重（只记录一次，但附带 count）
+  // 点赞逻辑（帖子）
   function handleLike(postId, btn, e) {
     const post = posts.find(p => p.id === postId);
     if (post) {
@@ -735,12 +719,31 @@
     }
   }
 
-  // 对评论/回复点赞（简单增加次数，不维护列表）
-  function handleContentLike(item, type, postId, containerId) {
-    item.likes = (item.likes || 0) + 1;
-    savePosts();
-    // 重新渲染当前弹窗
-    renderCommentsModal(postId);
+  // 对评论/回复点赞
+  function handleContentLike(postId, itemId, type, parentId) {
+    const post = posts.find(p => p.id === postId);
+    if (!post) return;
+    const findItem = (items, id) => {
+      for (let item of items) {
+        if (item.id === id) return item;
+        if (item.replies) {
+          const found = findItem(item.replies, id);
+          if (found) return found;
+        }
+      }
+      return null;
+    };
+    let target;
+    if (type === 'comment') {
+      target = post.comments.find(c => c.id === itemId);
+    } else {
+      target = findItem(post.comments, itemId);
+    }
+    if (target) {
+      target.likes = (target.likes || 0) + 1;
+      savePosts();
+      renderCommentsModal(postId);
+    }
   }
 
   // ========== 弹窗管理 ==========
@@ -808,14 +811,13 @@
         let newHeight = startHeight + deltaY;
         newHeight = Math.min(MAX_H, Math.max(0, newHeight));
         drawer.style.height = `${newHeight}px`;
-        // 模糊度：从80到85模糊增强，从80到0模糊减弱
         let blurValue;
         if (newHeight >= INIT_H) {
           const t = (newHeight - INIT_H) / (MAX_H - INIT_H);
           blurValue = 2 + t * 6;
         } else {
           const t = (INIT_H - newHeight) / INIT_H;
-          blurValue = 2 - t * 1.5;
+          blurValue = 2 - t * 2;
         }
         wrapper.style.transform = `scale(0.94)`;
         wrapper.style.filter = `blur(${Math.max(0, blurValue)}px)`;
@@ -870,7 +872,7 @@
   }
 
   // ========== 回复逻辑 ==========
-  let activeReplyTarget = null; // { type: 'comment' or 'reply', id, parentId, postId, targetUsername }
+  let activeReplyTarget = null; // { postId, type, id, parentId, targetUsername }
 
   function setReplyTarget(postId, targetType, targetId, parentId, username) {
     activeReplyTarget = { postId, type: targetType, id: targetId, parentId, targetUsername: username };
@@ -901,7 +903,6 @@
       };
       post.comments.push(newComment);
     } else {
-      // 找到目标评论或回复
       const findItem = (items, id) => {
         for (let item of items) {
           if (item.id === id) return item;
@@ -952,21 +953,29 @@
     let modal = document.querySelector('.active-comments-modal');
     if (modal && modal.parentElement === activeMask) {
       const container = modal.querySelector('#commentListModal');
-      if (container) container.innerHTML = generateCommentsHtml(post, isMobile);
+      if (container) container.innerHTML = generateCommentsHtml(post);
       attachCommentEvents(modal, post, isMobile);
-      if (!isMobile && modal.querySelector('.pc-reply-preview')) {
+      // 更新预览文字
+      const previewDiv = modal.querySelector('.pc-reply-preview');
+      if (!isMobile && previewDiv) {
         if (activeReplyTarget) {
-          modal.querySelector('.pc-reply-preview').style.display = 'block';
-          modal.querySelector('.pc-reply-preview').innerHTML = `回复 @${activeReplyTarget.targetUsername}：`;
+          previewDiv.style.display = 'block';
+          previewDiv.innerHTML = `回复 @${activeReplyTarget.targetUsername}：`;
         } else {
-          modal.querySelector('.pc-reply-preview').style.display = 'none';
+          previewDiv.style.display = 'none';
         }
+      }
+      const input = modal.querySelector('#commentInputModal');
+      if (input && !isMobile && activeReplyTarget) {
+        input.placeholder = `回复 ${activeReplyTarget.targetUsername}...`;
+      } else if (input && !isMobile) {
+        input.placeholder = '写评论...';
       }
     } else {
       modal = document.createElement('div');
       modal.className = isMobile ? 'drawer-modal' : 'modal-card';
       modal.classList.add('active-comments-modal');
-      const replyPreviewHtml = !isMobile ? `<div class="pc-reply-preview" style="display:none; margin:0 20px;"></div>` : '';
+      const replyPreviewHtml = !isMobile ? `<div class="pc-reply-preview" style="display:none;"></div>` : '';
       modal.innerHTML = `
         ${isMobile ? '<div class="drag-bar"></div>' : '<div class="modal-header"><h3>💬 评论 · 0</h3><button class="close-modal">×</button></div>'}
         ${replyPreviewHtml}
@@ -974,7 +983,7 @@
           <div id="commentListModal" style="margin-bottom:12px;"></div>
         </div>
         <div class="comment-input-fixed">
-          <input type="text" id="commentInputModal" placeholder="写评论... ${!isMobile && activeReplyTarget ? `回复 ${activeReplyTarget.targetUsername}` : ''}">
+          <input type="text" id="commentInputModal" placeholder="写评论...">
           <button id="sendCommentModal">发送</button>
         </div>
       `;
@@ -982,26 +991,30 @@
         modal.querySelector('.modal-header h3').innerText = `💬 评论 · ${post.comments.length}`;
       }
       const container = modal.querySelector('#commentListModal');
-      container.innerHTML = generateCommentsHtml(post, isMobile);
+      container.innerHTML = generateCommentsHtml(post);
       openModal(modal, isMobile);
       attachCommentEvents(modal, post, isMobile);
-      if (!isMobile && modal.querySelector('.pc-reply-preview')) {
+      if (!isMobile) {
+        const previewDiv = modal.querySelector('.pc-reply-preview');
         if (activeReplyTarget) {
-          modal.querySelector('.pc-reply-preview').style.display = 'block';
-          modal.querySelector('.pc-reply-preview').innerHTML = `回复 @${activeReplyTarget.targetUsername}：`;
+          previewDiv.style.display = 'block';
+          previewDiv.innerHTML = `回复 @${activeReplyTarget.targetUsername}：`;
         } else {
-          modal.querySelector('.pc-reply-preview').style.display = 'none';
+          previewDiv.style.display = 'none';
+        }
+        const input = modal.querySelector('#commentInputModal');
+        if (activeReplyTarget) {
+          input.placeholder = `回复 ${activeReplyTarget.targetUsername}...`;
         }
       }
     }
   }
 
-  function generateCommentsHtml(post, isMobile) {
+  function generateCommentsHtml(post) {
     function renderItem(item, level = 0, parentId = null) {
       const likeCount = item.likes || 0;
-      const isAuthor = item.username === post.author;
-      const likeBtnHtml = `<button class="reply-like-btn" data-id="${item.id}" data-type="${item.replies ? 'comment' : 'reply'}" data-parent="${parentId || ''}">❤️ ${likeCount}</button>`;
-      const replyBtnHtml = !isMobile ? `<button class="reply-action-btn" data-id="${item.id}" data-type="${item.replies ? 'comment' : 'reply'}" data-parent="${parentId || ''}" data-username="${item.username}">💬 回复</button>` : '';
+      const likeBtn = `<button class="like-btn" data-id="${item.id}" data-type="${item.replies ? 'comment' : 'reply'}" data-parent="${parentId || ''}">❤️ ${likeCount}</button>`;
+      const replyBtn = `<button class="reply-btn" data-id="${item.id}" data-type="${item.replies ? 'comment' : 'reply'}" data-parent="${parentId || ''}" data-username="${item.username}">💬 回复</button>`;
       const nestedHtml = (item.replies && item.replies.length) ? `
         <div class="nested-replies">
           ${item.replies.map(r => renderItem(r, level + 1, item.id)).join('')}
@@ -1014,9 +1027,9 @@
             <div class="${item.replies ? 'comment-right' : 'reply-right'}">
               <div><span class="${item.replies ? 'comment-user' : 'reply-user'}" data-username="${escapeHtml(item.username)}">${escapeHtml(item.username)}</span><span class="${item.replies ? 'comment-time' : 'reply-time'}">${formatRelativeTime(item.createdAt)}</span></div>
               <div class="${item.replies ? 'comment-text' : 'reply-text'}">${escapeHtml(item.text)}</div>
-              <div style="display:flex; gap:12px; margin-top:4px;">
-                ${likeBtnHtml}
-                ${replyBtnHtml}
+              <div class="action-buttons">
+                ${likeBtn}
+                ${replyBtn}
               </div>
             </div>
           </div>
@@ -1030,38 +1043,18 @@
 
   function attachCommentEvents(modal, post, isMobile) {
     // 点赞评论/回复
-    modal.querySelectorAll('.reply-like-btn').forEach(btn => {
+    modal.querySelectorAll('.like-btn').forEach(btn => {
       btn.onclick = (e) => {
         e.stopPropagation();
         const id = parseInt(btn.dataset.id);
         const type = btn.dataset.type;
         const parentId = btn.dataset.parent ? parseInt(btn.dataset.parent) : null;
-        const findItem = (items, targetId) => {
-          for (let item of items) {
-            if (item.id === targetId) return item;
-            if (item.replies) {
-              const found = findItem(item.replies, targetId);
-              if (found) return found;
-            }
-          }
-          return null;
-        };
-        let target;
-        if (type === 'comment') {
-          target = post.comments.find(c => c.id === id);
-        } else {
-          target = findItem(post.comments, id);
-        }
-        if (target) {
-          target.likes = (target.likes || 0) + 1;
-          savePosts();
-          renderCommentsModal(post.id);
-        }
+        handleContentLike(post.id, id, type, parentId);
       };
     });
-    // 电脑端回复按钮
+    // 回复按钮（电脑端显示，手机端无独立回复按钮）
     if (!isMobile) {
-      modal.querySelectorAll('.reply-action-btn').forEach(btn => {
+      modal.querySelectorAll('.reply-btn').forEach(btn => {
         btn.onclick = (e) => {
           e.stopPropagation();
           const id = parseInt(btn.dataset.id);
@@ -1071,102 +1064,72 @@
           setReplyTarget(post.id, type, id, parentId, username);
         };
       });
-      // 评论输入框预览和发送
-      const input = modal.querySelector('#commentInputModal');
-      const sendBtn = modal.querySelector('#sendCommentModal');
-      if (sendBtn) {
-        sendBtn.onclick = () => {
-          if (activeReplyTarget) {
-            submitReply(post.id, input, false);
-            input.value = '';
-          } else {
-            let val = input.value.trim();
-            if (!val) return;
-            const newComment = {
-              id: Date.now(),
-              username: currentUser.username,
-              avatar: currentUser.avatar,
-              text: val,
-              createdAt: Date.now(),
-              likes: 0,
-              likedBy: [],
-              replies: []
-            };
-            post.comments.push(newComment);
-            savePosts();
-            input.value = '';
-            renderCommentsModal(post.id);
-          }
-        };
-        input.addEventListener('keypress', (e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
+    }
+    // 发送逻辑
+    const input = modal.querySelector('#commentInputModal');
+    const sendBtn = modal.querySelector('#sendCommentModal');
+    if (sendBtn) {
+      sendBtn.onclick = () => {
+        if (activeReplyTarget) {
+          submitReply(post.id, input, isMobile);
+          input.value = '';
+        } else {
+          let val = input.value.trim();
+          if (!val) return;
+          const newComment = {
+            id: Date.now(),
+            username: currentUser.username,
+            avatar: currentUser.avatar,
+            text: val,
+            createdAt: Date.now(),
+            likes: 0,
+            likedBy: [],
+            replies: []
+          };
+          post.comments.push(newComment);
+          savePosts();
+          input.value = '';
+          renderCommentsModal(post.id);
+        }
+      };
+      input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (!isMobile) {
             sendBtn.click();
+          } else {
+            // 手机端回车收起键盘
+            input.blur();
           }
-        });
-      }
-    } else {
-      // 手机端：点击评论内容弹出键盘并自动聚焦，无独立回复按钮
+        }
+      });
+    }
+    // 手机端：点击评论内容（文本区域）弹出键盘并聚焦，滚动到该评论
+    if (isMobile) {
       modal.querySelectorAll('.comment-text, .reply-text').forEach(el => {
         el.onclick = (e) => {
           e.stopPropagation();
-          const commentItem = el.closest('.comment-item, .reply-item');
+          const commentDiv = el.closest('.comment-item, .reply-item');
           let targetId, targetType, parentId, targetUsername;
-          // 向上查找获取数据
-          const likeBtn = commentItem.querySelector('.reply-like-btn');
+          const likeBtn = commentDiv.querySelector('.like-btn');
           if (likeBtn) {
             targetId = parseInt(likeBtn.dataset.id);
             targetType = likeBtn.dataset.type;
             parentId = likeBtn.dataset.parent ? parseInt(likeBtn.dataset.parent) : null;
           }
-          const userSpan = commentItem.querySelector('.comment-user, .reply-user');
+          const userSpan = commentDiv.querySelector('.comment-user, .reply-user');
           if (userSpan) targetUsername = userSpan.dataset.username;
           if (targetId) {
             setReplyTarget(post.id, targetType, targetId, parentId, targetUsername);
           }
-          const input = modal.querySelector('#commentInputModal');
-          if (input) {
-            input.focus();
-            // 简单上推页面效果：无需额外处理，键盘自动上推
-          }
+          input.focus();
+          // 滚动到该评论位置（轻微延迟让键盘弹起）
+          setTimeout(() => {
+            commentDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 100);
         };
       });
-      // 手机端发送
-      const input = modal.querySelector('#commentInputModal');
-      const sendBtn = modal.querySelector('#sendCommentModal');
-      if (sendBtn) {
-        sendBtn.onclick = () => {
-          if (activeReplyTarget) {
-            submitReply(post.id, input, true);
-            input.value = '';
-          } else {
-            let val = input.value.trim();
-            if (!val) return;
-            const newComment = {
-              id: Date.now(),
-              username: currentUser.username,
-              avatar: currentUser.avatar,
-              text: val,
-              createdAt: Date.now(),
-              likes: 0,
-              likedBy: [],
-              replies: []
-            };
-            post.comments.push(newComment);
-            savePosts();
-            input.value = '';
-            renderCommentsModal(post.id);
-          }
-        };
-        input.addEventListener('keypress', (e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            // 手机端回车只收起键盘，不发送（根据需求）
-            input.blur();
-          }
-        });
-      }
-      // 点击空白处收起键盘
+      // 点击空白区域收起键盘
       modal.querySelector('.drawer-content').addEventListener('touchstart', (e) => {
         if (document.activeElement === input) input.blur();
       });
