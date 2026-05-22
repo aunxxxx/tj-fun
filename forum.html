@@ -361,12 +361,12 @@
     .modal-mask.show .drawer-modal {
       transform: translateY(0);
     }
-    /* 拖拽条：更粗更明显，触摸区域扩大 */
+    /* 拖拽条：明显可见，橙色 + 阴影 */
     .drag-bar {
       width: 60px;
       height: 6px;
-      background: #aaa;
-      border-radius: 10px;
+      background: #ff7b5c;
+      border-radius: 20px;
       margin: 14px auto;
       cursor: grab;
       touch-action: pan-y;
@@ -376,6 +376,7 @@
       margin-top: 0;
       margin-bottom: 0;
       background-clip: content-box;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
     .drawer-content {
       flex: 1;
@@ -413,7 +414,7 @@
     .drawer-modal { display: none; }
   }
 
-  /* 评论列表样式 */
+  /* 评论列表样式 - 干净无边框 */
   .comment-item {
     padding: 12px 0;
     border-bottom: 1px solid #f0f2f5;
@@ -458,31 +459,35 @@
     margin-top: 8px;
     cursor: pointer;
   }
-  /* 评论输入区 - 加阴影、更高、更大 */
+  /* 评论输入区 - 毛玻璃效果，无边框，独立悬浮 */
   .comment-input-fixed {
     display: flex;
     gap: 12px;
     padding: 16px 20px 24px 20px;
-    background: white;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     position: sticky;
     bottom: 0;
     z-index: 10;
-    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+    border: none;
+    border-radius: 32px 32px 0 0;
   }
   .comment-input-fixed input {
     flex: 1;
     padding: 14px 18px;
-    border: 1px solid #e2e8f0;
+    border: none;
     border-radius: 40px;
     font-size: 15px;
     outline: none;
-    background: #f8fafc;
+    background: rgba(248, 250, 252, 0.9);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     transition: 0.1s;
   }
   .comment-input-fixed input:focus {
-    border-color: #ff7b5c;
     background: white;
-    box-shadow: 0 2px 8px rgba(255,123,92,0.2);
+    box-shadow: 0 2px 12px rgba(255, 123, 92, 0.15);
   }
   .comment-input-fixed button {
     background: #ff7b5c;
@@ -493,7 +498,7 @@
     font-weight: 600;
     cursor: pointer;
     font-size: 15px;
-    box-shadow: 0 2px 6px rgba(255,123,92,0.3);
+    box-shadow: 0 2px 8px rgba(255,123,92,0.3);
   }
   .comment-input-fixed button:active { transform: scale(0.96); }
 </style>
@@ -638,12 +643,10 @@
     if (!activeMask) return;
     const wrapper = document.getElementById('pageWrapper');
     const drawer = activeDrawer;
-    // 添加关闭动画
     if (drawer) {
       drawer.style.transition = 'transform 0.2s ease-out';
       drawer.style.transform = 'translateY(100%)';
     }
-    // 背景恢复
     wrapper.style.transform = '';
     wrapper.style.filter = '';
     wrapper.classList.remove('modal-open');
@@ -657,7 +660,7 @@
       document.body.style.overflow = '';
       document.body.style.position = '';
       document.body.style.top = '';
-    }, 180); // 等待动画完成
+    }, 180);
   }
 
   function openModal(modalElement, isMobile) {
@@ -705,12 +708,11 @@
       const onTouchMove = (e) => {
         if (!dragging) return;
         const currentY = e.touches[0].clientY;
-        const deltaY = startY - currentY; // 向上为正，向下为负
+        const deltaY = startY - currentY;
         let newHeight = startHeight + deltaY;
         const absoluteMin = MIN_H - 60;
         newHeight = Math.min(MAX_H, Math.max(absoluteMin, newHeight));
         drawer.style.height = `${newHeight}px`;
-        // 更新背景
         let t = 0;
         if (newHeight >= MIN_H) {
           t = (newHeight - MIN_H) / (MAX_H - MIN_H);
@@ -727,7 +729,6 @@
         if (!dragging) return;
         dragging = false;
         const currentH = drawer.offsetHeight;
-        // 阈值设为 20px，更容易关闭
         if (currentH < MIN_H - 20) {
           closeModal();
         } else if (currentH < MIN_H) {
@@ -977,4 +978,3 @@
 </script>
 </body>
 </html>
-```
