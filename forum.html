@@ -24,10 +24,17 @@
     transition: transform 0.3s ease, filter 0.3s ease, border-radius 0.3s ease;
   }
 
+  /* 手机端弹窗时：页面整体缩小 + 模糊 + 圆角 */
   .page-wrapper.modal-open {
     transform: scale(0.92);
     filter: blur(3px);
     border-radius: 28px;
+    overflow: hidden;
+  }
+
+  /* 导航栏在缩放时也带圆角 */
+  .page-wrapper.modal-open header {
+    border-radius: 28px 28px 0 0;
   }
 
   .forum-container {
@@ -53,6 +60,7 @@
     margin: 0 auto;
   }
 
+  /* 热门词条 */
   .hot-section {
     background: #fff6ea;
     border-radius: 28px;
@@ -163,7 +171,7 @@
     margin-left: 4px;
   }
 
-  /* 弹窗系统 */
+  /* ========== 弹窗遮罩 ========== */
   .modal-mask {
     position: fixed;
     top: 0;
@@ -182,6 +190,7 @@
     opacity: 1;
   }
 
+  /* 手机端：底部抽屉 */
   @media (max-width: 768px) {
     .modal-mask {
       align-items: flex-end;
@@ -194,10 +203,13 @@
       border-radius: 32px 32px 0 0;
       width: 100%;
       max-width: 700px;
-      max-height: 85vh;
       overflow-y: auto;
       transform: translateY(100%);
       transition: transform 0.3s ease;
+      height: 60vh; /* 🔽 初始高度（中间偏上） */
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
     }
     .modal-mask.show .drawer-modal {
       transform: translateY(0);
@@ -207,6 +219,7 @@
     }
   }
 
+  /* 电脑端：居中卡片 */
   @media (min-width: 769px) {
     .modal-mask {
       align-items: center;
@@ -222,6 +235,7 @@
       width: 90%;
       max-height: 70vh;
       overflow-y: auto;
+      position: relative;
     }
     .drawer-modal {
       display: none;
@@ -238,7 +252,9 @@
   }
 
   .drawer-content {
+    flex: 1;
     padding: 0 20px 20px;
+    overflow-y: auto;
   }
 
   .comment-input-fixed {
@@ -274,6 +290,7 @@
     float: right;
   }
 
+  /* 爱心动画 */
   .heart-animation {
     position: absolute;
     font-size: 20px;
@@ -307,6 +324,7 @@
 </div>
 
 <script>
+  // 数据
   let currentUser = { username: "测试用户", avatar: "images/people.jpg" };
   let posts = [
     { id: 1, author: "李四", content: "第一位认证用户报到！大家好啊！", likes: 10, likedBy: [], comments: [] },
@@ -354,65 +372,56 @@
     const closeBtn = modalEl.querySelector('.close-modal');
     if (closeBtn) closeBtn.onclick = close;
 
+    // 手机端抽屉滑动逻辑（向上拉高，向下关闭）
     if (isMobile && modalEl.classList.contains('drawer-modal')) {
-      let startY = 0;
-      let startTransform = 0;
-      let isDragging = false;
+      let startY = 0, startHeight = 0;
       const drawer = modalEl;
       drawer.style.transition = 'transform 0.2s ease';
 
-      const onTouchStart = (e) => {
+      drawer.addEventListener('touchstart', (e) => {
         startY = e.touches[0].clientY;
-        startTransform = parseFloat(drawer.style.transform.replace('translateY(', '')) || 0;
+        startHeight = drawer.offsetHeight;
         drawer.style.transition = '';
-        isDragging = true;
-      };
+      });
 
-      const onTouchMove = (e) => {
-        if (!isDragging) return;
-        const delta = e.touches[0].clientY - startY;
-        let newY = startTransform + delta;
-        if (newY < 0) newY = 0;
-        if (newY > window.innerHeight * 0.6) {
+      drawer.addEventListener('touchmove', (e) => {
+        const delta = startY - e.touches[0].clientY; // 向上为正
+        let newHeight = startHeight + delta;
+        if (newHeight < window.innerHeight * 0.3) newHeight = window.innerHeight * 0.3;
+        if (newHeight > window.innerHeight * 0.9) newHeight = window.innerHeight * 0.9;
+        drawer.style.height = `${newHeight}px`;
+        drawer.style.transform = 'translateY(0)';
+      });
+
+      drawer.addEventListener('touchend', () => {
+        const currentHeight = drawer.offsetHeight;
+        if (currentHeight < window.innerHeight * 0.4) {
           close();
-          return;
+        } else if (currentHeight > window.innerHeight * 0.7) {
+          drawer.style.height = `${window.innerHeight * 0.85}px`;
+        } else {
+          drawer.style.height = `${window.innerHeight * 0.6}px`;
         }
-        drawer.style.transform = `translateY(${newY}px)`;
-      };
-
-      const onTouchEnd = () => {
-        if (!isDragging) return;
-        const currentY = parseFloat(drawer.style.transform.replace('translateY(', '')) || 0;
-        if (currentY > window.innerHeight * 0.2) close();
-        else drawer.style.transform = 'translateY(0)';
-        drawer.style.transition = 'transform 0.3s ease';
-        isDragging = false;
-      };
-
-      drawer.removeEventListener('touchstart', onTouchStart);
-      drawer.removeEventListener('touchmove', onTouchMove);
-      drawer.removeEventListener('touchend', onTouchEnd);
-      drawer.addEventListener('touchstart', onTouchStart);
-      drawer.addEventListener('touchmove', onTouchMove);
-      drawer.addEventListener('touchend', onTouchEnd);
+        drawer.style.transition = 'height 0.2s ease, transform 0.2s ease';
+      });
     }
   }
 
   function showLikesModal(postId) {
     const post = posts.find(p => p.id === postId);
     if (!post) return;
-    const listHtml = post.likedBy.map(u => `<div>❤️ ${escapeHtml(u.username || u)}</div>`).join('') || '<div>暂无点赞</div>';
+    const listHtml = post.likedBy.map(u => `<div class="modal-user-item">❤️ ${escapeHtml(u.username || u)}</div>`).join('') || '<div>暂无点赞</div>';
     const isMobile = window.innerWidth <= 768;
 
     if (isMobile) {
       const modal = document.createElement('div');
       modal.className = 'drawer-modal';
-      modal.innerHTML = `<div class="drag-bar"></div><div class="drawer-content"><div style="font-weight:bold;margin-bottom:16px;">❤️ 点赞列表</div>${listHtml}</div>`;
+      modal.innerHTML = `<div class="drag-bar"></div><div class="drawer-content"><div style="font-weight:bold;margin-bottom:16px;">❤️ 点赞列表</div><div>${listHtml}</div></div>`;
       openModal(modal, true);
     } else {
       const modal = document.createElement('div');
       modal.className = 'modal-card';
-      modal.innerHTML = `<div class="close-modal">×</div><div style="font-weight:bold;margin-bottom:16px;">❤️ 点赞列表</div>${listHtml}`;
+      modal.innerHTML = `<div class="close-modal">×</div><div style="font-weight:bold;margin-bottom:16px;">❤️ 点赞列表</div><div>${listHtml}</div>`;
       openModal(modal, false);
     }
   }
