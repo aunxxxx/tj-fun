@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>铁汁窝 - 时代骏风</title>
 <style>
-  /* ========== 全局样式 ========== */
   * {
     margin: 0;
     padding: 0;
@@ -18,12 +17,17 @@
     overflow-x: hidden;
   }
 
-  /* 页面包裹层（用于缩放 + 模糊） */
+  /* 页面包裹层（缩放 + 模糊 + 圆角） */
   .page-wrapper {
     background: #f5f7fb;
     min-height: 100vh;
-    transition: transform 0.1s ease, filter 0.1s ease; /* 快速响应滑动 */
+    transition: transform 0.1s linear, filter 0.1s linear;
     will-change: transform, filter;
+  }
+
+  /* 弹窗打开时的缩放样式（初始值） */
+  .page-wrapper.modal-open {
+    transition: transform 0.2s ease, filter 0.2s ease;
   }
 
   .forum-container {
@@ -32,7 +36,7 @@
     padding: 20px 16px 60px;
   }
 
-  /* 导航栏样式（在 page-wrapper 内部，会一起缩放） */
+  /* 导航栏 */
   header {
     background: white;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -79,7 +83,6 @@
     cursor: pointer;
     display: flex;
     justify-content: space-between;
-    align-items: center;
   }
 
   .posts-list {
@@ -161,7 +164,7 @@
     margin-left: 4px;
   }
 
-  /* ========== 弹窗遮罩 ========== */
+  /* ========== 弹窗系统 ========== */
   .modal-mask {
     position: fixed;
     top: 0;
@@ -171,12 +174,10 @@
     z-index: 3000;
     visibility: hidden;
     display: flex;
-    pointer-events: none; /* 让遮罩不拦截点击，所有关闭只靠下滑 */
   }
 
   .modal-mask.show {
     visibility: visible;
-    pointer-events: none; /* 依然不拦截，保证只有抽屉可交互 */
   }
 
   /* 手机端：底部抽屉 */
@@ -185,6 +186,7 @@
       align-items: flex-end;
       justify-content: center;
       background: transparent;
+      pointer-events: none;
     }
     .drawer-modal {
       background: #1e1e2a;
@@ -192,25 +194,66 @@
       border-radius: 32px 32px 0 0;
       width: 100%;
       max-width: 700px;
-      overflow-y: auto;
-      transform: translateY(100%);
-      transition: transform 0.3s ease, height 0.2s ease;
-      height: 70vh; /* 🔽 初始高度（更高，减少缩放范围） */
-      min-height: 350px;
       display: flex;
       flex-direction: column;
-      pointer-events: auto; /* 抽屉本身可交互 */
+      height: 70vh;              /* 初始高度 */
+      min-height: 300px;
+      transform: translateY(100%);
+      transition: transform 0.3s ease, height 0.05s linear;
+      pointer-events: auto;
       box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
     }
     .modal-mask.show .drawer-modal {
       transform: translateY(0);
     }
+    .drawer-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 20px 20px;
+    }
+    /* 评论输入框固定在底部 */
+    .comment-input-fixed {
+      display: flex;
+      gap: 8px;
+      padding: 12px 16px;
+      background: #2a2a36;
+      border-radius: 60px;
+      margin: 12px 16px 20px 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      flex-shrink: 0;
+    }
+    .comment-input-fixed input {
+      flex: 1;
+      padding: 10px 0;
+      border: none;
+      background: transparent;
+      color: white;
+      font-size: 15px;
+      outline: none;
+    }
+    .comment-input-fixed button {
+      padding: 8px 20px;
+      border-radius: 40px;
+      border: none;
+      background: #667eea;
+      color: white;
+      cursor: pointer;
+    }
     .modal-card {
       display: none;
     }
+    .drag-bar {
+      width: 50px;
+      height: 5px;
+      background: #aaa;
+      border-radius: 10px;
+      margin: 14px auto;
+      cursor: grab;
+      flex-shrink: 0;
+    }
   }
 
-  /* 电脑端：居中卡片（保留原有，但不需要改动） */
+  /* 电脑端：居中卡片 */
   @media (min-width: 769px) {
     .modal-mask {
       align-items: center;
@@ -233,66 +276,9 @@
     .drawer-modal {
       display: none;
     }
-  }
-
-  .drag-bar {
-    width: 50px;
-    height: 5px;
-    background: #aaa;
-    border-radius: 10px;
-    margin: 14px auto;
-    cursor: grab;
-  }
-
-  .drawer-content {
-    flex: 1;
-    padding: 0 20px 20px;
-    overflow-y: auto;
-  }
-
-  /* 🔽 评论输入框：大圆角 + 阴影 + 底部留白，固定在底部 */
-  .comment-input-fixed {
-    display: flex;
-    gap: 8px;
-    margin: 16px 16px 20px 16px;  /* 底部留白 20px */
-    padding: 6px 6px 6px 18px;
-    background: #2a2a36;
-    border-radius: 60px;          /* 大圆角 */
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    backdrop-filter: blur(4px);
-    position: sticky;
-    bottom: 0;
-    z-index: 10;
-  }
-
-  .comment-input-fixed input {
-    flex: 1;
-    padding: 10px 0;
-    border: none;
-    outline: none;
-    background: transparent;
-    color: white;
-    font-size: 15px;
-  }
-
-  .comment-input-fixed button {
-    padding: 8px 20px;
-    border-radius: 40px;
-    border: none;
-    background: #667eea;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-  }
-
-  .close-modal {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-    float: right;
-    display: none; /* 完全隐藏关闭按钮，仅靠下滑关闭 */
+    .drag-bar {
+      display: none;  /* 电脑端隐藏横线 */
+    }
   }
 
   /* 爱心动画 */
@@ -353,25 +339,27 @@
 
   let activeMask = null;
 
-  // 背景缩放/模糊跟随弹窗高度变化
-  function updateBackgroundScale(modalEl, isMobile) {
-    if (!isMobile) return;
-    const drawer = modalEl;
+  // 更新背景缩放 + 圆角
+  function updateBackgroundScale(drawer) {
     const wrapper = document.getElementById('pageWrapper');
     const currentHeight = drawer.offsetHeight;
-    const maxHeight = window.innerHeight * 0.85;   // 最大高度
-    const minHeight = window.innerHeight * 0.35;   // 最小高度（关闭阈值）
-    const startHeight = window.innerHeight * 0.7;  // 初始高度
-
-    // 计算比例：高度越高，缩放越小、模糊越强
+    const minHeight = window.innerHeight * 0.4;   // 关闭阈值
+    const startHeight = window.innerHeight * 0.7; // 初始高度
     let t = (currentHeight - minHeight) / (startHeight - minHeight);
-    t = Math.min(1, Math.max(0, t)); // 限制在0~1之间
-    // t=0 表示即将关闭（高度最小），页面应恢复正常 (scale=1, blur=0)
-    // t=1 表示初始高度，页面应缩放至0.92，模糊3px
-    const scale = 1 - t * 0.08;     // 1 -> 0.92
-    const blur = t * 3;             // 0 -> 3px
+    t = Math.min(1, Math.max(0, t));
+    // t=0 页面正常 scale1 blur0；t=1 页面缩放0.92 blur3px
+    const scale = 1 - t * 0.08;
+    const blur = t * 3;
     wrapper.style.transform = `scale(${scale})`;
     wrapper.style.filter = `blur(${blur}px)`;
+    // 圆角效果：仅在缩放时添加圆角
+    if (scale < 0.99) {
+      wrapper.style.borderRadius = '24px';
+      wrapper.style.overflow = 'hidden';
+    } else {
+      wrapper.style.borderRadius = '';
+      wrapper.style.overflow = '';
+    }
   }
 
   function openModal(modalEl, isMobile) {
@@ -379,10 +367,12 @@
 
     const wrapper = document.getElementById('pageWrapper');
     if (isMobile) {
-      wrapper.classList.add('modal-open'); // 保留类以备其他样式
-      // 初始设置背景缩放
+      wrapper.classList.add('modal-open');
+      // 初始设置
       wrapper.style.transform = `scale(0.92)`;
       wrapper.style.filter = `blur(3px)`;
+      wrapper.style.borderRadius = '24px';
+      wrapper.style.overflow = 'hidden';
     }
 
     const mask = document.createElement('div');
@@ -392,26 +382,25 @@
     document.body.style.overflow = 'hidden';
     activeMask = mask;
 
-    // 关闭函数（只由下滑触发）
     const close = () => {
       if (isMobile) {
+        wrapper.classList.remove('modal-open');
         wrapper.style.transform = '';
         wrapper.style.filter = '';
-        wrapper.classList.remove('modal-open');
+        wrapper.style.borderRadius = '';
+        wrapper.style.overflow = '';
       }
       mask.remove();
       document.body.style.overflow = '';
       activeMask = null;
     };
 
-    // ❌ 移除所有其他关闭方式：无mask点击，无closeBtn点击
-    // 手机端抽屉下滑关闭逻辑 + 背景跟随
+    // 手机端抽屉滑动交互
     if (isMobile && modalEl.classList.contains('drawer-modal')) {
       let startY = 0;
       let startHeight = 0;
       let isDragging = false;
       const drawer = modalEl;
-      drawer.style.transition = 'height 0.1s linear';
 
       const onTouchStart = (e) => {
         startY = e.touches[0].clientY;
@@ -424,40 +413,38 @@
         if (!isDragging) return;
         const delta = startY - e.touches[0].clientY; // 向上为正
         let newHeight = startHeight + delta;
-        // 限制高度范围
-        const minHeight = window.innerHeight * 0.35;
         const maxHeight = window.innerHeight * 0.9;
-        if (newHeight < minHeight) newHeight = minHeight;
-        if (newHeight > maxHeight) newHeight = maxHeight;
+        const minHeight = window.innerHeight * 0.35;
+        newHeight = Math.min(maxHeight, Math.max(minHeight, newHeight));
         drawer.style.height = `${newHeight}px`;
         drawer.style.transform = 'translateY(0)';
-        // 实时更新背景缩放
-        updateBackgroundScale(drawer, true);
+        updateBackgroundScale(drawer);
       };
 
       const onTouchEnd = () => {
         if (!isDragging) return;
         isDragging = false;
         const currentHeight = drawer.offsetHeight;
-        const minThreshold = window.innerHeight * 0.4; // 低于40vh则关闭
-        if (currentHeight < minThreshold) {
+        const closeThreshold = window.innerHeight * 0.4;
+        if (currentHeight < closeThreshold) {
           close();
         } else {
-          // 回弹到初始高度70vh
-          drawer.style.height = `${window.innerHeight * 0.7}px`;
-          drawer.style.transition = 'height 0.3s ease';
-          // 恢复背景到初始缩放
-          updateBackgroundScale(drawer, true);
+          // 回弹到初始高度 70vh
+          const targetHeight = window.innerHeight * 0.7;
+          drawer.style.height = `${targetHeight}px`;
+          drawer.style.transition = 'height 0.25s ease';
+          updateBackgroundScale(drawer);
+          setTimeout(() => { drawer.style.transition = ''; }, 250);
         }
-        drawer.style.transition = '';
       };
 
       drawer.addEventListener('touchstart', onTouchStart);
       drawer.addEventListener('touchmove', onTouchMove);
       drawer.addEventListener('touchend', onTouchEnd);
-      // 清理事件监听（可选，在close时移除）
+
+      // 清理事件（close时）
       const originalClose = close;
-      window.closeModal = () => {
+      window.customClose = () => {
         drawer.removeEventListener('touchstart', onTouchStart);
         drawer.removeEventListener('touchmove', onTouchMove);
         drawer.removeEventListener('touchend', onTouchEnd);
@@ -466,27 +453,25 @@
     }
   }
 
-  // 点赞弹窗
   function showLikesModal(postId) {
     const post = posts.find(p => p.id === postId);
     if (!post) return;
-    const listHtml = post.likedBy.map(u => `<div class="modal-user-item">❤️ ${escapeHtml(u.username || u)}</div>`).join('') || '<div>暂无点赞</div>';
+    const listHtml = post.likedBy.map(u => `<div>❤️ ${escapeHtml(u.username || u)}</div>`).join('') || '<div>暂无点赞</div>';
     const isMobile = window.innerWidth <= 768;
 
     if (isMobile) {
       const modal = document.createElement('div');
       modal.className = 'drawer-modal';
-      modal.innerHTML = `<div class="drag-bar"></div><div class="drawer-content"><div style="font-weight:bold;margin-bottom:16px;">❤️ 点赞列表</div><div>${listHtml}</div></div>`;
+      modal.innerHTML = `<div class="drag-bar"></div><div class="drawer-content"><div style="font-weight:bold;margin-bottom:16px;">❤️ 点赞列表</div>${listHtml}</div>`;
       openModal(modal, true);
     } else {
       const modal = document.createElement('div');
       modal.className = 'modal-card';
-      modal.innerHTML = `<div style="font-weight:bold;margin-bottom:16px;">❤️ 点赞列表</div><div>${listHtml}</div>`;
+      modal.innerHTML = `<div style="font-weight:bold;margin-bottom:16px;">❤️ 点赞列表</div>${listHtml}`;
       openModal(modal, false);
     }
   }
 
-  // 评论弹窗
   function showCommentsModal(postId) {
     const post = posts.find(p => p.id === postId);
     if (!post) return;
@@ -499,10 +484,10 @@
       <div class="drawer-content">
         <div style="font-weight:bold;margin-bottom:16px;">💬 评论列表</div>
         <div id="commentList"></div>
-        <div class="comment-input-fixed">
-          <input type="text" id="newCommentInput" placeholder="写评论...">
-          <button id="sendCommentBtn">发送</button>
-        </div>
+      </div>
+      <div class="comment-input-fixed">
+        <input type="text" id="newCommentInput" placeholder="写评论...">
+        <button id="sendCommentBtn">发送</button>
       </div>
     `;
     const listDiv = modal.querySelector('#commentList');
@@ -523,7 +508,6 @@
     openModal(modal, isMobile);
   }
 
-  // 点赞逻辑
   function handleLike(postId, btn, e) {
     const post = posts.find(p => p.id === postId);
     if (post) {
@@ -537,7 +521,6 @@
     }
   }
 
-  // 渲染帖子
   function renderPosts() {
     return posts.map(post => `
       <div class="post-card" data-id="${post.id}">
