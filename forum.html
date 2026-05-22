@@ -17,7 +17,6 @@
     overflow-x: hidden;
   }
 
-  /* 页面包裹层 */
   .page-wrapper {
     background: #f5f7fb;
     min-height: 100vh;
@@ -67,7 +66,7 @@
     color: #ff7b5c;
   }
 
-  /* 热门词条模块 */
+  /* 热门词条 */
   .hot-section {
     background: #fff6ea;
     border-radius: 28px;
@@ -323,7 +322,7 @@
     display: none;
   }
 
-  /* 弹窗底部抽屉 - 支持下滑关闭（基于 drawer 整体） */
+  /* 弹窗底部抽屉 - 下滑关闭（方向向下） */
   .modal-mask {
     position: fixed;
     top: 0;
@@ -404,7 +403,7 @@
     .drawer-modal { display: none; }
   }
 
-  /* 评论列表 + 优化输入框 */
+  /* 评论列表样式 */
   .comment-item {
     padding: 12px 0;
     border-bottom: 1px solid #f0f2f5;
@@ -617,7 +616,7 @@
     reader.readAsDataURL(file);
   }
 
-  // ========== 弹窗管理（下滑关闭 - 完全重写） ==========
+  // ========== 弹窗管理（下滑关闭 - 向下滑动） ==========
   let activeMask = null;
   let activeDrawer = null;
   function closeModal() {
@@ -659,72 +658,65 @@
       const drawer = modalElement;
       const drawerContent = drawer.querySelector('.drawer-content');
       let startY = 0;
-      let startHeight = 0;
+      let startTransformY = 0;
       let startScrollTop = 0;
       let dragging = false;
-      let isClosing = false;
+      let closeTriggered = false;
 
       const initHeight = window.innerHeight * 0.7;
       drawer.style.height = `${initHeight}px`;
       drawer.style.transform = 'translateY(0)';
 
       const onTouchStart = (e) => {
-        if (isClosing) return;
+        if (closeTriggered) return;
         startY = e.touches[0].clientY;
-        startHeight = drawer.offsetHeight;
         if (drawerContent) startScrollTop = drawerContent.scrollTop;
         dragging = true;
         drawer.style.transition = 'none';
-        // 不在这里 preventDefault，避免影响内部滚动
       };
 
       const onTouchMove = (e) => {
-        if (!dragging || isClosing) return;
-        const deltaY = startY - e.touches[0].clientY; // 向上为正，向下为负
-        let newHeight = startHeight - deltaY; // 向下拉（deltaY 负）时 newHeight 增加
-        const maxH = window.innerHeight * 0.85;
-        const minH = window.innerHeight * 0.32;
+        if (!dragging || closeTriggered) return;
+        const currentY = e.touches[0].clientY;
+        const deltaY = currentY - startY; // 向下滑动为正，向上为负
         
-        // 关键：如果内容滚动到顶部（scrollTop <= 0）且用户向下拉，才允许改变高度
+        // 只在内容滚动到顶部且向下滑动时，才移动 drawer
         const atTop = drawerContent && drawerContent.scrollTop <= 0;
-        if (atTop && deltaY < 0) {
-          // 向下拉
-          newHeight = Math.min(maxH, Math.max(minH, newHeight));
-          drawer.style.height = `${newHeight}px`;
-          // 更新背景缩放
-          const t = (newHeight - minH) / (maxH - minH);
-          wrapper.style.transform = `scale(${1 - t * 0.08})`;
-          wrapper.style.filter = `blur(${t * 2.5}px)`;
-          e.preventDefault(); // 阻止滚动
-        } else if (deltaY > 0 && startHeight < maxH) {
-          // 向上拉，只允许在未达到最大高度时调整
-          newHeight = Math.min(maxH, Math.max(minH, newHeight));
-          drawer.style.height = `${newHeight}px`;
-          const t = (newHeight - minH) / (maxH - minH);
-          wrapper.style.transform = `scale(${1 - t * 0.08})`;
-          wrapper.style.filter = `blur(${t * 2.5}px)`;
+        if (atTop && deltaY > 0) {
+          // 向下滑动，移动 drawer 的 transform
+          let translateY = Math.min(deltaY, 150); // 最大下移150px
+          drawer.style.transform = `translateY(${translateY}px)`;
+          // 背景逐渐恢复
+          const progress = Math.min(translateY / 120, 1);
+          wrapper.style.transform = `scale(${0.94 + progress * 0.06})`;
+          wrapper.style.filter = `blur(${2 - progress * 2}px)`;
+          e.preventDefault();
+        } else if (atTop && deltaY < 0) {
+          // 向上拉但已在顶部，忽略
           e.preventDefault();
         }
       };
 
       const onTouchEnd = () => {
-        if (!dragging || isClosing) return;
+        if (!dragging || closeTriggered) return;
         dragging = false;
-        const currentH = drawer.offsetHeight;
-        const threshold = window.innerHeight * 0.4;
-        if (currentH < threshold) {
-          isClosing = true;
+        const transformMatch = drawer.style.transform.match(/translateY\((\d+)px\)/);
+        const translateY = transformMatch ? parseInt(transformMatch[1]) : 0;
+        if (translateY > 80) {
+          // 下滑超过80px，关闭弹窗
+          closeTriggered = true;
           closeModal();
         } else {
-          let targetH = currentH > window.innerHeight * 0.8 ? window.innerHeight * 0.82 : window.innerHeight * 0.7;
-          drawer.style.transition = 'height 0.2s ease-out';
-          drawer.style.height = `${targetH}px`;
-          const t = (targetH - window.innerHeight*0.32) / (window.innerHeight*0.5);
-          wrapper.style.transform = `scale(${1 - t * 0.08})`;
-          wrapper.style.filter = `blur(${t * 2.5}px)`;
-          setTimeout(() => { if(drawer) drawer.style.transition = ''; }, 200);
+          // 回弹
+          drawer.style.transition = 'transform 0.2s ease-out';
+          drawer.style.transform = 'translateY(0)';
+          wrapper.style.transform = `scale(0.94)`;
+          wrapper.style.filter = `blur(2px)`;
+          setTimeout(() => {
+            if (drawer) drawer.style.transition = '';
+          }, 200);
         }
-        isClosing = false;
+        closeTriggered = false;
       };
 
       drawer.addEventListener('touchstart', onTouchStart, { passive: false });
