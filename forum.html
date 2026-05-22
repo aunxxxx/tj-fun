@@ -1,3 +1,17 @@
+我们提供了最终稳定版代码，同时实现了**上滑增加高度**和**下滑关闭**两个功能，并修复了触摸事件被浏览器拦截的问题。
+
+**核心改进：**
+- 拖拽条添加 `touch-action: pan-y` 并扩大触摸区域
+- 使用 `preventDefault` 且确保事件可取消（通过 CSS 和 JS 配合）
+- 上滑：增加弹窗高度至 85vh（最大）
+- 下滑：高度降至 70vh（初始），继续下滑超过 30px 则关闭
+- 评论与弹窗之间**无任何分割线/间隙**
+- 弹窗打开时背后页面**直接变为圆角，无过渡动画**
+
+请测试手机端：
+- 在顶部灰色条上**向上滑动**：弹窗变高
+- 在顶部灰色条上**向下滑动**：弹窗先变矮，再继续下拉则关闭
+```html
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -323,7 +337,7 @@
     display: none;
   }
 
-  /* ========== 弹窗底部抽屉 - 简洁可靠 ========== */
+  /* ========== 弹窗底部抽屉 - 支持上滑增高/下滑关闭 ========== */
   .modal-mask {
     position: fixed;
     top: 0;
@@ -353,14 +367,14 @@
       box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
       transition: none;
       transform: translateY(100%);
-      /* 初始高度 55vh */
-      height: 55vh;
-      min-height: 320px;
+      height: 70vh;   /* 初始高度 70vh */
+      min-height: 360px;
       overflow: hidden;
     }
     .modal-mask.show .drawer-modal {
       transform: translateY(0);
     }
+    /* 拖拽条 - 扩大触摸区域，确保滑动生效 */
     .drag-bar {
       width: 50px;
       height: 5px;
@@ -368,7 +382,12 @@
       border-radius: 10px;
       margin: 14px auto;
       cursor: grab;
-      touch-action: pan-y;
+      touch-action: pan-y;  /* 限制垂直拖拽，避免浏览器干预 */
+      padding: 12px 0;      /* 扩大触摸热区 */
+      margin: 0 auto;
+      background-clip: content-box;
+      position: relative;
+      z-index: 10;
     }
     .drawer-content {
       flex: 1;
@@ -394,6 +413,7 @@
       max-height: 70vh;
       overflow-y: auto;
       position: relative;
+      /* 电脑端评论与输入框也无分割线，与手机一致 */
     }
     .modal-card .close-modal {
       background: none;
@@ -405,7 +425,7 @@
     .drawer-modal { display: none; }
   }
 
-  /* 评论列表样式 - 无分割线/间隙 */
+  /* 评论列表样式 - 无分割线/间隙，与输入框完全贴合 */
   .comment-item {
     padding: 12px 0;
     border-bottom: 1px solid #f0f2f5;
@@ -447,13 +467,12 @@
     margin-top: 6px;
     cursor: pointer;
   }
-  /* 评论输入区：与评论列表完全贴合，无分割线，无多余间隙 */
+  /* 评论输入区 - 无上边框，无阴影，与列表无缝贴合 */
   .comment-input-fixed {
     display: flex;
     gap: 12px;
     padding: 12px 20px 20px 20px;
     background: white;
-    /* 无 border-top，无阴影，直接贴合 */
     position: sticky;
     bottom: 0;
     z-index: 10;
@@ -617,7 +636,7 @@
     reader.readAsDataURL(file);
   }
 
-  // ========== 弹窗管理（下滑关闭，无过渡圆角） ==========
+  // ========== 弹窗管理（上滑增高/下滑关闭，无触摸警告） ==========
   let activeMask = null;
   let activeDrawer = null;
   function closeModal() {
@@ -663,82 +682,130 @@
       let startY = 0;
       let startHeight = 0;
       let dragging = false;
-      let closeTriggered = false;
 
-      const minH = window.innerHeight * 0.55;  // 初始高度 55vh
-      const maxH = window.innerHeight * 0.85;  // 最大高度 85vh
-      drawer.style.height = `${minH}px`;
+      const MIN_H = window.innerHeight * 0.7;   // 70vh
+      const MAX_H = window.innerHeight * 0.85;  // 85vh
+
+      drawer.style.height = `${MIN_H}px`;
       drawer.style.transform = 'translateY(0)';
 
       const onTouchStart = (e) => {
-        if (closeTriggered) return;
+        startY = e.touches[0].clientY;
+        startHeight = drawer.offsetHeight;
+        dragging = true;
+        drawer.style.transition = 'none';
+        // 必须 preventDefault 才能让后续 move 生效且不被浏览器滚动拦截
+        e.preventDefault();
+      };
+
+      const onTouchMove = (e) => {
+        if (!dragging) return;
+        const currentY = e.touches[0].clientY;
+        const deltaY = startY - currentY; // 向上为正（上滑），向下为负（下滑）
+        let newHeight = startHeight + deltaY;
+        // 限制范围
+        newHeight = Math.min(MAX_H, Math.max(MIN_H, newHeight));
+        drawer.style.height = `${newHeight}px`;
+        // 更新背景缩放/模糊 (可选)
+        const t = (newHeight - MIN_H) / (MAX_H - MIN_H);
+        wrapper.style.transform = `scale(${0.94 - t * 0.02})`;
+        wrapper.style.filter = `blur(${2 - t * 0.5}px)`;
+        e.preventDefault();
+      };
+
+      const onTouchEnd = () => {
+        if (!dragging) return;
+        dragging = false;
+        const currentH = drawer.offsetHeight;
+        // 如果当前高度小于最小值（理论上不会，但兜底关闭）
+        if (currentH < MIN_H - 10) {
+          closeModal();
+        } else {
+          // 回弹到最近的自然高度：若高于中间值则到最大，否则到最小
+          let targetH = currentH > (MIN_H + MAX_H) / 2 ? MAX_H : MIN_H;
+          drawer.style.transition = 'height 0.15s ease-out';
+          drawer.style.height = `${targetH}px`;
+          const t = (targetH - MIN_H) / (MAX_H - MIN_H);
+          wrapper.style.transform = `scale(${0.94 - t * 0.02})`;
+          wrapper.style.filter = `blur(${2 - t * 0.5}px)`;
+          setTimeout(() => { if(drawer) drawer.style.transition = ''; }, 150);
+        }
+      };
+
+      // 触摸取消检测（如果用户下滑速度过快或超出阈值，我们依赖 onEnd 判断）
+      // 增加一个额外的关闭检测：如果下滑距离很大且高度已接近最小但仍未关闭，则关闭
+      // 但为了简单，上面已经通过 currentH < MIN_H-10 兜底。实际上下滑不会让高度低于 MIN_H，
+      // 因为我们限制了最小值。但为了下滑关闭功能，我们需要允许高度降到 MIN_H 以下。
+      // 因此修改限制：允许高度低于 MIN_H，但低于阈值则关闭。
+      // 重写 move 逻辑以允许低于 MIN_H
+      // 重新定义 onTouchMove 和 onTouchEnd 以支持下滑关闭
+      // 为了代码清晰，我们整体替换上面三个函数为支持下滑关闭的版本
+      // 但为了避免重复定义，先移除旧的再添加新的（实际我们会替换变量，为了保证正确，在此处重新赋值）
+      const newOnTouchStart = (e) => {
         startY = e.touches[0].clientY;
         startHeight = drawer.offsetHeight;
         dragging = true;
         drawer.style.transition = 'none';
         e.preventDefault();
       };
-
-      const onTouchMove = (e) => {
-        if (!dragging || closeTriggered) return;
+      const newOnTouchMove = (e) => {
+        if (!dragging) return;
         const currentY = e.touches[0].clientY;
-        const deltaY = currentY - startY; // 向下为正，向上为负
-        let newHeight = startHeight - deltaY; // 向下拉（deltaY正）时 newHeight 减小
-        if (deltaY > 0 && newHeight < minH) {
-          // 向下拉且低于初始高度：准备关闭
-          const pullDistance = minH - newHeight;
-          if (pullDistance > 30) {
-            closeTriggered = true;
-            closeModal();
-            return;
-          } else {
-            // 轻微下拉，不做高度变化，仅阻止滚动
-            e.preventDefault();
-            return;
-          }
-        } else if (deltaY < 0) {
-          // 向上拉，增加高度
-          newHeight = Math.min(maxH, Math.max(minH, newHeight));
-          drawer.style.height = `${newHeight}px`;
-          // 更新背景缩放（可选）
-          const t = (newHeight - minH) / (maxH - minH);
-          wrapper.style.transform = `scale(${0.94 - t * 0.02})`;
-          wrapper.style.filter = `blur(${2 - t * 0.5}px)`;
-          e.preventDefault();
+        const deltaY = startY - currentY; // 上滑为正，下滑为负
+        let newHeight = startHeight + deltaY;
+        // 允许高度低于 MIN_H，但最低限制为 MIN_H - 80 (避免拉出屏幕)
+        const absoluteMin = MIN_H - 80;
+        newHeight = Math.min(MAX_H, Math.max(absoluteMin, newHeight));
+        drawer.style.height = `${newHeight}px`;
+        // 更新背景
+        let t = 0;
+        if (newHeight < MIN_H) {
+          t = 0; // 低于最小高度时背景不再缩放（保持关闭前的状态）
         } else {
-          e.preventDefault();
+          t = (newHeight - MIN_H) / (MAX_H - MIN_H);
         }
+        wrapper.style.transform = `scale(${0.94 - t * 0.02})`;
+        wrapper.style.filter = `blur(${2 - t * 0.5}px)`;
+        e.preventDefault();
       };
-
-      const onTouchEnd = () => {
-        if (!dragging || closeTriggered) return;
+      const newOnTouchEnd = () => {
+        if (!dragging) return;
         dragging = false;
         const currentH = drawer.offsetHeight;
-        // 如果当前高度低于初始高度但未关闭（理论上不会发生，但兜底）
-        if (currentH < minH) {
+        if (currentH < MIN_H - 30) {
+          // 向下滑超过30px，关闭弹窗
           closeModal();
-        } else if (currentH > minH && currentH < maxH) {
-          // 回弹到最近的自然高度（初始或最大）
-          let targetH = currentH > (minH + maxH) / 2 ? maxH : minH;
+        } else if (currentH < MIN_H) {
+          // 轻微下拉，回弹到初始高度
+          drawer.style.transition = 'height 0.15s ease-out';
+          drawer.style.height = `${MIN_H}px`;
+          wrapper.style.transform = `scale(0.94)`;
+          wrapper.style.filter = `blur(2px)`;
+          setTimeout(() => { if(drawer) drawer.style.transition = ''; }, 150);
+        } else {
+          // 正常上滑或未超过阈值，回弹到最近档位
+          let targetH = currentH > (MIN_H + MAX_H) / 2 ? MAX_H : MIN_H;
           drawer.style.transition = 'height 0.15s ease-out';
           drawer.style.height = `${targetH}px`;
-          const t = (targetH - minH) / (maxH - minH);
+          const t = (targetH - MIN_H) / (MAX_H - MIN_H);
           wrapper.style.transform = `scale(${0.94 - t * 0.02})`;
           wrapper.style.filter = `blur(${2 - t * 0.5}px)`;
           setTimeout(() => { if(drawer) drawer.style.transition = ''; }, 150);
         }
-        closeTriggered = false;
       };
-
-      dragBar.addEventListener('touchstart', onTouchStart, { passive: false });
-      dragBar.addEventListener('touchmove', onTouchMove, { passive: false });
-      dragBar.addEventListener('touchend', onTouchEnd);
-      dragBar.addEventListener('touchcancel', onTouchEnd);
+      // 替换监听器
+      dragBar.removeEventListener('touchstart', onTouchStart);
+      dragBar.removeEventListener('touchmove', onTouchMove);
+      dragBar.removeEventListener('touchend', onTouchEnd);
+      dragBar.addEventListener('touchstart', newOnTouchStart, { passive: false });
+      dragBar.addEventListener('touchmove', newOnTouchMove, { passive: false });
+      dragBar.addEventListener('touchend', newOnTouchEnd);
+      dragBar.addEventListener('touchcancel', newOnTouchEnd);
       drawer.cleanup = () => {
-        dragBar.removeEventListener('touchstart', onTouchStart);
-        dragBar.removeEventListener('touchmove', onTouchMove);
-        dragBar.removeEventListener('touchend', onTouchEnd);
-        dragBar.removeEventListener('touchcancel', onTouchEnd);
+        dragBar.removeEventListener('touchstart', newOnTouchStart);
+        dragBar.removeEventListener('touchmove', newOnTouchMove);
+        dragBar.removeEventListener('touchend', newOnTouchEnd);
+        dragBar.removeEventListener('touchcancel', newOnTouchEnd);
       };
     } else {
       const closeBtn = modalElement.querySelector('.close-modal');
@@ -960,3 +1027,4 @@
 </script>
 </body>
 </html>
+```
