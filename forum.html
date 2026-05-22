@@ -4,22 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>铁汁窝 - 时代骏风</title>
-<link rel="stylesheet" href="css/style.css">
 <style>
 /* ========================= 基础样式 ========================= */
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:#f5f7fb;font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;}
 
-/* 🔽🟢 可调参数1：主容器顶部距离（避免被导航栏遮住，建议 80~120px） */
+/* ========================= 主容器 ========================= */
 .forum-container{max-width:700px;margin:0 auto;padding:100px 16px 60px;transition: all 0.2s ease;}
 
+/* ========================= 热门词条 ========================= */
 .hot-section{background:#fff6ea;border-radius:28px;padding:16px;margin-bottom:28px;position:relative;}
-.plus-btn{position:absolute;top:12px;left:16px;width:32px;height:32px;background:#ff7b5c;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;}
 .hot-title{text-align:center;font-size:20px;font-weight:bold;margin-bottom:16px;color:#ff7b5c;}
 .hot-list{display:flex;flex-direction:column;gap:12px;}
 .hot-item{background:white;border-radius:20px;padding:12px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
 .hot-name{font-weight:700;}
 .hot-count{font-size:13px;color:#b97f4a;}
+
+/* ========================= 帖子列表 ========================= */
 .posts-list{display:flex;flex-direction:column;gap:16px;}
 .post-card{background:white;border-radius:24px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
 .post-header{display:flex;gap:12px;margin-bottom:12px;}
@@ -32,13 +33,12 @@ body{background:#f5f7fb;font-family:system-ui, -apple-system, 'Segoe UI', Roboto
 .post-stats{display:flex;gap:24px;margin-top:12px;padding-top:10px;border-top:1px solid #eee;}
 
 .stat-group{display:flex;align-items:center;gap:6px;cursor:pointer;}
-.like-action-btn{background:none;border:none;cursor:pointer;font-size:18px;transition:transform 0.1s ease;display:flex;align-items:center;position:relative;}
-.like-action-btn svg{width:18px;height:18px;stroke:#777;stroke-width:2;fill:none;}
-.comment-action-btn{background:none;border:none;cursor:pointer;font-size:18px;display:flex;align-items:center;}
-.comment-action-btn svg{width:18px;height:18px;stroke:#777;stroke-width:2;fill:none;}
+.like-action-btn, .comment-action-btn{
+    background:none;border:none;cursor:pointer;font-size:18px;display:flex;align-items:center;position:relative;
+}
 .stat-num{cursor:pointer;font-size:14px;color:#777;margin-left:8px;}
 
-/* ❤️ 爱心蔓延动画（支持连续点击飘散） */
+/* ❤️ 点赞动画 */
 .heart-animation{
     position:absolute;
     font-size:20px;
@@ -51,26 +51,17 @@ body{background:#f5f7fb;font-family:system-ui, -apple-system, 'Segoe UI', Roboto
     100%{ transform: scale(1.5) translateY(-50px); opacity:0; }
 }
 
-/* ========== 弹窗 & 遮罩 ========== */
+/* ========================= 弹窗 ========================= */
 .modal-mask {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
+    background: rgba(0,0,0,0.6);
+    -webkit-backdrop-filter: blur(8px); /* Safari 前缀 */
+    backdrop-filter: blur(8px);
     z-index: 3000; visibility: hidden; opacity: 0;
     transition: opacity 0.25s ease;
 }
 .modal-mask.show {visibility: visible; opacity:1;}
 
-/* 手机端弹窗背景缩放 */
-@media(max-width:768px){
-    body.modal-open .forum-container{
-        transform: scale(0.95);
-        border-radius:20px;
-        transition: transform 0.25s ease, filter 0.25s ease;
-        filter: brightness(0.7);
-    }
-}
-
-/* 电脑端弹窗卡片 */
 .modal-card{
     background: #1e1e2a; color:white; border-radius:32px; padding:24px;
     max-width:400px; width:90%; max-height:70vh; overflow-y:auto;
@@ -80,7 +71,7 @@ body{background:#f5f7fb;font-family:system-ui, -apple-system, 'Segoe UI', Roboto
 .modal-card .modal-header{display:flex; justify-content:space-between; margin-bottom:20px;}
 .modal-card .close-modal{background:none;border:none;color:white;font-size:24px;cursor:pointer;}
 
-/* 手机端底部抽屉 */
+/* 手机端抽屉 */
 @media(max-width:768px){
     .drawer-modal{
         position:fixed; bottom:0; left:0; right:0;
@@ -90,13 +81,10 @@ body{background:#f5f7fb;font-family:system-ui, -apple-system, 'Segoe UI', Roboto
     }
     .drawer-modal.open{transform:translateY(0);}
     .drag-bar{width:50px;height:5px;background:#aaa;border-radius:10px;margin:14px auto;cursor:grab;}
-    .drawer-content{flex:1; overflow-y:auto; padding:0 20px 20px;}
+    .drawer-content{flex:1;overflow-y:auto;padding:0 20px 20px; min-height:150px;}
 }
 
-.modal-list{display:flex;flex-direction:column;gap:16px;}
-.modal-user-item{display:flex;align-items:center;gap:12px;cursor:pointer;}
-.modal-avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;}
-
+/* 评论输入框 */
 .comment-input-fixed{
     position:sticky; bottom:10px; margin:0 16px 16px;
     background:#2a2a36; border-radius:60px; padding:6px 18px; display:flex;
@@ -104,101 +92,72 @@ body{background:#f5f7fb;font-family:system-ui, -apple-system, 'Segoe UI', Roboto
 }
 .comment-input-fixed input{flex:1; padding:10px 0; border:none; outline:none; background:transparent; color:white; font-size:15px;}
 .comment-input-fixed button{padding:8px 20px;border-radius:40px;border:none;background:#667eea;color:white;font-weight:bold;cursor:pointer;}
-@media(min-width:769px){
-    .comment-input-fixed{margin:0;border-radius:0;box-shadow:none;background:#1e1e2a;padding:12px 20px;}
-    .comment-input-fixed input{background:#2a2a36;border-radius:40px;padding:10px 16px;}
-}
-
-/* 导航栏 + 滚动隐藏 */
-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background: #ffffff;
-    z-index: 1000;
-    transition: transform 0.3s ease;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-header.hide { transform: translateY(-100%); }
 </style>
 </head>
 <body>
 
 <header>
-<div class="header-container">
-<a href="about.html"><img src="images/logo.png" alt="公司Logo" class="logo"></a>
-<nav>
-<a href="index.html">Home</a>
-<a href="news.html">大事件</a>
-<a href="forum.html" class="current">铁汁窝</a>
-</nav>
-<div class="user-area">
-<a href="profile.html"><img src="images/people.jpg" alt="个人中心" class="user-avatar"></a>
-</div>
-</div>
+    <div class="header-container">
+        <a href="#"><img src="images/logo.png" alt="公司Logo" class="logo"></a>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">大事件</a>
+            <a href="#" class="current">铁汁窝</a>
+        </nav>
+        <div class="user-area">
+            <a href="#"><img src="images/people.jpg" alt="个人中心" class="user-avatar"></a>
+        </div>
+    </div>
 </header>
 
 <div class="forum-container" id="forumApp"></div>
 
 <script>
 // ======================== 🟢 可修改数据 ========================
-const VERIFIED_BADGE_TEXT = "✓ 官方认证";          // 认证徽章文字
-const HOT_POST_COUNT = 3;                         // 🔽 热门词条显示数量
-const MANUAL_TOP_WORDS = ["登顶计划"];             // 🔽 手动置顶词条（永远排最前）
-
-let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-if(!currentUser) location.href='login.html';
+const VERIFIED_BADGE_TEXT = "✓ 官方认证";          
+const HOT_POST_COUNT = 3;                         
+const MANUAL_TOP_WORDS = ["登顶计划"];             
+let currentUser = JSON.parse(localStorage.getItem('currentUser')) || {username:'测试用户',avatar:'images/people.jpg'};
 let posts = JSON.parse(localStorage.getItem('forum_posts')) || [];
 
-// 🟢 初始示例数据（可修改内容、作者、点赞数）
+// ======================== 初始化示例数据 ========================
 if(posts.length===0){
     posts = [
         {id:1,author:"李四",content:"第一位认证用户报到！大家好啊！",image:null,time:new Date().toLocaleString(),likes:10,likedBy:[],comments:[]},
         {id:2,author:"张三",content:"契弟广场终于开了，开心！",image:null,time:new Date().toLocaleString(),likes:3,likedBy:[],comments:[]}
     ];
-    savePosts();
+    localStorage.setItem('forum_posts',JSON.stringify(posts));
 }
-function savePosts(){localStorage.setItem('forum_posts',JSON.stringify(posts));}
 
+// ======================== 工具函数 ========================
 function escapeHtml(str){return str.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));}
-function extractWords(content){const words=content.match(/[\u4e00-\u9fa5]{2,6}/g)||[];return[...new Set(words)];}
+function extractWords(content){return content.match(/[\u4e00-\u9fa5]{2,6}/g)||[];}
 
-// 🔽 热门词条计算（出现次数 + 手动置顶）
+// ======================== 热门词条 ========================
 function getHotWords(){
     const wordStats=new Map();
-    posts.forEach(post=>{
-        const words=extractWords(post.content);
-        words.forEach(word=>{
-            if(!wordStats.has(word)) wordStats.set(word,{count:0});
-            wordStats.get(word).count++;
-        });
-    });
+    posts.forEach(post=>{extractWords(post.content).forEach(w=>{if(!wordStats.has(w))wordStats.set(w,{count:0}); wordStats.get(w).count++;});});
     const arr=Array.from(wordStats.entries()).sort((a,b)=>b[1].count-a[1].count);
     MANUAL_TOP_WORDS.forEach(w=>{
         const idx=arr.findIndex(([k])=>k===w);
-        if(idx>=0){const [item]=arr.splice(idx,1);arr.unshift([w,item[1]]);}
+        if(idx>=0){const [item]=arr.splice(idx,1); arr.unshift([w,item[1]]);} 
         else arr.unshift([w,{count:1}]);
     });
     return arr.slice(0,HOT_POST_COUNT);
 }
 
 function renderHotWords(){
-    const words=getHotWords();
-    return words.map(([word,data])=>`<div class="hot-item" data-word="${word}"><span class="hot-name">${word}</span><span class="hot-count">🔥 ${data.count}</span></div>`).join('');
+    return getHotWords().map(([word,data])=>`<div class="hot-item" data-word="${word}"><span class="hot-name">${word}</span><span class="hot-count">🔥 ${data.count}</span></div>`).join('');
 }
 
+// ======================== 渲染帖子 ========================
 function renderPosts(){
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    return posts.map(post=>{
-        const user = users.find(u=>u.username===post.author) || {};
-        const showVerified = user.role==='trainee' && user.isVerified;
-        return `
+    return posts.map(post=>`
         <div class="post-card" data-id="${post.id}">
             <div class="post-header">
-                <img src="${user.avatar||'images/people.jpg'}" class="post-avatar" onclick="viewProfile('${post.author}')">
+                <img src="${post.avatar||'images/people.jpg'}" class="post-avatar" onclick="viewProfile('${post.author}')">
                 <div>
-                    <div class="author-name" onclick="viewProfile('${post.author}')">${escapeHtml(post.author)} ${showVerified?`<span class="verified-badge">${VERIFIED_BADGE_TEXT}</span>`:''}</div>
+                    <div class="author-name" onclick="viewProfile('${post.author}')">${escapeHtml(post.author)}</div>
                     <div class="post-time">${post.time}</div>
                 </div>
             </div>
@@ -207,23 +166,21 @@ function renderPosts(){
             <div class="post-stats">
                 <div class="stat-group">
                     <button class="like-action-btn" data-id="${post.id}">
-                        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M20.8 4.6c-1.6-1.6-4.1-1.6-5.7 0l-.5.5-.5-.5c-1.6-1.6-4.1-1.6-5.7 0-1.6 1.6-1.6 4.1 0 5.7l6.2 6.2 6.2-6.2c1.6-1.6 1.6-4.1 0-5.7z"/></svg>
+                        ❤️
                     </button>
                     <span class="stat-num" data-type="likes" data-id="${post.id}">${post.likes}</span>
                 </div>
                 <div class="stat-group">
-                    <button class="comment-action-btn" data-id="${post.id}">
-                        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/></svg>
-                    </button>
+                    <button class="comment-action-btn" data-id="${post.id}">💬</button>
                     <span class="stat-num" data-type="comments" data-id="${post.id}">${post.comments.length}</span>
                 </div>
             </div>
-        </div>`;
-    }).join('');
+        </div>
+    `).join('');
 }
 
-// ======================== ❤️ 爱心动画（点击位置飘散）========================
-function createHeartAnimation(btn, event) {
+// ======================== 点赞动画 ========================
+function createHeartAnimation(btn, event){
     const rect = btn.getBoundingClientRect();
     const heart = document.createElement('span');
     heart.className = 'heart-animation';
@@ -232,201 +189,45 @@ function createHeartAnimation(btn, event) {
     heart.style.top = `${event.clientY - rect.top}px`;
     btn.style.position = 'relative';
     btn.appendChild(heart);
-    setTimeout(() => heart.remove(), 800);
+    setTimeout(()=>heart.remove(),800);
 }
 
-// ======================== 弹窗滚动锁定 ========================
-function openModalWithScrollLock() { document.body.classList.add('modal-open'); document.body.style.overflow = 'hidden'; }
-function closeModalWithScrollUnlock() { document.body.classList.remove('modal-open'); document.body.style.overflow = ''; }
-
-// 🔵 手机端抽屉核心（支持向下拖动关闭）
-// 🔽 可调参数：startOpenY(0.3~0.5) closeThreshold(0.6~0.7) speedThreshold(0.3~1)
-function createMobileDrawer(modal, mask) {
-    let startY = 0, startTranslate = 0, startTime = 0, isDragging = false;
-    const startOpenY = window.innerHeight * 0.4;      // 🔽 弹窗展开高度
-    const closeThreshold = window.innerHeight * 0.65; // 🔽 超过此值关闭
-    const speedThreshold = 0.5;                      // 🔽 滑动速度阈值(px/ms)
-
-    modal.style.transform = `translateY(${startOpenY}px)`;
-    modal.style.transition = 'transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1)';
-    setTimeout(() => modal.classList.add('open'), 10);
-
-    const closeModal = () => {
-        modal.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1)';
-        modal.style.transform = `translateY(100%)`;
-        setTimeout(() => { modal.remove(); mask.remove(); closeModalWithScrollUnlock(); }, 250);
-    };
-
-    const onTouchStart = (e) => {
-        startY = e.touches[0].clientY;
-        startTranslate = parseFloat(modal.style.transform.replace('translateY(', '')) || startOpenY;
-        startTime = Date.now();
-        modal.style.transition = '';
-        isDragging = true;
-    };
-    const onTouchMove = (e) => {
-        if (!isDragging) return;
-        let newTranslate = startTranslate + (e.touches[0].clientY - startY);
-        newTranslate = Math.min(window.innerHeight, Math.max(0, newTranslate));
-        modal.style.transform = `translateY(${newTranslate}px)`;
-        const fc = document.querySelector('.forum-container');
-        if (fc) {
-            fc.style.transform = `scale(${0.95 + 0.05 * (newTranslate / window.innerHeight)})`;
-            fc.style.filter = `brightness(${0.7 + 0.3 * (newTranslate / window.innerHeight)})`;
-        }
-    };
-    const onTouchEnd = () => {
-        isDragging = false;
-        const currentY = parseFloat(modal.style.transform.replace('translateY(', '')) || startOpenY;
-        const deltaY = currentY - startTranslate;
-        const speed = Math.abs(deltaY) / (Date.now() - startTime);
-        if (currentY > closeThreshold || (speed > speedThreshold && deltaY > 50)) closeModal();
-        else {
-            modal.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1)';
-            modal.style.transform = `translateY(${startOpenY}px)`;
-            const fc = document.querySelector('.forum-container');
-            if (fc) { fc.style.transition = 'transform 0.25s ease, filter 0.25s ease'; fc.style.transform = 'scale(0.95)'; fc.style.filter = 'brightness(0.7)'; }
-        }
-    };
-    modal.addEventListener('touchstart', onTouchStart);
-    modal.addEventListener('touchmove', onTouchMove);
-    modal.addEventListener('touchend', onTouchEnd);
-    modal.addEventListener('touchcancel', onTouchEnd);
-    return { closeModal };
-}
-
-// ======================== 点赞弹窗 ========================
-function showLikesModal(postId) {
-    const post = posts.find(p => p.id === postId);
-    if (!post) return;
-    let likedHtml = post.likedBy?.length ? post.likedBy.map(u => {
-        const name = typeof u === 'string' ? u : (u.username || '匿名');
-        const avatar = (typeof u === 'object' && u.avatar) ? u.avatar : 'images/people.jpg';
-        return `<div class="modal-user-item"><img class="modal-avatar" src="${avatar}"><div>${escapeHtml(name)}</div></div>`;
-    }).join('') : '<div style="padding:20px;text-align:center;">暂无点赞</div>';
-
-    openModalWithScrollLock();
-    if (window.innerWidth <= 768) {
-        const mask = document.createElement('div'); mask.className = 'modal-mask show'; document.body.appendChild(mask);
-        const modal = document.createElement('div'); modal.className = 'drawer-modal';
-        modal.innerHTML = `<div class="drag-bar"></div><div class="drawer-content"><div style="font-weight:bold;margin-bottom:20px;">❤️ 点赞列表</div><div class="modal-list">${likedHtml}</div></div>`;
-        document.body.appendChild(modal);
-        createMobileDrawer(modal, mask);
-    } else {
-        const mask = document.createElement('div'); mask.className = 'modal-mask show'; document.body.appendChild(mask);
-        const modal = document.createElement('div'); modal.className = 'modal-card';
-        modal.innerHTML = `<div class="modal-header"><div>点赞列表</div><button class="close-modal">×</button></div><div class="modal-list">${likedHtml}</div>`;
-        document.body.appendChild(modal);
-        const close = () => { modal.remove(); mask.remove(); closeModalWithScrollUnlock(); };
-        mask.onclick = close;
-        modal.querySelector('.close-modal').onclick = close;
+// ======================== 点赞逻辑 ========================
+function handleLike(postId){
+    const post = posts.find(p=>p.id===postId);
+    if(post){
+        post.likes = (post.likes||0)+1;
+        if(!post.likedBy) post.likedBy=[];
+        post.likedBy.push({username:currentUser.username, avatar:currentUser.avatar});
+        localStorage.setItem('forum_posts',JSON.stringify(posts));
+        renderForum();
     }
 }
 
-// ======================== 评论弹窗 ========================
-function showCommentsModal(postId) {
-    const post = posts.find(p => p.id === postId);
-    if (!post) return;
-    openModalWithScrollLock();
-
-    if (window.innerWidth <= 768) {
-        const mask = document.createElement('div'); mask.className = 'modal-mask show'; document.body.appendChild(mask);
-        const modal = document.createElement('div'); modal.className = 'drawer-modal';
-        modal.innerHTML = `<div class="drag-bar"></div><div class="drawer-content"><div style="font-weight:bold;margin-bottom:20px;">💬 评论列表</div><div id="commentList" class="modal-list"></div></div><div class="comment-input-fixed"><input type="text" id="newComment" placeholder="写评论..."><button id="submitComment">发送</button></div>`;
-        document.body.appendChild(modal);
-        createMobileDrawer(modal, mask);
-
-        const container = modal.querySelector('#commentList');
-        const renderComments = () => {
-            container.innerHTML = post.comments?.length ? post.comments.map(c => `<div class="modal-user-item"><img class="modal-avatar" src="${c.avatar || 'images/people.jpg'}"><div><strong>${escapeHtml(c.username)}</strong>: ${escapeHtml(c.text)}</div></div>`).join('') : '<div style="padding:20px;text-align:center;">暂无评论</div>';
-        };
-        renderComments();
-
-        modal.querySelector('#submitComment').onclick = () => {
-            const text = modal.querySelector('#newComment').value.trim();
-            if (!text) return;
-            if (!post.comments) post.comments = [];
-            post.comments.push({ username: currentUser.username, text, avatar: currentUser.avatar || 'images/people.jpg' });
-            savePosts();
-            renderComments();
-            modal.querySelector('#newComment').value = '';
-        };
-    } else {
-        const mask = document.createElement('div'); mask.className = 'modal-mask show'; document.body.appendChild(mask);
-        const modal = document.createElement('div'); modal.className = 'modal-card';
-        modal.innerHTML = `<div class="modal-header"><div>评论列表</div><button class="close-modal">×</button></div><div class="modal-list" id="desktopCommentList"></div><div class="comment-input-fixed"><input type="text" id="newCommentDesktop" placeholder="写评论..."><button id="submitCommentDesktop">发送</button></div>`;
-        document.body.appendChild(modal);
-        const listDiv = modal.querySelector('#desktopCommentList');
-        const renderComments = () => {
-            listDiv.innerHTML = post.comments?.length ? post.comments.map(c => `<div class="modal-user-item"><img class="modal-avatar" src="${c.avatar || 'images/people.jpg'}"><div><strong>${escapeHtml(c.username)}</strong>: ${escapeHtml(c.text)}</div></div>`).join('') : '<div style="padding:20px;text-align:center;">暂无评论</div>';
-        };
-        renderComments();
-
-        modal.querySelector('#submitCommentDesktop').onclick = () => {
-            const text = modal.querySelector('#newCommentDesktop').value.trim();
-            if (!text) return;
-            if (!post.comments) post.comments = [];
-            post.comments.push({ username: currentUser.username, text, avatar: currentUser.avatar || 'images/people.jpg' });
-            savePosts();
-            renderComments();
-            modal.querySelector('#newCommentDesktop').value = '';
-        };
-
-        const close = () => { modal.remove(); mask.remove(); closeModalWithScrollUnlock(); };
-        mask.onclick = close;
-        modal.querySelector('.close-modal').onclick = close;
-    }
-}
-
-// ======================== 点赞逻辑（增票 + 记录） ========================
-function handleLike(postId) {
-    const post = posts.find(p => p.id === postId);
-    if (post) {
-        post.likes = (post.likes || 0) + 1;
-        if (!post.likedBy) post.likedBy = [];
-        post.likedBy.push({ username: currentUser.username, avatar: currentUser.avatar || 'images/people.jpg' });
-        savePosts();
-        renderForum();  // 刷新页面以更新点赞数
-    }
-}
-
-// ======================== 渲染主论坛 ========================
-function renderForum() {
+// ======================== 渲染论坛 ========================
+function renderForum(){
     const forum = document.getElementById('forumApp');
-    if (!forum) return;
     forum.innerHTML = `<div class="hot-section"><div class="hot-title">🔥 热门词条</div><div class="hot-list">${renderHotWords()}</div></div><div class="posts-list">${renderPosts()}</div>`;
-
-    forum.querySelectorAll('.hot-item').forEach(item => item.onclick = () => alert(`热门词条：${item.dataset.word}`));
-
-    forum.querySelectorAll('.like-action-btn').forEach(btn => {
+    
+    forum.querySelectorAll('.hot-item').forEach(item=>item.onclick=()=>alert(`热门词条：${item.dataset.word}`));
+    
+    forum.querySelectorAll('.like-action-btn').forEach(btn=>{
         const id = parseInt(btn.dataset.id);
-        btn.onclick = (e) => {
-            e.stopPropagation();
-            handleLike(id);
-            btn.style.transform = 'scale(1.2)';
-            createHeartAnimation(btn, e);
-            setTimeout(() => btn.style.transform = '', 150);
-        };
+        btn.onclick = (e)=>{e.stopPropagation(); handleLike(id); createHeartAnimation(btn,e);};
     });
-
-    forum.querySelectorAll('.stat-num[data-type="likes"]').forEach(btn => {
-        btn.onclick = (e) => { e.stopPropagation(); showLikesModal(parseInt(btn.dataset.id)); };
-    });
-
-    forum.querySelectorAll('.stat-group').forEach(group => {
-        if (group.querySelector('.comment-action-btn')) {
+    
+    forum.querySelectorAll('.stat-group').forEach(group=>{
+        if(group.querySelector('.comment-action-btn')){
             const id = parseInt(group.querySelector('.comment-action-btn').dataset.id);
-            group.onclick = (e) => { e.stopPropagation(); showCommentsModal(id); };
+            group.onclick = (e)=>{ e.stopPropagation(); alert('显示评论弹窗（可扩展）'); };
         }
     });
 }
 
-// ======================== 导航栏滚动隐藏 ========================
-let lastScroll = 0; const header = document.querySelector('header');
-window.addEventListener('scroll', () => { const cur = window.scrollY; if (cur > lastScroll && cur > 50) header.classList.add('hide'); else header.classList.remove('hide'); lastScroll = cur; });
-
-window.viewProfile = (username) => alert(`跳转到 ${username} 的个人主页（预留）`);
+// ======================== 页面初始化 ========================
+window.viewProfile = username=>alert(`跳转到 ${username} 的个人主页`);
 renderForum();
 </script>
+
 </body>
 </html>
