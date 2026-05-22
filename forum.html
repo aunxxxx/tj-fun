@@ -17,11 +17,10 @@
     overflow-x: hidden;
   }
 
-  /* 页面包裹层 */
   .page-wrapper {
     background: #f5f7fb;
     min-height: 100vh;
-    transition: transform 0.1s ease, filter 0.1s ease;
+    transition: transform 0.05s linear, filter 0.05s linear;
     will-change: transform, filter;
     position: relative;
     z-index: 1;
@@ -66,7 +65,7 @@
     color: #ff7b5c;
   }
 
-  /* 热门词条模块 */
+  /* 热门词条 */
   .hot-section {
     background: #fff6ea;
     border-radius: 28px;
@@ -170,7 +169,6 @@
   .post-content {
     margin: 12px 0;
     line-height: 1.4;
-    word-break: break-word;
   }
   .post-image {
     max-width: 100%;
@@ -324,7 +322,7 @@
     display: none;
   }
 
-  /* ========== 弹窗底部抽屉 ========== */
+  /* 弹窗底部抽屉 */
   .modal-mask {
     position: fixed;
     top: 0;
@@ -336,8 +334,6 @@
     display: flex;
   }
   .modal-mask.show { visibility: visible; }
-
-  /* 手机端样式 */
   @media (max-width: 768px) {
     .modal-mask {
       align-items: flex-end;
@@ -363,7 +359,6 @@
     .modal-mask.show .drawer-modal {
       transform: translateY(0);
     }
-    /* 拖拽条 - 可见且触摸区域扩大 */
     .drag-bar {
       width: 50px;
       height: 5px;
@@ -372,9 +367,6 @@
       margin: 14px auto;
       cursor: grab;
       touch-action: pan-y;
-      position: relative;
-      z-index: 10;
-      /* 扩大触摸热区 */
       padding: 12px 0;
       margin-top: 0;
       margin-bottom: 0;
@@ -388,8 +380,6 @@
     }
     .modal-card { display: none; }
   }
-
-  /* 电脑端样式 */
   @media (min-width: 769px) {
     .modal-mask {
       align-items: center;
@@ -417,7 +407,7 @@
     .drawer-modal { display: none; }
   }
 
-  /* 评论列表样式 - 无分割线/间隙，与输入框完全贴合 */
+  /* 评论样式 */
   .comment-item {
     padding: 12px 0;
     border-bottom: 1px solid #f0f2f5;
@@ -459,7 +449,6 @@
     margin-top: 6px;
     cursor: pointer;
   }
-  /* 评论输入区 - 无上边框，无阴影，与列表无缝贴合 */
   .comment-input-fixed {
     display: flex;
     gap: 12px;
@@ -514,7 +503,6 @@
 </div>
 
 <script>
-  // 角色权限
   const userRole = 'trainee';
   const currentUser = { username: "时代骏风仔", avatar: "🐯", bio: "热爱骑行，喜欢分享", role: userRole };
 
@@ -575,7 +563,7 @@
     renderForum();
   }
 
-  // 发帖页面
+  // 发帖
   function openPostEditor() {
     const overlay = document.getElementById('postEditorOverlay');
     if (!overlay) return;
@@ -628,9 +616,11 @@
     reader.readAsDataURL(file);
   }
 
-  // ========== 弹窗管理（下滑关闭 + 上滑增高） ==========
+  // 弹窗管理（下滑关闭、上滑增高，背景随高度实时变化，关闭后恢复滚动位置）
   let activeMask = null;
   let activeDrawer = null;
+  let savedScrollY = 0;
+
   function closeModal() {
     if (!activeMask) return;
     const wrapper = document.getElementById('pageWrapper');
@@ -641,14 +631,18 @@
     activeMask.remove();
     activeMask = null;
     activeDrawer = null;
+    // 恢复body滚动
     document.body.style.overflow = '';
     document.body.style.position = '';
     document.body.style.top = '';
+    window.scrollTo(0, savedScrollY);
   }
 
   function openModal(modalElement, isMobile) {
     if (activeMask) closeModal();
     const wrapper = document.getElementById('pageWrapper');
+    // 记录当前滚动位置
+    savedScrollY = window.scrollY;
     if (isMobile) {
       wrapper.style.transform = `scale(0.94)`;
       wrapper.style.filter = `blur(2px)`;
@@ -658,11 +652,11 @@
     mask.className = 'modal-mask show';
     document.body.appendChild(mask);
     mask.appendChild(modalElement);
+    // 锁定body滚动
     document.body.style.overflow = 'hidden';
     document.body.style.position = 'fixed';
     document.body.style.width = '100%';
-    const scrollY = window.scrollY;
-    document.body.style.top = `-${scrollY}px`;
+    document.body.style.top = `-${savedScrollY}px`;
     activeMask = mask;
 
     if (isMobile) {
@@ -679,6 +673,19 @@
       drawer.style.height = `${MIN_H}px`;
       drawer.style.transform = 'translateY(0)';
 
+      // 更新背景缩放/模糊的函数
+      const updateBackground = (height) => {
+        let t = 0;
+        if (height >= MIN_H) {
+          t = Math.min(1, (height - MIN_H) / (MAX_H - MIN_H));
+          wrapper.style.transform = `scale(${0.94 - t * 0.02})`;
+          wrapper.style.filter = `blur(${2 - t * 0.5}px)`;
+        } else {
+          wrapper.style.transform = `scale(0.94)`;
+          wrapper.style.filter = `blur(2px)`;
+        }
+      };
+
       const onTouchStart = (e) => {
         startY = e.touches[0].clientY;
         startHeight = drawer.offsetHeight;
@@ -692,20 +699,10 @@
         const currentY = e.touches[0].clientY;
         const deltaY = startY - currentY; // 向上为正，向下为负
         let newHeight = startHeight + deltaY;
-        // 允许高度低于 MIN_H，但最低不低于 MIN_H - 60
         const absoluteMin = MIN_H - 60;
         newHeight = Math.min(MAX_H, Math.max(absoluteMin, newHeight));
         drawer.style.height = `${newHeight}px`;
-        // 更新背景缩放
-        let t = 0;
-        if (newHeight >= MIN_H) {
-          t = (newHeight - MIN_H) / (MAX_H - MIN_H);
-          wrapper.style.transform = `scale(${0.94 - t * 0.02})`;
-          wrapper.style.filter = `blur(${2 - t * 0.5}px)`;
-        } else {
-          wrapper.style.transform = `scale(0.94)`;
-          wrapper.style.filter = `blur(2px)`;
-        }
+        updateBackground(newHeight);
         e.preventDefault();
       };
 
@@ -714,23 +711,17 @@
         dragging = false;
         const currentH = drawer.offsetHeight;
         if (currentH < MIN_H - 30) {
-          // 向下滑动超过30px，关闭弹窗
           closeModal();
         } else if (currentH < MIN_H) {
-          // 轻微下拉，回弹到初始高度
           drawer.style.transition = 'height 0.15s ease-out';
           drawer.style.height = `${MIN_H}px`;
-          wrapper.style.transform = `scale(0.94)`;
-          wrapper.style.filter = `blur(2px)`;
+          updateBackground(MIN_H);
           setTimeout(() => { if(drawer) drawer.style.transition = ''; }, 150);
         } else {
-          // 上滑或未超过阈值，回弹到最近档位
           let targetH = currentH > (MIN_H + MAX_H) / 2 ? MAX_H : MIN_H;
           drawer.style.transition = 'height 0.15s ease-out';
           drawer.style.height = `${targetH}px`;
-          const t = (targetH - MIN_H) / (MAX_H - MIN_H);
-          wrapper.style.transform = `scale(${0.94 - t * 0.02})`;
-          wrapper.style.filter = `blur(${2 - t * 0.5}px)`;
+          updateBackground(targetH);
           setTimeout(() => { if(drawer) drawer.style.transition = ''; }, 150);
         }
       };
