@@ -15,9 +15,10 @@
   body {
     background: #000;
     font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    overflow-x: hidden;
   }
 
-  /* 黑色背景层（独立，不受模糊影响） */
+  /* 黑色背景层 */
   .bg-black {
     position: fixed;
     top: 0;
@@ -28,30 +29,27 @@
     z-index: -1;
   }
 
-  /* 页面主容器 */
+  /* 整个页面内容（包含导航栏）一起缩放 */
   .page-wrapper {
     background: #f5f7fb;
     min-height: 100vh;
     will-change: transform, filter, border-radius;
+    transition: transform 0.35s cubic-bezier(0.25, 1.25, 0.5, 1),
+                filter 0.35s ease,
+                border-radius 0.35s ease;
   }
 
-  /* 🔽 页面弹性缩小动画（iOS 风格） */
-  @keyframes pageShrink {
-    0%   { transform: scale(1); filter: blur(0); border-radius: 0; }
-    60%  { transform: scale(0.88); filter: blur(4px); border-radius: 32px; }
-    80%  { transform: scale(0.92); filter: blur(3px); border-radius: 28px; }
-    100% { transform: scale(0.90); filter: blur(3px); border-radius: 28px; }
-  }
-
+  /* 🔽 手机端弹窗时：页面整体缩小 + 模糊 + 圆角 */
   .page-wrapper.modal-open {
-    animation: pageShrink 0.35s cubic-bezier(0.25, 1.25, 0.5, 1) forwards;
+    transform: scale(0.92);
+    filter: blur(3px);
+    border-radius: 28px;
   }
 
-  /* 🔽 弹窗弹性放大动画 */
+  /* 🔽 弹窗弹性放大动画（不干扰原有 transform） */
   @keyframes modalPop {
-    0%   { transform: scale(0.8); opacity: 0; }
-    60%  { transform: scale(1.05); opacity: 1; }
-    80%  { transform: scale(0.98); }
+    0%   { transform: scale(0.8) translateY(0); opacity: 0; }
+    60%  { transform: scale(1.02); opacity: 1; }
     100% { transform: scale(1); }
   }
 
@@ -93,7 +91,6 @@
     align-items: center;
   }
 
-  /* 帖子列表 */
   .posts-list {
     display: flex;
     flex-direction: column;
@@ -186,8 +183,8 @@
     opacity: 0;
     transition: 0.2s;
     display: flex;
-    align-items: flex-end;
     justify-content: center;
+    align-items: flex-end;
   }
 
   .modal-mask.show {
@@ -195,7 +192,7 @@
     opacity: 1;
   }
 
-  /* 手机端底部抽屉（带弹性动画） */
+  /* 手机端底部抽屉 */
   .drawer-modal {
     background: #1e1e2a;
     color: white;
@@ -206,7 +203,7 @@
     overflow-y: auto;
     transform: translateY(100%);
     transition: transform 0.3s ease;
-    animation: modalPop 0.35s cubic-bezier(0.25, 1.25, 0.5, 1) forwards;
+    animation: modalPop 0.3s cubic-bezier(0.25, 1.25, 0.5, 1) forwards;
   }
 
   .modal-mask.show .drawer-modal {
@@ -250,7 +247,7 @@
     cursor: pointer;
   }
 
-  /* 爱心飘散动画 */
+  /* 爱心动画 */
   .heart-animation {
     position: absolute;
     font-size: 20px;
@@ -270,20 +267,13 @@
     }
   }
 
-  /* 导航栏 + 滚动隐藏 */
+  /* 导航栏（现在在 page-wrapper 内部，会一起缩放） */
   header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
     background: white;
-    z-index: 1000;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-  }
-
-  header.hide {
-    transform: translateY(-100%);
+    position: sticky;
+    top: 0;
+    z-index: 100;
   }
 
   .header-container {
@@ -291,6 +281,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 12px 20px;
+    max-width: 700px;
+    margin: 0 auto;
   }
 
   /* 电脑端弹窗（居中卡片） */
@@ -308,7 +300,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 3100;
-    animation: modalPop 0.35s cubic-bezier(0.25, 1.25, 0.5, 1) forwards;
+    animation: modalPop 0.3s cubic-bezier(0.25, 1.25, 0.5, 1) forwards;
   }
 
   .modal-card .close-modal {
@@ -320,6 +312,7 @@
     float: right;
   }
 
+  /* 电脑端遮罩半透明 */
   @media (min-width: 769px) {
     .modal-mask {
       background: rgba(0, 0, 0, 0.6);
@@ -330,6 +323,7 @@
     }
   }
 
+  /* 手机端不显示居中卡片 */
   @media (max-width: 768px) {
     .modal-card {
       display: none;
@@ -341,19 +335,19 @@
 
 <div class="bg-black"></div>
 
-<header>
-  <div class="header-container">
-    <a href="about.html"><img src="images/logo.png" style="height:40px;"></a>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="news.html">大事件</a>
-      <a href="forum.html" style="font-weight:bold;">铁汁窝</a>
-    </nav>
-    <a href="profile.html"><img src="images/people.jpg" style="width:40px;height:40px;border-radius:50%;"></a>
-  </div>
-</header>
-
 <div class="page-wrapper" id="pageWrapper">
+  <header>
+    <div class="header-container">
+      <a href="about.html"><img src="images/logo.png" style="height:40px;"></a>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="news.html">大事件</a>
+        <a href="forum.html" style="font-weight:bold;">铁汁窝</a>
+      </nav>
+      <a href="profile.html"><img src="images/people.jpg" style="width:40px;height:40px;border-radius:50%;"></a>
+    </div>
+  </header>
+
   <div class="forum-container" id="forumApp"></div>
 </div>
 
@@ -368,7 +362,7 @@
   function savePosts() { localStorage.setItem('forum_posts', JSON.stringify(posts)); }
   function escapeHtml(str) { return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
 
-  // ======================== 爱心飘散动画 ========================
+  // 爱心动画
   function createHeartAnimation(btn, e) {
     const rect = btn.getBoundingClientRect();
     const heart = document.createElement('span');
@@ -381,7 +375,6 @@
     setTimeout(() => heart.remove(), 800);
   }
 
-  // ======================== 弹窗核心逻辑 ========================
   let activeMask = null;
 
   function openModal(modalEl, isMobile) {
@@ -410,10 +403,8 @@
       modalEl.querySelector('.close-modal').onclick = close;
     }
 
-    // 手机端抽屉滑动逻辑
     if (isMobile && modalEl.classList.contains('drawer-modal')) {
-      let startY = 0;
-      let startTransform = 0;
+      let startY = 0, startTransform = 0;
       const drawer = modalEl;
       drawer.style.transition = 'transform 0.2s ease';
 
@@ -443,7 +434,6 @@
     }
   }
 
-  // ======================== 点赞弹窗 ========================
   function showLikesModal(postId) {
     const post = posts.find(p => p.id === postId);
     if (!post) return;
@@ -453,38 +443,28 @@
     if (isMobile) {
       const modal = document.createElement('div');
       modal.className = 'drawer-modal';
-      modal.innerHTML = `
-        <div class="drag-bar"></div>
-        <div class="drawer-content">
-          <div style="font-weight:bold;margin-bottom:16px;">❤️ 点赞列表</div>
-          <div>${listHtml}</div>
-        </div>
-      `;
+      modal.innerHTML = `<div class="drag-bar"></div><div class="drawer-content"><div style="font-weight:bold;margin-bottom:16px;">❤️ 点赞列表</div><div>${listHtml}</div></div>`;
       openModal(modal, true);
     } else {
       const modal = document.createElement('div');
       modal.className = 'modal-card';
-      modal.innerHTML = `
-        <div style="text-align:right;"><button class="close-modal" style="background:none;border:none;font-size:24px;cursor:pointer;">×</button></div>
-        <div style="font-weight:bold;margin-bottom:16px;">❤️ 点赞列表</div>
-        <div>${listHtml}</div>
-      `;
+      modal.innerHTML = `<div style="text-align:right;"><button class="close-modal">×</button></div><div style="font-weight:bold;margin-bottom:16px;">❤️ 点赞列表</div><div>${listHtml}</div>`;
       openModal(modal, false);
     }
   }
 
-  // ======================== 评论弹窗 ========================
   function showCommentsModal(postId) {
     const post = posts.find(p => p.id === postId);
     if (!post) return;
     const isMobile = window.innerWidth <= 768;
 
-    if (isMobile) {
+    const createModal = (isMobile) => {
       const modal = document.createElement('div');
-      modal.className = 'drawer-modal';
+      modal.className = isMobile ? 'drawer-modal' : 'modal-card';
       modal.innerHTML = `
         <div class="drag-bar"></div>
         <div class="drawer-content">
+          <div style="text-align:right;"><button class="close-modal">×</button></div>
           <div style="font-weight:bold;margin-bottom:16px;">💬 评论列表</div>
           <div id="commentList"></div>
           <div class="comment-input-fixed">
@@ -493,54 +473,28 @@
           </div>
         </div>
       `;
-      openModal(modal, true);
+      return modal;
+    };
 
-      const listDiv = modal.querySelector('#commentList');
-      const render = () => {
-        listDiv.innerHTML = post.comments.map(c => `<div><strong>${escapeHtml(c.username)}</strong>: ${escapeHtml(c.text)}</div>`).join('') || '<div>暂无评论</div>';
-      };
+    const modal = createModal(isMobile);
+    const listDiv = modal.querySelector('#commentList');
+    const render = () => {
+      listDiv.innerHTML = post.comments.map(c => `<div><strong>${escapeHtml(c.username)}</strong>: ${escapeHtml(c.text)}</div>`).join('') || '<div>暂无评论</div>';
+    };
+    render();
+
+    modal.querySelector('#sendCommentBtn').onclick = () => {
+      const val = modal.querySelector('#newCommentInput').value.trim();
+      if (!val) return;
+      post.comments.push({ username: currentUser.username, text: val });
+      savePosts();
       render();
+      modal.querySelector('#newCommentInput').value = '';
+    };
 
-      modal.querySelector('#sendCommentBtn').onclick = () => {
-        const val = modal.querySelector('#newCommentInput').value.trim();
-        if (!val) return;
-        post.comments.push({ username: currentUser.username, text: val });
-        savePosts();
-        render();
-        modal.querySelector('#newCommentInput').value = '';
-      };
-    } else {
-      const modal = document.createElement('div');
-      modal.className = 'modal-card';
-      modal.innerHTML = `
-        <div style="text-align:right;"><button class="close-modal" style="background:none;border:none;font-size:24px;cursor:pointer;">×</button></div>
-        <div style="font-weight:bold;margin-bottom:16px;">💬 评论列表</div>
-        <div id="commentList"></div>
-        <div class="comment-input-fixed">
-          <input type="text" id="newCommentInput" placeholder="写评论...">
-          <button id="sendCommentBtn">发送</button>
-        </div>
-      `;
-      openModal(modal, false);
-
-      const listDiv = modal.querySelector('#commentList');
-      const render = () => {
-        listDiv.innerHTML = post.comments.map(c => `<div><strong>${escapeHtml(c.username)}</strong>: ${escapeHtml(c.text)}</div>`).join('') || '<div>暂无评论</div>';
-      };
-      render();
-
-      modal.querySelector('#sendCommentBtn').onclick = () => {
-        const val = modal.querySelector('#newCommentInput').value.trim();
-        if (!val) return;
-        post.comments.push({ username: currentUser.username, text: val });
-        savePosts();
-        render();
-        modal.querySelector('#newCommentInput').value = '';
-      };
-    }
+    openModal(modal, isMobile);
   }
 
-  // ======================== 点赞逻辑 ========================
   function handleLike(postId, btn, e) {
     const post = posts.find(p => p.id === postId);
     if (post) {
@@ -554,7 +508,6 @@
     }
   }
 
-  // ======================== 渲染帖子 ========================
   function renderPosts() {
     return posts.map(post => `
       <div class="post-card" data-id="${post.id}">
@@ -568,15 +521,11 @@
         <div class="post-content">${escapeHtml(post.content)}</div>
         <div class="post-stats">
           <div class="stat-group like-group" data-id="${post.id}">
-            <button class="like-action-btn">
-              <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M20.8 4.6c-1.6-1.6-4.1-1.6-5.7 0l-.5.5-.5-.5c-1.6-1.6-4.1-1.6-5.7 0-1.6 1.6-1.6 4.1 0 5.7l6.2 6.2 6.2-6.2c1.6-1.6 1.6-4.1 0-5.7z"/></svg>
-            </button>
+            <button class="like-action-btn"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M20.8 4.6c-1.6-1.6-4.1-1.6-5.7 0l-.5.5-.5-.5c-1.6-1.6-4.1-1.6-5.7 0-1.6 1.6-1.6 4.1 0 5.7l6.2 6.2 6.2-6.2c1.6-1.6 1.6-4.1 0-5.7z"/></svg></button>
             <span class="stat-num like-num" data-id="${post.id}">${post.likes}</span>
           </div>
           <div class="stat-group comment-group" data-id="${post.id}">
-            <button class="comment-action-btn">
-              <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/></svg>
-            </button>
+            <button class="comment-action-btn"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/></svg></button>
             <span class="stat-num comment-num" data-id="${post.id}">${post.comments.length}</span>
           </div>
         </div>
@@ -584,7 +533,6 @@
     `).join('');
   }
 
-  // ======================== 渲染论坛 ========================
   function renderForum() {
     const container = document.getElementById('forumApp');
     container.innerHTML = `
@@ -619,16 +567,6 @@
       };
     });
   }
-
-  // ======================== 导航栏滚动隐藏 ========================
-  let lastScroll = 0;
-  window.addEventListener('scroll', () => {
-    const header = document.querySelector('header');
-    const st = window.scrollY;
-    if (st > lastScroll && st > 60) header.classList.add('hide');
-    else header.classList.remove('hide');
-    lastScroll = st;
-  });
 
   renderForum();
 </script>
