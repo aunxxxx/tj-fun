@@ -1138,6 +1138,10 @@
     activeDrawer = modalElement;
 
     const drawer = modalElement;
+   drawer.addEventListener('touchstart', onTouchStart, { passive: false });
+drawer.addEventListener('touchmove', onTouchMove, { passive: false });
+drawer.addEventListener('touchend', onTouchEnd);
+drawer.addEventListener('touchcancel', onTouchEnd);
     const dragBar = drawer.querySelector('.drag-bar');
 
     if (!dragBar) return;
@@ -1205,57 +1209,117 @@
 
     // ===== touch start =====
 
-    const onTouchStart = (e) => {
-      startY = e.touches[0].clientY;
-      startHeight = drawer.offsetHeight;
+   const onTouchStart = (e) => {
 
-      dragging = true;
+  startY = e.touches[0].clientY;
+  deltaY = 0;
+  dragging = true;
 
-      setDrawerTransition(false);
-      setWrapperTransition(false);
-    };
+  const content =
+    drawer.querySelector('.drawer-content');
+
+  startFromContent =
+    e.target.closest('.drawer-content') !== null;
+
+  // 记录内容滚动位置
+  if (content) {
+    startScrollTop = content.scrollTop;
+  }
+
+  drawer.style.transition = 'none';
+  wrapper.style.transition = 'none';
+  mask.style.transition = 'none';
+};
 
     // ===== touch move =====
 
-    const onTouchMove = (e) => {
-      if (!dragging) return;
+   const onTouchMove = (e) => {
+  if (!dragging) return;
 
-      const currentY = e.touches[0].clientY;
+  const currentY = e.touches[0].clientY;
+  deltaY = currentY - startY;
 
-      // 向上拖 = delta 正
-      const deltaY = startY - currentY;
+  const content =
+    drawer.querySelector('.drawer-content');
 
-      let newHeight = startHeight + deltaY;
+  // =========================
+  // ① 内容区滚动优先
+  // =========================
+  if (startFromContent && content) {
 
-      // 最大限制
-      newHeight = Math.min(MAX_H, newHeight);
+    const atTop = content.scrollTop <= 0;
 
-      // 小于 MIN_H 后增加阻尼
-      if (newHeight < MIN_H) {
-        const extra = MIN_H - newHeight;
+    // 没到顶部 → 不允许拖抽屉
+    if (!atTop) return;
+  }
 
-        // rubber band
-        newHeight = MIN_H - extra * 0.35;
-      }
+  // =========================
+  // ② 只处理“向下拖”
+  // =========================
+  if (deltaY > 0) {
 
-      currentHeight = newHeight;
+    e.preventDefault();
 
-      drawer.style.height = `${newHeight}px`;
+    // drawer 跟随手指
+    drawer.style.transform =
+      `translateY(${deltaY}px)`;
 
-      updateBackgroundByHeight(newHeight);
+    // 背景联动
+    const progress =
+      Math.min(deltaY / 300, 1);
 
-      e.preventDefault();
-    };
+    wrapper.style.transform =
+      `scale(${1 - progress * 0.08})`;
 
+    wrapper.style.filter =
+      `blur(${progress * 4}px)`;
+
+    mask.style.background =
+      `rgba(0,0,0,${0.3 + progress * 0.3})`;
+  }
+};
     // ===== touch end =====
 
     const onTouchEnd = () => {
-      if (!dragging) return;
 
-      dragging = false;
+  dragging = false;
 
-      setDrawerTransition(true);
-      setWrapperTransition(true);
+  drawer.style.transition =
+    'transform .25s ease';
+
+  wrapper.style.transition =
+    'transform .25s ease, filter .25s ease';
+
+  mask.style.transition =
+    'background .25s ease';
+
+  // =========================
+  // ① 关闭条件（核心）
+  // =========================
+  if (deltaY > 120) {
+
+    drawer.style.transform =
+      `translateY(100%)`;
+
+    wrapper.style.transform = 'scale(1)';
+    wrapper.style.filter = 'blur(0px)';
+    mask.style.background = 'rgba(0,0,0,0)';
+
+    setTimeout(() => {
+      closeModal();
+    }, 200);
+
+    return;
+  }
+
+  // =========================
+  // ② 回弹
+  // =========================
+  drawer.style.transform = '';
+  wrapper.style.transform = '';
+  wrapper.style.filter = '';
+  mask.style.background = 'rgba(0,0,0,0.3)';
+};
 
       // ===== close =====
       if (currentHeight < CLOSE_THRESHOLD) {
