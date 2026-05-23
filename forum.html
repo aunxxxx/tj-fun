@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>铁汁窝2.53</title>
+<title>铁汁窝2.54</title>
 <style>
   * {
     margin: 0;
@@ -1405,77 +1405,95 @@
     return count;
   }
 
-  function generateCommentsHtml(post) {
-    const renderItem = (item, level=0, parentId=null) => {
-      const likeCount = item.likes || 0;
-      const replyCount = getReplyCount(item);
-      const actions = `
-  <div class="action-bar">
+ function generateCommentsHtml(post) {
+  const renderItem = (item, level = 0, parentId = null) => {
+    const likeCount = item.likes || 0;
+    const replyCount = getReplyCount(item);
 
-    <button
-      class="action-btn reply-btn"
-      data-id="${item.id}"
-      data-type="${item.replies ? 'comment' : 'reply'}"
-      data-parent="${parentId || ''}"
-      data-username="${item.username}"
-    >
+    const actions = `
+      <div class="action-bar">
 
-      <svg
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2"
-        fill="none"
-      >
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-      </svg>
+        <button
+          class="action-btn reply-btn"
+          data-id="${item.id}"
+          data-type="${item.replies ? 'comment' : 'reply'}"
+          data-parent="${parentId || ''}"
+          data-username="${item.username}"
+        >
+          <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
 
-      ${replyCount > 0 ? replyCount : ''}
+          ${replyCount > 0 ? replyCount : ''}
+        </button>
 
-    </button>
+        <button
+          class="action-btn like-btn"
+          data-id="${item.id}"
+          data-type="${item.replies ? 'comment' : 'reply'}"
+          data-parent="${parentId || ''}"
+        >
+          <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none">
+            <path d="M20.8 4.6c-1.6-1.6-4.1-1.6-5.7 0l-.5.5-.5-.5c-1.6-1.6-4.1-1.6-5.7 0-1.6 1.6-1.6 4.1 0 5.7l6.2 6.2 6.2-6.2c1.6-1.6 1.6-4.1 0-5.7z"/>
+          </svg>
 
-    <button
-      class="action-btn like-btn ${liked ? 'liked' : ''}"
-      data-id="${item.id}"
-      data-type="${item.replies ? 'comment' : 'reply'}"
-      data-parent="${parentId || ''}"
-    >
+          <span class="like-count">
+            ${likeCount}
+          </span>
+        </button>
 
-      <svg
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2"
-        fill="none"
-      >
-        <path d="M20.8 4.6c-1.6-1.6-4.1-1.6-5.7 0l-.5.5-.5-.5c-1.6-1.6-4.1-1.6-5.7 0-1.6 1.6-1.6 4.1 0 5.7l6.2 6.2 6.2-6.2c1.6-1.6 1.6-4.1 0-5.7z"/>
-      </svg>
+      </div>
+    `;
 
-      <span class="like-count">
-        ${likeCount}
-      </span>
+    const nested =
+      (item.replies && item.replies.length)
+        ? `<div class="nested-replies">
+            ${item.replies.map(r => renderItem(r, level + 1, item.id)).join('')}
+           </div>`
+        : '';
 
-    </button>
+    return `
+      <div class="${item.replies ? 'comment-item' : 'reply-item'}">
+        <div class="${item.replies ? 'comment-main' : 'reply-main'}">
 
-  </div>
-`;
-      `;
-      const nested = (item.replies && item.replies.length) ? `<div class="nested-replies">${item.replies.map(r => renderItem(r, level+1, item.id)).join('')}</div>` : '';
-      return `
-        <div class="${item.replies ? 'comment-item' : 'reply-item'}">
-          <div class="${item.replies ? 'comment-main' : 'reply-main'}">
-            <div class="${item.replies ? 'comment-avatar' : 'reply-avatar'}" data-username="${escapeHtml(item.username)}">${escapeHtml(item.avatar || item.username.charAt(0))}</div>
-            <div class="${item.replies ? 'comment-right' : 'reply-right'}">
-              <div><span class="${item.replies ? 'comment-user' : 'reply-user'}" data-username="${escapeHtml(item.username)}">${escapeHtml(item.username)}</span><span class="${item.replies ? 'comment-time' : 'reply-time'}">${formatRelativeTime(item.createdAt)}</span></div>
-              <div class="${item.replies ? 'comment-text' : 'reply-text'}">${escapeHtml(item.text)}</div>
-              ${actions}
-            </div>
+          <div class="${item.replies ? 'comment-avatar' : 'reply-avatar'}"
+               data-username="${escapeHtml(item.username)}">
+            ${escapeHtml(item.avatar || item.username.charAt(0))}
           </div>
-          ${nested}
+
+          <div class="${item.replies ? 'comment-right' : 'reply-right'}">
+
+            <div>
+              <span class="${item.replies ? 'comment-user' : 'reply-user'}"
+                    data-username="${escapeHtml(item.username)}">
+                ${escapeHtml(item.username)}
+              </span>
+
+              <span class="${item.replies ? 'comment-time' : 'reply-time'}">
+                ${formatRelativeTime(item.createdAt)}
+              </span>
+            </div>
+
+            <div class="${item.replies ? 'comment-text' : 'reply-text'}">
+              ${escapeHtml(item.text)}
+            </div>
+
+            ${actions}
+          </div>
+
         </div>
-      `;
-    };
-    if (!post.comments.length) return '<div style="text-align:center;padding:24px;">暂无评论</div>';
-    return post.comments.map(c => renderItem(c)).join('');
+
+        ${nested}
+      </div>
+    `;
+  };
+
+  if (!post.comments.length) {
+    return '<div style="text-align:center;padding:24px;">暂无评论</div>';
   }
+
+  return post.comments.map(c => renderItem(c)).join('');
+}
 
   function attachCommentEvents(modal, post, isMobile) {
 
