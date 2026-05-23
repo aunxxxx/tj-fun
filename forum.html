@@ -1108,17 +1108,11 @@
     window.scrollTo(0, scrollPosition);
   }
 
-  function openModal(modalElement, isMobile) {
+ function openModal(modalElement, isMobile) {
   if (activeMask) closeModal();
 
   const wrapper = document.getElementById('pageWrapper');
   scrollPosition = window.scrollY;
-
-  if (isMobile) {
-    wrapper.style.transition =
-      'transform 0.25s ease, filter 0.25s ease';
-    wrapper.classList.add('modal-open');
-  }
 
   const mask = document.createElement('div');
   mask.className = 'modal-mask show';
@@ -1133,256 +1127,194 @@
 
   activeMask = mask;
 
-  if (isMobile) {
-    activeDrawer = modalElement;
-
-    const drawer = modalElement;
-   drawer.addEventListener('touchstart', onTouchStart, { passive: false });
-drawer.addEventListener('touchmove', onTouchMove, { passive: false });
-drawer.addEventListener('touchend', onTouchEnd);
-drawer.addEventListener('touchcancel', onTouchEnd);
-    const dragBar = drawer.querySelector('.drag-bar');
-
-    if (!dragBar) return;
-
-    let startY = 0;
-    let startHeight = 0;
-    let currentHeight = 0;
-    let dragging = false;
-
-    const MIN_H = window.innerHeight * 0.3;
-    const INIT_H = window.innerHeight * 0.8;
-    const MAX_H = window.innerHeight * 0.92;
-
-    const CLOSE_THRESHOLD = window.innerHeight * 0.22;
-    const EXPAND_THRESHOLD = window.innerHeight * 0.88;
-
-    currentHeight = INIT_H;
-
-    drawer.style.height = `${INIT_H}px`;
-    drawer.style.transform = 'translateY(0)';
-    drawer.style.transition = 'height .25s ease-out';
-
-    // ===== 工具函数 =====
-
-    const setDrawerTransition = (enabled) => {
-      drawer.style.transition = enabled
-        ? 'height .25s ease-out'
-        : 'none';
-    };
-
-    const setWrapperTransition = (enabled) => {
-      wrapper.style.transition = enabled
-        ? 'transform .25s ease-out, filter .25s ease-out'
-        : 'none';
-    };
-
-    const snapTo = (height) => {
-      currentHeight = height;
-      drawer.style.height = `${height}px`;
-      updateBackgroundByHeight(height);
-    };
-
-    // ===== 背景联动 =====
-
-    function updateBackgroundByHeight(height) {
-      let progress =
-        (height - MIN_H) / (MAX_H - MIN_H);
-
-     progress = Math.max(0, progress);
-
-      // scale: 1 → 0.88
-      const scaleVal = 1 - progress * 0.12;
-
-      // blur: 0 → 6
-      const blurVal = progress * 6;
-
-      wrapper.style.transform = `scale(${scaleVal})`;
-      wrapper.style.filter = `blur(${blurVal}px)`;
-
-      // mask opacity 联动
-      mask.style.background = `rgba(0,0,0,${
-        0.15 + progress * 0.25
-      })`;
-    }
-
-    // ===== touch start =====
-
-   const onTouchStart = (e) => {
-
-  startY = e.touches[0].clientY;
-  deltaY = 0;
-  dragging = true;
-
-  const content =
-    drawer.querySelector('.drawer-content');
-
-  startFromContent =
-    e.target.closest('.drawer-content') !== null;
-
-  // 记录内容滚动位置
-  if (content) {
-    startScrollTop = content.scrollTop;
-  }
-
-  drawer.style.transition = 'none';
-  wrapper.style.transition = 'none';
-  mask.style.transition = 'none';
-};
-
-    // ===== touch move =====
-
-   const onTouchMove = (e) => {
-  if (!dragging) return;
-
-  const currentY = e.touches[0].clientY;
-  deltaY = currentY - startY;
-
-  const content =
-    drawer.querySelector('.drawer-content');
-
-  // =========================
-  // ① 内容区滚动优先
-  // =========================
-  if (startFromContent && content) {
-
-    const atTop = content.scrollTop <= 0;
-
-    // 没到顶部 → 不允许拖抽屉
-    if (!atTop) return;
-  }
-
-  // =========================
-  // ② 只处理“向下拖”
-  // =========================
-  if (deltaY > 0) {
-
-    e.preventDefault();
-
-    // drawer 跟随手指
-    drawer.style.transform =
-      `translateY(${deltaY}px)`;
-
-    // 背景联动
-    const progress =
-      Math.min(deltaY / 300, 1);
-
-    wrapper.style.transform =
-      `scale(${1 - progress * 0.08})`;
-
-    wrapper.style.filter =
-      `blur(${progress * 4}px)`;
-
-    mask.style.background =
-      `rgba(0,0,0,${0.3 + progress * 0.3})`;
-  }
-};
-    // ===== touch end =====
-
-   const onTouchEnd = () => {
-
-  dragging = false;
-
-  drawer.style.transition =
-    'transform .25s ease';
-
-  wrapper.style.transition =
-    'transform .25s ease, filter .25s ease';
-
-  mask.style.transition =
-    'background .25s ease';
-
-  if (deltaY > 120) {
-
-    drawer.style.transform =
-      `translateY(100%)`;
-
-    wrapper.style.transform = 'scale(1)';
-    wrapper.style.filter = 'blur(0px)';
-    mask.style.background = 'rgba(0,0,0,0)';
-
-    setTimeout(() => {
-      closeModal();
-    }, 200);
-
+  // ===== PC =====
+  if (!isMobile) {
+    const closeBtn = modalElement.querySelector('.close-modal');
+    if (closeBtn) closeBtn.onclick = () => closeModal();
     return;
   }
 
-  // 回弹
-  drawer.style.transform = '';
-  wrapper.style.transform = '';
-  wrapper.style.filter = '';
-  mask.style.background = 'rgba(0,0,0,0.3)';
-};
+  // ===== Mobile iOS Sheet =====
+  enableIOSBottomSheet({
+    drawer: modalElement,
+    wrapper,
+    mask,
+    dragBar: modalElement.querySelector('.drag-bar'),
+    closeModal
+  });
+}
+
+ function enableIOSBottomSheet({
+  drawer,
+  wrapper,
+  mask,
+  dragBar,
+  closeModal
+}) {
+
+  // ===== sizes =====
+  const MIN_H = window.innerHeight * 0.35;
+  const MID_H = window.innerHeight * 0.75;
+  const MAX_H = window.innerHeight * 0.92;
+
+  let startY = 0;
+  let deltaY = 0;
+  let dragging = false;
+
+  const content = drawer.querySelector('.drawer-content');
+
+  let startFromContent = false;
 
   // =========================
-  // 回弹
+  // smooth transition helper
   // =========================
-  drawer.style.transform = '';
-  wrapper.style.transform = '';
-  wrapper.style.filter = '';
-  mask.style.background = 'rgba(0,0,0,0.3)';
-};
+  const setTransition = (on) => {
+    const t = on
+      ? 'transform .28s cubic-bezier(.2,.8,.2,1), filter .28s'
+      : 'none';
 
-    // ===== event =====
+    drawer.style.transition = t;
+    wrapper.style.transition = t;
+    mask.style.transition = 'background .28s';
+  };
 
-    dragBar.addEventListener(
-      'touchstart',
-      onTouchStart,
-      { passive: false }
-    );
+  // =========================
+  // background effect
+  // =========================
+  const applyEffect = (p) => {
+    const scale = 1 - p * 0.08;
+    const blur = p * 5;
 
-    dragBar.addEventListener(
-      'touchmove',
-      onTouchMove,
-      { passive: false }
-    );
+    wrapper.style.transform = `scale(${scale})`;
+    wrapper.style.filter = `blur(${blur}px)`;
 
-    dragBar.addEventListener(
-      'touchend',
-      onTouchEnd
-    );
+    mask.style.background =
+      `rgba(0,0,0,${0.3 + p * 0.35})`;
+  };
 
-    dragBar.addEventListener(
-      'touchcancel',
-      onTouchEnd
-    );
+  // =========================
+  // snap states
+  // =========================
+  const snap = (state) => {
+    setTransition(true);
 
-    // ===== cleanup =====
-
-    drawer.cleanup = () => {
-      dragBar.removeEventListener(
-        'touchstart',
-        onTouchStart
-      );
-
-      dragBar.removeEventListener(
-        'touchmove',
-        onTouchMove
-      );
-
-      dragBar.removeEventListener(
-        'touchend',
-        onTouchEnd
-      );
-
-      dragBar.removeEventListener(
-        'touchcancel',
-        onTouchEnd
-      );
-    };
-
-    // 初始状态
-    updateBackgroundByHeight(INIT_H);
-
-  } else {
-    const closeBtn =
-      modalElement.querySelector('.close-modal');
-
-    if (closeBtn) {
-      closeBtn.onclick = () => closeModal();
+    if (state === 'mid') {
+      drawer.style.height = `${MID_H}px`;
+      applyEffect(0.15);
     }
-  }
+
+    if (state === 'full') {
+      drawer.style.height = `${MAX_H}px`;
+      applyEffect(0);
+    }
+
+    if (state === 'close') {
+      drawer.style.transform = `translateY(100%)`;
+      wrapper.style.transform = '';
+      wrapper.style.filter = '';
+      mask.style.background = 'rgba(0,0,0,0)';
+
+      setTimeout(() => closeModal(), 220);
+    }
+  };
+
+  // =========================
+  // touch start
+  // =========================
+  const onTouchStart = (e) => {
+    startY = e.touches[0].clientY;
+    deltaY = 0;
+    dragging = true;
+
+    startFromContent =
+      e.target.closest('.drawer-content') !== null;
+
+    setTransition(false);
+  };
+
+  // =========================
+  // touch move
+  // =========================
+  const onTouchMove = (e) => {
+    if (!dragging) return;
+
+    const y = e.touches[0].clientY;
+    deltaY = y - startY;
+
+    // 内容优先滚动
+    if (startFromContent && content && content.scrollTop > 0) {
+      return;
+    }
+
+    // 只允许下拉
+    if (deltaY > 0) {
+      e.preventDefault();
+
+      const damp = Math.min(deltaY, 240);
+      const p = damp / 240;
+
+      drawer.style.transform =
+        `translateY(${damp * 0.25}px)`;
+
+      applyEffect(p);
+    }
+  };
+
+  // =========================
+  // touch end (iOS feel core)
+  // =========================
+  const onTouchEnd = () => {
+    dragging = false;
+    setTransition(true);
+
+    const velocityClose = deltaY > 140;
+
+    // ===== 快速下滑直接关闭 =====
+    if (velocityClose) {
+      snap('close');
+      return;
+    }
+
+    const abs = Math.abs(deltaY);
+
+    // ===== 吸附逻辑 =====
+    if (abs < 60) {
+      snap('mid');
+      return;
+    }
+
+    if (deltaY > 120) {
+      snap('close');
+      return;
+    }
+
+    // 默认回弹
+    snap('mid');
+  };
+
+  // =========================
+  // bind events
+  // =========================
+  dragBar.addEventListener('touchstart', onTouchStart, { passive: false });
+  dragBar.addEventListener('touchmove', onTouchMove, { passive: false });
+  dragBar.addEventListener('touchend', onTouchEnd);
+  dragBar.addEventListener('touchcancel', onTouchEnd);
+
+  // =========================
+  // cleanup
+  // =========================
+  drawer.cleanup = () => {
+    dragBar.removeEventListener('touchstart', onTouchStart);
+    dragBar.removeEventListener('touchmove', onTouchMove);
+    dragBar.removeEventListener('touchend', onTouchEnd);
+    dragBar.removeEventListener('touchcancel', onTouchEnd);
+  };
+
+  // init state
+  drawer.style.height = `${MID_H}px`;
+  mask.style.background = 'rgba(0,0,0,0.3)';
+}
+ 
 
   function showLikesModal(postId) {
     const post = posts.find(p => p.id === postId);
