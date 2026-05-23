@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>铁汁窝2.50</title>
+<title>铁汁窝2.51</title>
 <style>
   * {
     margin: 0;
@@ -1320,31 +1320,46 @@ drawer.addEventListener('touchcancel', onTouchEnd);
   mask.style.background = 'rgba(0,0,0,0.3)';
 };
 
-      // ===== close =====
-      if (currentHeight < CLOSE_THRESHOLD) {
-        wrapper.style.transform = 'scale(1)';
-        wrapper.style.filter = 'blur(0px)';
+     const onTouchEnd = () => {
 
-        mask.style.background = 'rgba(0,0,0,0)';
+  dragging = false;
 
-        drawer.style.height = '0px';
+  drawer.style.transition =
+    'transform .25s ease';
 
-        setTimeout(() => {
-          closeModal();
-        }, 220);
+  wrapper.style.transition =
+    'transform .25s ease, filter .25s ease';
 
-        return;
-      }
+  mask.style.transition =
+    'background .25s ease';
 
-      // ===== expand =====
-      if (currentHeight > EXPAND_THRESHOLD) {
-        snapTo(MAX_H);
-        return;
-      }
+  // =========================
+  // 关闭
+  // =========================
+  if (deltaY > 120) {
 
-      // ===== 默认回弹 =====
-      snapTo(INIT_H);
-    };
+    drawer.style.transform =
+      `translateY(100%)`;
+
+    wrapper.style.transform = 'scale(1)';
+    wrapper.style.filter = 'blur(0px)';
+    mask.style.background = 'rgba(0,0,0,0)';
+
+    setTimeout(() => {
+      closeModal();
+    }, 200);
+
+    return;
+  }
+
+  // =========================
+  // 回弹
+  // =========================
+  drawer.style.transform = '';
+  wrapper.style.transform = '';
+  wrapper.style.filter = '';
+  mask.style.background = 'rgba(0,0,0,0.3)';
+};
 
     // ===== event =====
 
