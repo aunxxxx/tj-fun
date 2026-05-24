@@ -53,26 +53,28 @@ export function renderLikeList(container, state) {
   `).join("");
 }
 
+import { addLike, renderLikeCount, getUniqueUsers } from "./like.js";
+
 /**
- * 绑定点赞点击
- * mode: "feed" | "comment"
+ * 绑定点赞按钮
  */
 export function bindLike(el, postId, user, mode, onShowList) {
   const btn = el.querySelector(".like-btn");
   const countEl = el.querySelector(".like-count");
 
+  // ✔ 点赞（只负责 +1）
   btn.addEventListener("click", () => {
     const state = addLike(postId, user);
     renderLikeCount(el, state);
-
-    // feed模式：可以查看点赞列表
-    if (mode === "feed") {
-      countEl.onclick = () => onShowList(state);
-    }
-
-    // comment模式：不绑定点击事件
-    if (mode === "comment") {
-      countEl.onclick = null;
-    }
   });
+
+  // ✔ 只绑定一次点击查看列表
+  if (mode === "feed") {
+    countEl.addEventListener("click", () => {
+      const state = getLikeState(postId);
+      const users = getUniqueUsers(state);
+
+      onShowList(users, state);
+    });
+  }
 }
