@@ -1,56 +1,220 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh">
 <head>
-  <meta charset="UTF-8">
-  <title>Comment Test</title>
+  <meta charset="UTF-8" />
+  <title>Comment System</title>
+
   <style>
+    body {
+      font-family: Arial;
+      padding: 20px;
+    }
+
     .comment {
-      padding: 6px;
-      margin-left: 20px;
+      padding: 8px;
+      margin-top: 6px;
       border-left: 1px solid #ddd;
+    }
+
+    .meta {
+      font-size: 12px;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    button {
+      margin-left: 6px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    #inputBox {
+      margin-bottom: 20px;
+    }
+
+    input {
+      padding: 6px;
+      width: 260px;
     }
   </style>
 </head>
+
 <body>
 
+<!-- 输入框 -->
+<div id="inputBox">
+  <input id="commentInput" placeholder="输入评论..." />
+  <button id="sendBtn">发送</button>
+</div>
+
+<!-- 评论区 -->
 <div id="root"></div>
 
 <script type="module">
-  import { commentState, updateCommentState } from "./comment.js";
 
-  // ===== 假数据 =====
-  const mockComments = [
-    { id: "1", parentId: null, content: "第一条评论", user: { name: "Alice" } },
-    { id: "2", parentId: "1", content: "回复第一条", user: { name: "Bob" } },
-    { id: "3", parentId: "2", content: "继续回复", user: { name: "Charlie" } }
-  ];
+// ==============================
+// ① state
+// ==============================
+const commentState = {
+  comments: [],
+  commentTree: []
+};
 
-  // 初始化数据
-  updateCommentState(commentState, mockComments);
+// ==============================
+// ② 树结构
+// ==============================
+function buildCommentTree(list) {
+  const map = new Map();
+  const tree = [];
 
-  console.log(commentState.commentTree);
+  list.forEach(item => {
+    map.set(item.id, { ...item, children: [] });
+  });
 
-  // ===== 渲染函数（直接写在这里，先别拆文件）=====
-  function render(list, container, level = 0) {
-    list.forEach(item => {
+  map.forEach(item => {
+    if (item.parentId) {
+      const parent = map.get(item.parentId);
+      if (parent) parent.children.push(item);
+    } else {
+      tree.push(item);
+    }
+  });
+
+  return tree;
+}
+
+// ==============================
+// ③ state更新
+// ==============================
+function updateState(list) {
+  commentState.comments = list;
+  commentState.commentTree = buildCommentTree(list);
+}
+
+// ==============================
+// ④ 渲染
+// ==============================
+function render(list, container, level = 0) {
+  container.innerHTML = "";
+
+  function walk(nodes, parent, depth) {
+    nodes.forEach(item => {
       const div = document.createElement("div");
       div.className = "comment";
-      div.style.marginLeft = level * 20 + "px";
+      div.style.marginLeft = depth * 20 + "px";
 
       div.innerHTML = `
-        <b>${item.user.name}</b>: ${item.content}
+        <div>
+          <b>${item.user.name}</b>: ${item.content}
+        </div>
+
+        <div class="meta">
+          ❤️ <span class="like-count">${item.likes || 0}</span>
+
+          <button class="like-btn" data-id="${item.id}">
+            点赞
+          </button>
+
+          <button class="reply-btn" data-id="${item.id}">
+            回复
+          </button>
+        </div>
       `;
 
-      container.appendChild(div);
+      parent.appendChild(div);
 
-      if (item.children && item.children.length > 0) {
-        render(item.children, container, level + 1);
+      if (item.children?.length) {
+        walk(item.children, parent, depth + 1);
       }
     });
   }
 
-  const root = document.getElementById("root");
+  walk(list, container, level);
+}
+
+// ==============================
+// ⑤ mock数据
+// ==============================
+const mock = [
+  { id: "1", parentId: null, content: "第一条评论", user: { name: "Alice" }, likes: 0 },
+  { id: "2", parentId: "1", content: "回复第一条", user: { name: "Bob" }, likes: 0 },
+  { id: "3", parentId: "2", content: "继续回复", user: { name: "Charlie" }, likes: 0 }
+];
+
+updateState(mock);
+
+// ==============================
+// ⑥ 状态
+// ==============================
+let replyTargetId = null;
+
+// ==============================
+// ⑦ 渲染
+// ==============================
+const root = document.getElementById("root");
+
+function refresh() {
   render(commentState.commentTree, root);
+}
+
+refresh();
+
+// ==============================
+// ⑧ 点击事件（点赞 + 回复）
+// ==============================
+document.addEventListener("click", (e) => {
+
+  // 回复
+  if (e.target.classList.contains("reply-btn")) {
+    replyTargetId = e.target.dataset.id;
+    document.getElementById("commentInput").focus();
+  }
+
+  // 点赞
+  if (e.target.classList.contains("like-btn")) {
+    const id = e.target.dataset.id;
+
+    commentState.comments = commentState.comments.map(c => {
+      if (c.id === id) {
+        return {
+          ...c,
+          likes: (c.likes || 0) + 1
+        };
+      }
+      return c;
+    });
+
+    updateState(commentState.comments);
+    refresh();
+  }
+});
+
+// ==============================
+// ⑨ 发送评论
+// ==============================
+document.getElementById("sendBtn").onclick = () => {
+  const input = document.getElementById("commentInput");
+  const content = input.value.trim();
+
+  if (!content) return;
+
+  const newComment = {
+    id: Date.now().toString(),
+    parentId: replyTargetId || null,
+    content,
+    user: { name: "Me" },
+    likes: 0
+  };
+
+  const newList = [...commentState.comments, newComment];
+
+  updateState(newList);
+  refresh();
+
+  input.value = "";
+  replyTargetId = null;
+};
+
 </script>
 
 </body>
