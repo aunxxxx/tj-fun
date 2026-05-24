@@ -348,3 +348,37 @@ function openModal(
     );
   };
 }
+import { getLikeState } from "./services/storage.js";
+import { getUniqueUsers } from "./like.js";
+import { openModal, closeModal } from "./modalEngine.js";
+
+/**
+ * 点赞弹窗入口（放 bottomsheet.js）
+ */
+export function openLikeSheet(postId) {
+  const tpl = document.getElementById("likeModal");
+
+  const modal = tpl.cloneNode(true);
+  modal.style.display = "block";
+
+  const state = getLikeState(postId);
+  const users = getUniqueUsers(state);
+
+  const html = users.map(u => `
+    <div class="like-user">
+      <img src="${u.avatar}" />
+      <span>${u.name}</span>
+    </div>
+  `).join("");
+
+  modal.querySelector(".drawer-content").innerHTML = html;
+  modal.querySelector(".modal-body").innerHTML = html;
+
+  const isMobile = window.innerWidth <= 768;
+
+  openModal(modal, isMobile);
+
+  modal.querySelector(".close-modal")?.addEventListener("click", () => {
+    closeModal();
+  });
+}
