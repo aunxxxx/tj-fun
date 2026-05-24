@@ -1,97 +1,171 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<link rel="stylesheet" href="css/header.css">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>铁汁窝2.54</title>
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" href="css/modal.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>铁汁窝 2.54</title>
+
+  <link rel="stylesheet" href="css/header.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/modal.css">
+
+  <style>
+    .forum-container {
+      display: flex;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .post-section {
+      flex: 1;
+      min-height: 600px;
+    }
+
+    .side-panel {
+      width: 280px;
+    }
+
+    .modal.hidden {
+      display: none;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      width: 500px;
+      max-height: 80vh;
+      background: #fff;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    #commentList {
+      flex: 1;
+      overflow: auto;
+      padding: 10px;
+    }
+
+    .comment-input-bar {
+      display: flex;
+      padding: 10px;
+      border-top: 1px solid #eee;
+      gap: 10px;
+    }
+
+    .comment-input-bar input {
+      flex: 1;
+      padding: 6px;
+    }
+  </style>
 </head>
+
 <body>
-    <div class="page-wrapper" id="pageWrapper">
-       <header class="main-header">
 
-  <div class="header-container">
+<div class="page-wrapper" id="pageWrapper">
 
-    <!-- Logo -->
-    <a
-      href="index.html"
-      class="logo-link"
-    >
+  <!-- ================= HEADER ================= -->
+  <header class="main-header">
 
-      <img
-        src="images/logo.png"
-        alt="公司Logo"
-        class="logo"
-      />
+    <div class="header-container">
 
-    </a>
-
-    <!-- Nav -->
-    <nav class="main-nav">
-
-      <a
-        href="index.html"
-        class="nav-link"
-      >
-        Home
+      <a href="index.html" class="logo-link">
+        <img src="images/logo.png" class="logo" />
       </a>
 
-      <a
-        href="news.html"
-        class="nav-link"
-      >
-        大事件
-      </a>
+      <nav class="main-nav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="news.html" class="nav-link">大事件</a>
+        <a href="forum.html" class="nav-link active">铁汁窝</a>
+      </nav>
 
-      <a
-        href="forum.html"
-        class="nav-link active"
-      >
-        铁汁窝
-      </a>
+      <div class="header-user">
+        <a href="profile.html">
+          <img src="images/people.jpg" class="user-avatar" />
+        </a>
+      </div>
 
-    </nav>
+    </div>
 
-    <!-- User -->
-    <div class="header-user">
+  </header>
 
-      <a
-        href="profile.html"
-        class="user-link"
-      >
+  <!-- ================= MAIN ================= -->
+  <main class="forum-container">
 
-        <img
-          src="images/people.jpg"
-          alt="个人中心"
-          class="user-avatar"
-        />
+    <!-- 帖子流 -->
+    <section class="post-section" id="postList">
+      <!-- postCard.js 渲染这里 -->
+    </section>
 
-      </a>
+    <!-- 侧边栏 -->
+    <aside class="side-panel">
+
+      <div id="hotKeywords"></div>
+      <div id="recommendPanel"></div>
+
+    </aside>
+
+  </main>
+
+  <!-- ================= COMMENT MODAL ================= -->
+  <div id="commentModal" class="modal hidden">
+
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <span>评论</span>
+        <button id="closeCommentModal">×</button>
+      </div>
+
+      <!-- 评论列表 -->
+      <div id="commentList"></div>
+
+      <!-- 输入框 -->
+      <div class="comment-input-bar">
+        <input id="commentInput" placeholder="写评论..." />
+        <button id="sendCommentBtn">发送</button>
+      </div>
 
     </div>
 
   </div>
 
-</header>        <div class="forum-container" id="forumApp"></div>
-    </div>
+</div>
 
-    <script src="js/config.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="main.js" type="module"></script>
-    <script src="js/services/storage.js"></script>
-    <script src="js/services/like.js"></script>
-    <script src="js/services/keyword.js"></script>
-    <script src="js/services/post.js"></script>
-    <script src="js/hooks/animation.js"></script>
-    <script src="js/hooks/modal.js"></script>
-    <script src="js/hooks/reply.js"></script>
-    <script src="js/components/postEditor.js"></script>
-    <script src="js/components/commentModal.js"></script>
-    <script src="js/components/hotKeywords.js"></script>
-    <script src="js/components/postCard.js"></script>
-    <script src="js/app.js"></script>
+<!-- ================= JS ================= -->
+
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+
+<script src="js/services/storage.js"></script>
+<script src="js/services/like.js"></script>
+<script src="js/services/post.js"></script>
+
+<script src="js/components/postCard.js"></script>
+<script src="js/components/commentModal.js"></script>
+<script src="js/components/hotKeywords.js"></script>
+<script src="js/components/postEditor.js"></script>
+
+<script src="js/hooks/reply.js"></script>
+<script src="js/hooks/modal.js"></script>
+<script src="js/hooks/animation.js"></script>
+
+<script src="js/app.js"></script>
+
 </body>
 </html>
