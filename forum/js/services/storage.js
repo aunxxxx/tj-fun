@@ -92,3 +92,39 @@ posts = loadPosts();
 
 currentUser =
   loadCurrentUser();
+/* ========================================
+   like
+======================================== */
+function loadLikeState() {
+  try {
+    return JSON.parse(
+      localStorage.getItem('likeState')
+    ) || {};
+  } catch (err) {
+    console.error('loadLikeState error', err);
+    return {};
+  }
+}
+
+function saveLikeStateAll(data) {
+  try {
+    localStorage.setItem(
+      'likeState',
+      JSON.stringify(data)
+    );
+  } catch (err) {
+    console.error('saveLikeState error', err);
+  }
+}
+
+/* 暴露给 like.js 用 */
+function getLikeState(postId) {
+  const all = loadLikeState();
+  return all[postId] || { count: 0, users: [] };
+}
+
+function saveLikeState(postId, state) {
+  const all = loadLikeState();
+  all[postId] = state;
+  saveLikeStateAll(all);
+}
