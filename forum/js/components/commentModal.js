@@ -1,231 +1,143 @@
 
-import { commentState } from "../state/commentState.js";
-import { updateState } from "../services/commentService.js";
+/* ========================================
+   WECHAT / RED NOTE / iOS SHEET FINAL
+======================================== */
 
-/* ================= DOM ================= */
+.modal-mask {
+  position: fixed;
+  inset: 0;
 
-const mask = document.querySelector(".modal-mask");
-const drawer = document.querySelector(".drawer-modal");
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 
-const listBox = document.getElementById("commentList");
-const input = document.getElementById("commentInput");
-const sendBtn = document.getElementById("sendCommentBtn");
+  background: rgba(0,0,0,0.3);
 
-/* ================= state ================= */
+  z-index: 9999;
 
-let currentPostId = null;
-let replyTarget = null;
-
-/* ================= follow list（模拟） ================= */
-
-const followList = [
-  { id: "u1", name: "Alice" },
-  { id: "u2", name: "Bob" },
-  { id: "u3", name: "Charlie" }
-];
-
-/* ================= open ================= */
-
-export function openCommentModal(postId) {
-  currentPostId = postId;
-
-  const mock = [
-    { id: "1", postId, parentId: null, content: "第一条评论", user: { name: "Alice" }, likes: 0 },
-    { id: "2", postId, parentId: "1", content: "回复评论", user: { name: "Bob" }, likes: 0 }
-  ];
-
-  updateState(commentState, mock);
-  render();
-
-  mask.classList.add("show");
+  opacity: 0;
+  transition: opacity 0.25s ease;
 }
 
-/* ================= close ================= */
-
-function close() {
-  mask.classList.remove("show");
-  resetInput();
+.modal-mask.show {
+  opacity: 1;
 }
 
-/* ================= render ================= */
+/* ================= SHEET ================= */
 
-function render() {
-  listBox.innerHTML = "";
+.drawer-modal {
+  width: 100%;
+  max-width: 720px;
+  height: 85vh;
 
-  function walk(nodes, depth = 0) {
-    nodes.forEach(n => {
-      const div = document.createElement("div");
+  background: #fff;
+  border-radius: 28px 28px 0 0;
 
-      div.className = "comment-item";
-      div.dataset.id = n.id;
-      div.style.marginLeft = depth * 18 + "px";
+  display: flex;
+  flex-direction: column;
 
-      div.innerHTML = `
-        <b>${n.user.name}</b>: ${n.content}
-        <div class="comment-actions">
-          <button class="reply">回复</button>
-          <button class="like">👍 ${n.likes || 0}</button>
-        </div>
-      `;
+  transform: translateY(100%);
 
-      listBox.appendChild(div);
-
-      if (n.children?.length) walk(n.children, depth + 1);
-    });
-  }
-
-  walk(commentState.commentTree);
+  will-change: transform;
 }
 
-/* ================= reply ================= */
-
-document.addEventListener("click", (e) => {
-
-  const item = e.target.closest(".comment-item");
-
-  if (item && e.target.classList.contains("reply")) {
-    const id = item.dataset.id;
-    const comment = commentState.comments.find(c => c.id === id);
-
-    setReply(comment);
-  }
-
-  if (e.target.classList.contains("like")) {
-    const id = item.dataset.id;
-
-    commentState.comments = commentState.comments.map(c => {
-      if (c.id === id) {
-        return { ...c, likes: (c.likes || 0) + 1 };
-      }
-      return c;
-    });
-
-    updateState(commentState, commentState.comments);
-    render();
-  }
-});
-
-/* ================= reply UI ================= */
-
-function setReply(comment) {
-  replyTarget = comment;
-
-  let bar = document.querySelector(".reply-preview");
-
-  if (!bar) {
-    bar = document.createElement("div");
-    bar.className = "reply-preview";
-
-    input.parentNode.insertBefore(bar, input);
-  }
-
-  bar.innerHTML = `
-    <span>回复 @${comment.user.name}: ${comment.content}</span>
-    <button id="cancelReply">✕</button>
-  `;
-
-  document.getElementById("cancelReply").onclick = () => {
-    replyTarget = null;
-    bar.remove();
-  };
+/* dragging state */
+.drawer-modal.dragging {
+  transition: none !important;
 }
 
-/* ================= send ================= */
+/* ================= ANIMATION ================= */
 
-sendBtn.onclick = () => {
-  const text = input.value.trim();
-  if (!text) return;
-
-  const newComment = {
-    id: Date.now().toString(),
-    postId: currentPostId,
-    parentId: replyTarget?.id || null,
-    content: text,
-    user: { name: "Me" },
-    likes: 0
-  };
-
-  const list = [...commentState.comments, newComment];
-
-  updateState(commentState, list);
-  render();
-
-  resetInput();
-};
-
-/* ================= reset ================= */
-
-function resetInput() {
-  input.value = "";
-  replyTarget = null;
-
-  const bar = document.querySelector(".reply-preview");
-  if (bar) bar.remove();
+.modal-mask.show .drawer-modal {
+  animation: sheetIn 0.35s cubic-bezier(0.2,0.8,0.2,1);
 }
 
-/* ================= iOS drag (with velocity) ================= */
+@keyframes sheetIn {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
 
-let startY = 0;
-let currentY = 0;
-let startTime = 0;
-let velocity = 0;
-let dragging = false;
+/* ================= DRAG HANDLE ================= */
 
-drawer.addEventListener("touchstart", (e) => {
-  startY = e.touches[0].clientY;
-  startTime = Date.now();
-  dragging = true;
+.drag-bar {
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  drawer.classList.add("dragging");
-});
+.drag-bar::before {
+  content: "";
+  width: 42px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.2);
+}
 
-drawer.addEventListener("touchmove", (e) => {
-  if (!dragging) return;
+/* ================= CONTENT ================= */
 
-  currentY = e.touches[0].clientY;
-  let diff = currentY - startY;
+.drawer-content {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
 
-  if (diff < 0) diff = 0;
+/* ================= COMMENTS ================= */
 
-  drawer.style.transform = `translateY(${diff}px)`;
-});
+.comment-item {
+  padding: 10px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
 
-drawer.addEventListener("touchend", () => {
-  dragging = false;
-  drawer.classList.remove("dragging");
+.comment-actions {
+  font-size: 12px;
+  color: #666;
+  display: flex;
+  gap: 10px;
+}
 
-  const delta = currentY - startY;
-  const time = Date.now() - startTime;
+/* ================= INPUT ================= */
 
-  velocity = delta / time; // px/ms
+.comment-input-bar {
+  display: flex;
+  gap: 8px;
+  padding: 10px;
+  border-top: 1px solid rgba(0,0,0,0.08);
+  background: #fff;
 
-  const shouldClose =
-    delta > 120 || velocity > 0.8;
+  transition: transform 0.25s cubic-bezier(0.2,0.8,0.2,1);
+}
 
-  if (shouldClose) {
-    mask.classList.remove("show");
+.comment-input-bar input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
 
-    setTimeout(() => {
-      drawer.style.transform = "translateY(100%)";
-    }, 300);
-  } else {
-    drawer.style.transform = "translateY(0)";
-  }
-});
+.comment-input-bar button {
+  padding: 10px 14px;
+  border: none;
+  background: #111;
+  color: #fff;
+  border-radius: 10px;
+}
 
-/* ================= @ 用户（关注列表） ================= */
+/* ================= REPLY ================= */
 
-input.addEventListener("focus", () => {
-  const atList = document.createElement("div");
-  atList.className = "reply-preview";
+.reply-preview {
+  padding: 6px 10px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  font-size: 12px;
 
-  atList.innerHTML = followList
-    .map(u => `<div>@${u.name}</div>`)
-    .join("");
+  display: flex;
+  justify-content: space-between;
 
-  input.parentNode.appendChild(atList);
+  animation: pop 0.2s ease;
+}
 
-  setTimeout(() => {
-    atList.remove();
-  }, 3000);
-});
+@keyframes pop {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
