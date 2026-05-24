@@ -1,65 +1,43 @@
-import { bindLike } from "./likeBind.js";
-import { openLikeSheet, closeSheet } from "./bottomsheet.js";
+document.addEventListener("DOMContentLoaded", () => {
 
-const mockUser = {
-  id: "guest_1",
-  name: "Guest",
-  avatar: "/img/default.png"
-};
+  /* =========================
+     POST 点击 -> 打开评论
+  ========================= */
 
-/* =========================
-   CLOSE SHEET（安全绑定）
-========================= */
-
-function initBottomSheetClose() {
-  const mask = document.querySelector(".modal-mask");
-
-  if (!mask) return;
-
-  // 防止重复绑定
-  mask.removeEventListener?.("click", handleClose);
-  mask.addEventListener("click", handleClose);
-}
-
-function handleClose(e) {
-  if (e.target.classList.contains("modal-mask")) {
-    closeSheet();
-  }
-}
-
-/* =========================
-   LIKE 初始化（防重复）
-========================= */
-
-function initFeed() {
   const posts = document.querySelectorAll(".post");
 
-  if (!posts.length) return;
-
-  posts.forEach(postEl => {
-    const postId = postEl.dataset.id;
-
-    // 防重复绑定（关键优化）
-    if (postEl.dataset.likeBound === "1") return;
-    postEl.dataset.likeBound = "1";
-
-    bindLike(
-      postEl,
-      postId,
-      mockUser,
-      "feed",
-      () => {
-        openLikeSheet(postId);
-      }
-    );
+  posts.forEach(post => {
+    post.addEventListener("click", () => {
+      post.classList.toggle("liked");
+    });
   });
-}
 
-/* =========================
-   BOOT（统一入口）
-========================= */
+  /* =========================
+     COMMENT MODAL
+  ========================= */
 
-document.addEventListener("DOMContentLoaded", () => {
-  initBottomSheetClose();
-  initFeed();
+  const modal = document.getElementById("commentModal");
+  const closeBtn = document.getElementById("closeCommentModal");
+  const postList = document.getElementById("postList");
+
+  // 打开
+  postList.addEventListener("click", (e) => {
+    const post = e.target.closest(".post");
+    if (!post) return;
+
+    modal.classList.remove("hidden");
+  });
+
+  // 关闭按钮
+  closeBtn.addEventListener("click", () => {
+    modal.classList.add("hidden");
+  });
+
+  // 点击背景关闭
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.classList.add("hidden");
+    }
+  });
+
 });
