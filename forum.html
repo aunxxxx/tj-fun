@@ -2,8 +2,8 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>铁汁窝 2.60</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>铁汁窝 2.61</title>
 
   <link rel="stylesheet" href="css/header.css">
   <link rel="stylesheet" href="css/main.css">
@@ -77,11 +77,10 @@
 
 <body>
 
-<div class="page-wrapper" id="pageWrapper">
+<div class="page-wrapper">
 
-  <!-- ================= HEADER ================= -->
+  <!-- HEADER -->
   <header class="main-header">
-
     <div class="header-container">
 
       <a href="index.html" class="logo-link">
@@ -101,30 +100,24 @@
       </div>
 
     </div>
-
   </header>
 
-  <!-- ================= MAIN ================= -->
+  <!-- MAIN -->
   <main class="forum-container">
 
-    <!-- 帖子流 -->
     <section class="post-section" id="postList">
-      <!-- postCard.js 渲染这里 -->
+      <!-- 暂时没有 postCard → 这里不会炸 -->
     </section>
 
-    <!-- 侧边栏 -->
     <aside class="side-panel">
-
       <div id="hotKeywords"></div>
       <div id="recommendPanel"></div>
-
     </aside>
 
   </main>
 
-  <!-- ================= COMMENT MODAL ================= -->
+  <!-- COMMENT MODAL -->
   <div id="commentModal" class="modal hidden">
-
     <div class="modal-content">
 
       <div class="modal-header">
@@ -132,38 +125,31 @@
         <button id="closeCommentModal">×</button>
       </div>
 
-      <!-- 评论列表 -->
       <div id="commentList"></div>
 
-      <!-- 输入框 -->
       <div class="comment-input-bar">
         <input id="commentInput" placeholder="写评论..." />
         <button id="sendCommentBtn">发送</button>
       </div>
 
     </div>
-
   </div>
 
 </div>
 
-<!-- ================= JS ================= -->
-
+<!-- JS（只保留真实存在的） -->
 <script src="js/config.js"></script>
 <script src="js/utils.js"></script>
 
 <script src="js/services/storage.js"></script>
 <script src="js/services/like.js"></script>
-<script src="js/services/post.js"></script>
 
-<script src="js/components/postCard.js"></script>
-<script src="js/components/commentModal.js"></script>
-<script src="js/components/hotKeywords.js"></script>
-<script src="js/components/postEditor.js"></script>
-
-<script src="js/hooks/reply.js"></script>
-<script src="js/hooks/modal.js"></script>
-<script src="js/hooks/animation.js"></script>
+<!-- 暂时不要 post/comment/hooks（还没写会404） -->
+<!-- <script src="js/services/post.js"></script> -->
+<!-- <script src="js/components/postCard.js"></script> -->
+<!-- <script src="js/components/commentModal.js"></script> -->
+<!-- <script src="js/hooks/reply.js"></script> -->
+<!-- <script src="js/hooks/animation.js"></script> -->
 
 <script src="js/main.js"></script>
 
