@@ -1,6 +1,6 @@
 
 /* ========================================
-   WECHAT / RED NOTE / iOS SHEET FINAL
+   FINAL COMMENT SYSTEM (WECHAT + ZHIHU + RED)
 ======================================== */
 
 .modal-mask {
@@ -11,7 +11,7 @@
   align-items: flex-end;
   justify-content: center;
 
-  background: rgba(0,0,0,0.3);
+  background: rgba(0,0,0,0.35);
 
   z-index: 9999;
 
@@ -41,23 +41,11 @@
   will-change: transform;
 }
 
-/* dragging state */
 .drawer-modal.dragging {
   transition: none !important;
 }
 
-/* ================= ANIMATION ================= */
-
-.modal-mask.show .drawer-modal {
-  animation: sheetIn 0.35s cubic-bezier(0.2,0.8,0.2,1);
-}
-
-@keyframes sheetIn {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
-}
-
-/* ================= DRAG HANDLE ================= */
+/* ================= HANDLE ================= */
 
 .drag-bar {
   height: 28px;
@@ -70,8 +58,8 @@
   content: "";
   width: 42px;
   height: 5px;
-  border-radius: 999px;
   background: rgba(0,0,0,0.2);
+  border-radius: 999px;
 }
 
 /* ================= CONTENT ================= */
@@ -82,12 +70,19 @@
   -webkit-overflow-scrolling: touch;
 }
 
-/* ================= COMMENTS ================= */
+/* ================= COMMENT ITEM ================= */
 
 .comment-item {
   padding: 10px;
   border-bottom: 1px solid rgba(0,0,0,0.06);
+  transition: background 0.2s ease;
 }
+
+.comment-item.active {
+  background: rgba(0,0,0,0.04);
+}
+
+/* ================= ACTIONS ================= */
 
 .comment-actions {
   font-size: 12px;
@@ -106,6 +101,10 @@
   background: #fff;
 
   transition: transform 0.25s cubic-bezier(0.2,0.8,0.2,1);
+}
+
+.comment-input-bar.focused {
+  transform: translateY(-6px);
 }
 
 .comment-input-bar input {
@@ -133,11 +132,10 @@
 
   display: flex;
   justify-content: space-between;
-
-  animation: pop 0.2s ease;
 }
 
-@keyframes pop {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+/* ================= BACKDROP ================= */
+
+.modal-mask {
+  backdrop-filter: blur(0px);
 }
