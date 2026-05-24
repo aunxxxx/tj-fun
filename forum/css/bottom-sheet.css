@@ -1,0 +1,159 @@
+/* ========================================
+   iOS Bottom Sheet
+   专业版弹窗系统
+======================================== */
+
+.modal-mask {
+
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  background: rgba(0,0,0,.3);
+
+  z-index: 9999;
+
+  opacity: 0;
+
+  transition:
+    opacity .28s ease,
+    background .28s ease;
+
+  backdrop-filter: blur(0px);
+}
+
+.modal-mask.show {
+  opacity: 1;
+}
+
+.drawer-modal {
+
+  position: relative;
+
+  width: 100%;
+  max-width: 700px;
+
+  height: 85vh;
+
+  background: #fff;
+
+  border-radius: 28px 28px 0 0;
+
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+
+  box-shadow:
+    0 -10px 40px rgba(0,0,0,.18);
+
+  will-change:
+    transform;
+}
+
+/* =========================
+   drag bar
+========================= */
+
+.drag-bar {
+
+  position: relative;
+
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  touch-action: none;
+}
+
+.drag-bar::before {
+
+  content: '';
+
+  width: 42px;
+  height: 5px;
+
+  border-radius: 999px;
+
+  background:
+    rgba(0,0,0,.22);
+}
+
+/* =========================
+   content
+========================= */
+
+.drawer-content {
+
+  flex: 1;
+
+  overflow-y: auto;
+
+  -webkit-overflow-scrolling: touch;
+
+  overscroll-behavior: contain;
+}
+
+/* =========================
+   page scaling
+========================= */
+
+.modal-open {
+
+  overflow: hidden;
+}
+
+/* =========================
+   desktop modal
+========================= */
+
+.modal-card {
+
+  width: 620px;
+
+  max-height: 85vh;
+
+  background: #fff;
+
+  border-radius: 24px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 10px 40px rgba(0,0,0,.18);
+}
+
+/* =========================
+   header
+========================= */
+
+.modal-header {
+
+  height: 64px;
+
+  padding: 0 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom:
+    1px solid rgba(0,0,0,.06);
+}
+
+.close-modal {
+
+  border: none;
+  background: none;
+
+  font-size: 28px;
+
+  cursor: pointer;
+}
