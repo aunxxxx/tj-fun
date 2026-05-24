@@ -1,4 +1,5 @@
-import { bindLike } from "./like.js";
+import { bindLike } from "./likeBind.js";
+import { openLikeSheet } from "./bottomsheet.js";
 
 const mockUser = {
   id: "guest_1",
@@ -6,7 +7,7 @@ const mockUser = {
   avatar: "/img/default.png"
 };
 
-document.querySelectorAll(".post").forEach((postEl) => {
+document.querySelectorAll(".post").forEach(postEl => {
   const postId = postEl.dataset.id;
 
   bindLike(
@@ -14,10 +15,8 @@ document.querySelectorAll(".post").forEach((postEl) => {
     postId,
     mockUser,
     "feed",
-    (users, state) => {
-      // 现在先不用UI，只做验证
-      console.log("点赞用户列表：", users);
-      console.log("点赞数据：", state);
+    () => {
+      openLikeSheet(postId);
     }
   );
 });
