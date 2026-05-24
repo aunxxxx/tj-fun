@@ -1,22 +1,53 @@
-export function buildCommentTree(list) {
+
+import { commentState, setComments } from "../state/commentState.js";
+
+/* =========================
+   获取
+========================= */
+export function getComments() {
+  return commentState.comments;
+}
+
+/* =========================
+   添加评论
+========================= */
+export function addComment(comment) {
+  const newComments = [
+    ...commentState.comments,
+    {
+      id: Date.now().toString(),
+      ...comment
+    }
+  ];
+
+  setComments(newComments);
+  return newComments;
+}
+
+/* =========================
+   删除评论
+========================= */
+export function deleteComment(id) {
+  const newComments = commentState.comments.filter(c => c.id !== id);
+  setComments(newComments);
+}
+
+/* =========================
+   tree 构建（楼中楼）
+========================= */
+export function buildTree(comments) {
   const map = new Map();
   const tree = [];
 
-  list.forEach(i => map.set(i.id, { ...i, children: [] }));
+  comments.forEach(c => map.set(c.id, { ...c, children: [] }));
 
-  map.forEach(i => {
-    if (i.parentId) {
-      const p = map.get(i.parentId);
-      if (p) p.children.push(i);
+  map.forEach(c => {
+    if (c.parentId && map.get(c.parentId)) {
+      map.get(c.parentId).children.push(c);
     } else {
-      tree.push(i);
+      tree.push(c);
     }
   });
 
   return tree;
-}
-
-export function updateState(state, list) {
-  state.comments = list;
-  state.commentTree = buildCommentTree(list);
 }
