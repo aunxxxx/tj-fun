@@ -1,141 +1,200 @@
 
-/* ========================================
-   FINAL COMMENT SYSTEM (WECHAT + ZHIHU + RED)
-======================================== */
+const mask = document.querySelector(".modal-mask");
+const drawer = document.querySelector(".drawer-modal");
 
-.modal-mask {
-  position: fixed;
-  inset: 0;
+const listBox = document.getElementById("commentList");
+const input = document.getElementById("commentInput");
+const sendBtn = document.getElementById("sendCommentBtn");
 
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
+/* ================= STATE ================= */
 
-  background: rgba(0,0,0,0.35);
+let replyTarget = null;
 
-  z-index: 9999;
+/* ================= PHYSICS ================= */
 
-  opacity: 0;
-  transition: opacity 0.25s ease;
+let startY = 0;
+let lastY = 0;
+let velocity = 0;
+let lastTime = 0;
+
+let translateY = 0;
+let dragging = false;
+
+const FRICTION = 0.92;
+
+/* ================= OPEN ================= */
+
+export function openCommentModal() {
+  mask.classList.add("show");
 }
 
-.modal-mask.show {
-  opacity: 1;
+/* ================= CLOSE ================= */
+
+function closeModal() {
+  mask.classList.remove("show");
+  drawer.style.transform = "translateY(100%)";
 }
 
-/* ================= SHEET ================= */
+/* ================= CLICK COMMENT ================= */
 
-.drawer-modal {
-  width: 100%;
-  max-width: 720px;
-  height: 85vh;
+document.addEventListener("click", (e) => {
+  const item = e.target.closest(".comment-item");
 
-  background: #fff;
-  border-radius: 28px 28px 0 0;
+  if (!item) return;
 
-  display: flex;
-  flex-direction: column;
+  // 🧲 磁吸定位（核心）
+  item.scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
 
-  transform: translateY(100%);
+  setActive(item);
 
-  will-change: transform;
-}
+  if (e.target.classList.contains("reply")) {
+    setReply(item);
+  }
+});
 
-.drawer-modal.dragging {
-  transition: none !important;
-}
+/* ================= ACTIVE ================= */
 
-/* ================= HANDLE ================= */
+function setActive(item) {
+  document.querySelectorAll(".comment-item")
+    .forEach(el => el.classList.remove("active"));
 
-.drag-bar {
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.drag-bar::before {
-  content: "";
-  width: 42px;
-  height: 5px;
-  background: rgba(0,0,0,0.2);
-  border-radius: 999px;
-}
-
-/* ================= CONTENT ================= */
-
-.drawer-content {
-  flex: 1;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* ================= COMMENT ITEM ================= */
-
-.comment-item {
-  padding: 10px;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
-  transition: background 0.2s ease;
-}
-
-.comment-item.active {
-  background: rgba(0,0,0,0.04);
-}
-
-/* ================= ACTIONS ================= */
-
-.comment-actions {
-  font-size: 12px;
-  color: #666;
-  display: flex;
-  gap: 10px;
-}
-
-/* ================= INPUT ================= */
-
-.comment-input-bar {
-  display: flex;
-  gap: 8px;
-  padding: 10px;
-  border-top: 1px solid rgba(0,0,0,0.08);
-  background: #fff;
-
-  transition: transform 0.25s cubic-bezier(0.2,0.8,0.2,1);
-}
-
-.comment-input-bar.focused {
-  transform: translateY(-6px);
-}
-
-.comment-input-bar input {
-  flex: 1;
-  padding: 10px;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-}
-
-.comment-input-bar button {
-  padding: 10px 14px;
-  border: none;
-  background: #111;
-  color: #fff;
-  border-radius: 10px;
+  item.classList.add("active");
 }
 
 /* ================= REPLY ================= */
 
-.reply-preview {
-  padding: 6px 10px;
-  background: #f5f5f5;
-  border-radius: 8px;
-  font-size: 12px;
+function setReply(item) {
+  const name = item.dataset.name || "用户";
 
-  display: flex;
-  justify-content: space-between;
+  replyTarget = item;
+
+  let bar = document.querySelector(".reply-preview");
+
+  if (!bar) {
+    bar = document.createElement("div");
+    bar.className = "reply-preview";
+    input.parentNode.insertBefore(bar, input);
+  }
+
+  bar.innerHTML = `
+    <span>回复 @${name}</span>
+    <button id="cancelReply">✕</button>
+  `;
+
+  document.getElementById("cancelReply").onclick = () => {
+    replyTarget = null;
+    bar.remove();
+  };
+
+  // 🧭 输入框跟随（知乎级）
+  document.querySelector(".comment-input-bar")
+    .classList.add("focused");
+}
+
+/* ================= SEND ================= */
+
+sendBtn.onclick = () => {
+  input.value = "";
+  replyTarget = null;
+
+  document.querySelector(".reply-preview")?.remove();
+
+  document.querySelector(".comment-input-bar")
+    .classList.remove("focused");
+};
+
+/* ================= WECHAT DRAG ================= */
+
+drawer.addEventListener("touchstart", (e) => {
+  startY = e.touches[0].clientY;
+  lastY = startY;
+  lastTime = Date.now();
+  dragging = true;
+
+  drawer.classList.add("dragging");
+});
+
+drawer.addEventListener("touchmove", (e) => {
+  if (!dragging) return;
+
+  const y = e.touches[0].clientY;
+
+  const delta = y - startY;
+
+  const now = Date.now();
+  velocity = (y - lastY) / (now - lastTime);
+
+  lastY = y;
+  lastTime = now;
+
+  let move = delta;
+
+  // 🪶 小红书阻尼
+  if (move > 0) {
+    move = move * (1 / (1 + move * 0.002));
+  }
+
+  translateY = move;
+
+  drawer.style.transform = `translateY(${translateY}px)`;
+
+  updateBackdrop(move);
+});
+
+drawer.addEventListener("touchend", () => {
+  dragging = false;
+  drawer.classList.remove("dragging");
+
+  const v = velocity * 1000;
+
+  if (translateY > 160 || v > 1200) {
+    inertiaClose(v);
+  } else {
+    snapBack();
+  }
+});
+
+/* ================= INERTIA ================= */
+
+function inertiaClose(v) {
+  let pos = translateY;
+  let vel = v;
+
+  function step() {
+    vel *= FRICTION;
+    pos += vel * 0.016;
+
+    drawer.style.transform = `translateY(${pos}px)`;
+
+    if (Math.abs(vel) > 0.5) {
+      requestAnimationFrame(step);
+    } else {
+      closeModal();
+    }
+  }
+
+  requestAnimationFrame(step);
+}
+
+/* ================= SNAP ================= */
+
+function snapBack() {
+  drawer.style.transition =
+    "transform 0.4s cubic-bezier(0.2,0.9,0.2,1)";
+
+  drawer.style.transform = "translateY(0)";
+
+  setTimeout(() => {
+    drawer.style.transition = "none";
+  }, 400);
 }
 
 /* ================= BACKDROP ================= */
 
-.modal-mask {
-  backdrop-filter: blur(0px);
+function updateBackdrop(p) {
+  mask.style.backdropFilter =
+    `blur(${Math.min(10, p * 0.05)}px)`;
 }
