@@ -1,6 +1,6 @@
 
 /* ========================================
-   iOS Bottom Sheet + Comment System
+   FINAL COMMENT SYSTEM (WECHAT + ZHIHU + RED)
 ======================================== */
 
 .modal-mask {
@@ -11,23 +11,23 @@
   align-items: flex-end;
   justify-content: center;
 
-  background: rgba(0,0,0,.3);
+  background: rgba(0,0,0,0.35);
 
   z-index: 9999;
 
   opacity: 0;
-  transition: opacity .25s ease;
+  transition: opacity 0.25s ease;
 }
 
 .modal-mask.show {
   opacity: 1;
 }
 
-/* ================= drawer ================= */
+/* ================= SHEET ================= */
 
 .drawer-modal {
   width: 100%;
-  max-width: 700px;
+  max-width: 720px;
   height: 85vh;
 
   background: #fff;
@@ -37,34 +37,32 @@
   flex-direction: column;
 
   transform: translateY(100%);
-  transition: transform .35s cubic-bezier(.2,.8,.2,1);
 
   will-change: transform;
 }
 
-.modal-mask.show .drawer-modal {
-  transform: translateY(0);
+.drawer-modal.dragging {
+  transition: none !important;
 }
 
-/* ================= drag ================= */
+/* ================= HANDLE ================= */
 
 .drag-bar {
   height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-  touch-action: none;
 }
 
 .drag-bar::before {
   content: "";
   width: 42px;
   height: 5px;
-  background: rgba(0,0,0,.2);
+  background: rgba(0,0,0,0.2);
   border-radius: 999px;
 }
 
-/* ================= content ================= */
+/* ================= CONTENT ================= */
 
 .drawer-content {
   flex: 1;
@@ -72,12 +70,19 @@
   -webkit-overflow-scrolling: touch;
 }
 
-/* ================= comment ================= */
+/* ================= COMMENT ITEM ================= */
 
 .comment-item {
   padding: 10px;
-  border-bottom: 1px solid rgba(0,0,0,.06);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  transition: background 0.2s ease;
 }
+
+.comment-item.active {
+  background: rgba(0,0,0,0.04);
+}
+
+/* ================= ACTIONS ================= */
 
 .comment-actions {
   font-size: 12px;
@@ -86,17 +91,20 @@
   gap: 10px;
 }
 
-/* ================= input ================= */
+/* ================= INPUT ================= */
 
 .comment-input-bar {
   display: flex;
   gap: 8px;
   padding: 10px;
-  border-top: 1px solid rgba(0,0,0,.08);
-
+  border-top: 1px solid rgba(0,0,0,0.08);
   background: #fff;
 
-  transition: transform .25s ease;
+  transition: transform 0.25s cubic-bezier(0.2,0.8,0.2,1);
+}
+
+.comment-input-bar.focused {
+  transform: translateY(-6px);
 }
 
 .comment-input-bar input {
@@ -114,20 +122,20 @@
   border-radius: 10px;
 }
 
-/* ================= reply preview ================= */
+/* ================= REPLY ================= */
 
 .reply-preview {
   padding: 6px 10px;
   background: #f5f5f5;
   border-radius: 8px;
   font-size: 12px;
+
   display: flex;
   justify-content: space-between;
-  align-items: center;
 }
 
-/* ================= dragging state ================= */
+/* ================= BACKDROP ================= */
 
-.dragging {
-  transition: none !important;
+.modal-mask {
+  backdrop-filter: blur(0px);
 }
