@@ -157,3 +157,20 @@
 
   cursor: pointer;
 }
+
+.like-pop {
+  transform: scale(1.2);
+  transition: transform 0.15s ease;
+}
+
+.like-float {
+  position: fixed;
+  font-size: 14px;
+  font-weight: bold;
+  color: #ff3b30;
+  pointer-events: none;
+  transform: translateY(0);
+  opacity: 1;
+  transition: transform 0.6s ease, opacity 0.6s ease;
+  z-index: 9999;
+}
