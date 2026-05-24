@@ -1,4 +1,3 @@
-
 import { bindLike } from "./likeBind.js";
 import { openLikeSheet, closeSheet } from "./bottomsheet.js";
 
@@ -9,22 +8,40 @@ const mockUser = {
 };
 
 /* =========================
-   CLOSE SHEET
+   CLOSE SHEET（安全绑定）
 ========================= */
 
-document.querySelector(".modal-mask")?.addEventListener("click", (e) => {
+function initBottomSheetClose() {
+  const mask = document.querySelector(".modal-mask");
+
+  if (!mask) return;
+
+  // 防止重复绑定
+  mask.removeEventListener?.("click", handleClose);
+  mask.addEventListener("click", handleClose);
+}
+
+function handleClose(e) {
   if (e.target.classList.contains("modal-mask")) {
     closeSheet();
   }
-});
+}
 
 /* =========================
-   INIT FEED (核心)
+   LIKE 初始化（防重复）
 ========================= */
 
 function initFeed() {
-  document.querySelectorAll(".post").forEach(postEl => {
+  const posts = document.querySelectorAll(".post");
+
+  if (!posts.length) return;
+
+  posts.forEach(postEl => {
     const postId = postEl.dataset.id;
+
+    // 防重复绑定（关键优化）
+    if (postEl.dataset.likeBound === "1") return;
+    postEl.dataset.likeBound = "1";
 
     bindLike(
       postEl,
@@ -39,9 +56,10 @@ function initFeed() {
 }
 
 /* =========================
-   BOOT
+   BOOT（统一入口）
 ========================= */
 
 document.addEventListener("DOMContentLoaded", () => {
+  initBottomSheetClose();
   initFeed();
 });
