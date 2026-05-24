@@ -30,6 +30,6 @@ document.addEventListener("click", (e) => {
     const postId = e.target.dataset.postid;
 
     // 打开评论弹窗
-    openCommentModal(postId);
+   openCommentModal(post.id);
   }
 });
