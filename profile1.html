@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iX*OnE - Profile</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+    <div class="header-container">
+        <a href="about.html">
+            <img src="images/logo.png" alt="公司Logo" class="logo">
+        </a>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="news.html">大事件</a>
+            <a href="forum.html">铁汁窝</a>
+        </nav>
+        <div class="user-area">
+            <a href="profile1.html" class="user-icon">
+                <img src="images/people.jpg" alt="个人中心" class="user-avatar">
+            </a>
+        </div>
+    </div>
+</header>
+
+<section id="profile-page">
+    <div class="profile-top">
+        <div class="profile-main-title">
+            <img src="images/ilogo.jpg" alt="Logo" class="profile-title-logo">
+            <span>iX*OnE</span>
+        </div>
+        <img src="images/iX*OnE.jpg" alt="iX*OnE" class="profile-main-img">
+    </div>
+
+    <div class="profile-box">
+        <h2>PROFILE</h2>
+        <p>
+            　　iX*OnE，时代骏风（TJ-Fun）旗下国际流行乐演唱组合，
+            由
+            <a href="member-detail.html?id=马睿婕" class="member-link">马睿婕</a>、
+            <a href="member-detail.html?id=陈朗" class="member-link">陈朗</a>（队长）、
+            <a href="member-detail.html?id=冯浩轩" class="member-link">冯浩轩</a>、
+            <a href="member-detail.html?id=徐楚茹" class="member-link">徐楚茹</a>、
+            <a href="member-detail.html?id=唐芷莹" class="member-link">唐芷莹</a>、
+            <a href="member-detail.html?id=谭思盈" class="member-link">谭思盈</a>、
+            <a href="member-detail.html?id=陈安愉" class="member-link">陈安愉</a>、
+            <a href="member-detail.html?id=陈珊珊" class="member-link">陈珊珊</a>、
+            <a href="member-detail.html?id=陈琪琪" class="member-link">陈琪琪</a>
+            九位成员组成。
+        </p>
+        <p>
+            　　2024年11月1日在时代骏风（TJ-Fun）自制的青春成长节目
+            《登基计划》中正式出道。同年11月25日发行出道专辑
+            《iX*Dream》，销售额高达2220万；
+            12月担任公益星设计的公益明星大使，
+            年底获得国际新歌榜“最受欢迎团体”等十余奖项。
+        </p>
+        <p>
+            　　2025年7月11日，推出mini专辑《iX'World》，
+            销售额近5000万，并获得时代骏风“年度最佳团体奖”。
+            2026年1月26日，推出第一张正规专辑《CROWN THE iX》，
+            销售额近1亿。
+        </p>
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 时代骏风</p>
+</footer>
+
+<script>
+    // 强制登录检查
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) {
+        window.location.href = 'login.html';
+    }
+
+    // 头部滚动隐藏
+    let lastScrollTop = 0;
+    const header = document.querySelector('header');
+    window.addEventListener('scroll', function() {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        if (scrollTop > lastScrollTop && scrollTop > 50) {
+            header.classList.add('hide');
+        } else {
+            header.classList.remove('hide');
+        }
+        lastScrollTop = scrollTop;
+    });
+</script>
+
+</body>
+</html>
