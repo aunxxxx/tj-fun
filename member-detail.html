@@ -1,1 +1,8 @@
+通过 ?id=xxx 参数获取成员名称，然后显示对应的详细信息。
 
+示例获取参数的方式：
+
+javascript
+const urlParams = new URLSearchParams(window.location.search);
+const memberId = urlParams.get('id');  // 得到 "马睿婕" 等
+这样就不会有警告，并且点击成员名字/卡片都能正常跳转了！
