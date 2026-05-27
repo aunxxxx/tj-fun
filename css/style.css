@@ -656,3 +656,39 @@ footer {
     font-size: 14px;
     margin-top: 40px;
 }
+
+
+/* ============================================
+   成员超链接样式
+   ============================================ */
+
+/* Profile 页面中的成员名字链接 */
+.member-link {
+    color: #111;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.2s;
+}
+
+.member-link:hover {
+    color: #ff6b6b;
+    text-decoration: underline;
+}
+
+/* Members 卡片区域的链接（包裹整个卡片） */
+.member-card-link {
+    text-decoration: none;
+    display: block;
+}
+
+/* 保持卡片原有 hover 效果 */
+.member-card-link:hover .member-card {
+    transform: translateY(-5px);
+    background: #eeeeee;
+}
+
+/* 确保卡片内的文字颜色不受链接影响 */
+.member-card-link .member-card h3,
+.member-card-link .member-card p {
+    color: inherit;
+}
