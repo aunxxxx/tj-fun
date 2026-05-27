@@ -692,3 +692,132 @@ footer {
 .member-card-link .member-card p {
     color: inherit;
 }
+
+
+/* ============================================
+   Profile 独立页面样式
+   ============================================ */
+#profile-page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding-top: 100px;
+}
+
+.profile-top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.profile-main-title {
+    display: flex;
+    align-items: center;
+    font-size: 80px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    justify-content: center;
+    letter-spacing: 4px;
+}
+
+.profile-title-logo {
+    width: 80px;
+    height: 80px;
+    margin-right: 16px;
+}
+
+.profile-main-img {
+    width: 90%;
+    max-width: 700px;
+    border-radius: 16px;
+    margin-bottom: 30px;
+    display: block;
+}
+
+/* Profile 盒子样式 */
+.profile-box {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 24px;
+    color: #111;
+    line-height: 2.1;
+}
+
+.profile-box h2 {
+    font-size: 28px;
+    margin-bottom: 30px;
+    letter-spacing: 3px;
+}
+
+.profile-box p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 28px;
+    text-align: justify;
+}
+
+/* 成员名字链接 */
+.member-link {
+    color: #111;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.2s;
+}
+
+.member-link:hover {
+    color: #ff6b6b;
+    text-decoration: underline;
+}
+
+/* ============================================
+   Members 独立页面样式（保留原有 + 卡片链接）
+   ============================================ */
+#members-page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding-top: 100px;
+}
+
+/* 卡片链接样式 */
+.member-card-link {
+    text-decoration: none;
+    display: block;
+}
+
+.member-card-link:hover .member-card {
+    transform: translateY(-5px);
+    background: #eeeeee;
+}
+
+.member-card-link .member-card h3,
+.member-card-link .member-card p {
+    color: inherit;
+}
+
+/* 手机端适配 */
+@media (max-width: 768px) {
+    #profile-page {
+        padding-top: 120px;
+    }
+    .profile-main-title {
+        font-size: 52px;
+    }
+    .profile-title-logo {
+        width: 52px;
+        height: 52px;
+    }
+    .profile-main-img {
+        max-width: 550px;
+    }
+    .profile-box {
+        margin: 30px auto;
+        padding: 0 16px;
+    }
+    .profile-box h2 {
+        font-size: 24px;
+    }
+    .profile-box p {
+        font-size: 14px;
+        line-height: 1.8;
+    }
+}
