@@ -41,14 +41,14 @@ header.hide {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 12px 40px;   /* ← 导航栏上下高度：改第一个数字（如 20px） */
+        padding: 12px 40px;
         max-width: 1400px;
         margin: 0 auto;
         width: 100%;
         box-sizing: border-box;
     }
 
-    /* Logo - 位置：左边，大小：改 height */
+    /* Logo - 位置：左边 */
     .logo {
         height: 45px;
         flex-shrink: 0;
@@ -61,13 +61,13 @@ header.hide {
         white-space: nowrap;
     }
 
-    /* 导航容器 - 居中，位置固定 */
+    /* 导航链接 - 副标题大小和颜色 */
     nav a {
-        color: #333;
+        color: #555;
         margin: 0 20px;
         text-decoration: none;
-        font-weight: bold;
-        font-size: 18px;
+        font-weight: 500;
+        font-size: 20px;
         transition: all 0.3s ease;
         padding: 8px 16px;
         border-radius: 20px;
@@ -78,19 +78,21 @@ header.hide {
         background: #f5f5f5;
     }
     
+    /* 当前页面高亮 - 黑色粗体 */
     nav a.current {
-        background-color: #222;
-        color: #fff;
+        color: #111;
+        font-weight: 600;
+        background: transparent;
     }
 
-    /* 个人头像 - 位置：右边，大小：改 width/height */
+    /* 个人头像 */
     .user-area {
         flex-shrink: 0;
     }
     
     .user-avatar {
-        width: 45px;   /* ← 个人头像大小：改这个值 */
-        height: 45px;  /* ← 个人头像大小：改这个值 */
+        width: 45px;
+        height: 45px;
         border-radius: 50%;
         object-fit: cover;
         cursor: pointer;
@@ -116,8 +118,8 @@ header.hide {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 16px;   /* ← 5个元素之间的距离：改这个值 */
-        padding: 10px 16px;   /* ← 导航栏上下高度：改第一个数字（如 15px）*/
+        gap: 16px;
+        padding: 10px 16px;
         max-width: 1400px;
         margin: 0 auto;
         width: 100%;
@@ -125,23 +127,22 @@ header.hide {
     }
     
     .logo {
-        height: 30px;  /* ← 手机端 Logo 大小：改这个值 */
+        height: 30px;
         width: auto;
         margin-left: 5px;
     }
 
-   /* 导航容器 - 3个链接集中居中 */
     nav {
         display: flex;
         justify-content: center;
-        gap: 20px;   /* ← 手机端导航链接之间的距离：改这个值 */
+        gap: 20px;
     }
     
     nav a {
         color: #333;
         text-decoration: none;
         font-weight: bold;
-        font-size: 14px;   /* ← 手机端导航字体大小：改这个值 */
+        font-size: 14px;
         transition: all 0.3s ease;
         padding: 6px 12px;
         border-radius: 20px;
@@ -162,8 +163,8 @@ header.hide {
     }
     
     .user-avatar {
-        width: 40px;   /* ← 手机端个人头像大小：改这个值 */
-        height: 40px;   /* ← 手机端个人头像大小：改这个值 */
+        width: 40px;
+        height: 40px;
         margin-right: 5px;
         border-radius: 50%;
         object-fit: cover;
@@ -176,7 +177,7 @@ header.hide {
    所有页面内容区域（避开固定导航栏）
    ============================================ */
 section {
-    padding-top: 100px;  /* ← 所有页面内容离导航栏的距离 */
+    padding-top: 100px;
     padding-bottom: 60px;
     padding-left: 20px;
     padding-right: 20px;
@@ -197,8 +198,8 @@ section {
 
 .department-card {
     display: block;
-    width: 60%;    /* ← 图片容器宽度（相对父级）*/
-    max-width: 500px;    /* ← 图片最大宽度（电脑端）*/
+    width: 60%;
+    max-width: 500px;
     margin: 0 auto;
     cursor: pointer;
     text-decoration: none;
@@ -299,17 +300,15 @@ section {
    手机端 Home 页面 + plan 区域
    ============================================ */
 @media (max-width: 768px) {
-    /* Home 页面 */
     .department-card .hover-text {
         display: none;
     }
 
-    /* 显示图片下方文字 */
     .mobile-text {
         display: block;
         text-align: center;
         margin-top: 12px;
-        font-size: 26px;  /* ← 手机端图片下方文字大小 */
+        font-size: 26px;
         font-weight: bold;
         color: #333;
     }
@@ -319,7 +318,6 @@ section {
         max-width: 350px;
     }
     
-    /* plan 区域手机端 */
     .plan-wrapper {
         gap: 16px;
         margin: 30px auto 0;
@@ -428,273 +426,6 @@ section {
 
 
 /* ============================================
-   Members 页面（原有样式）
-   ============================================ */
-#members {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding-top: 100px;
-}
-
-.members-top {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.members-main-title {
-    display: flex;
-    align-items: center;
-    font-size: 80px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    justify-content: center;
-    letter-spacing: 4px;
-}
-
-.member-title-logo {
-    width: 80px;
-    height: 80px;
-    margin-right: 16px;
-}
-
-.members-main-img {
-    width: 90%;
-    max-width: 700px;
-    border-radius: 16px;
-    margin-bottom: 30px;
-    display: block;
-}
-
-.members-subtitle {
-    width: 100%;
-    text-align: left;
-    font-size: 50px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #111;
-}
-
-.members-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-}
-
-.member-card {
-    background: #f5f5f5;
-    padding: 15px;
-    border-radius: 12px;
-    text-align: center;
-    transition: transform 0.3s;
-    cursor: pointer;
-}
-
-.member-card:hover {
-    transform: translateY(-5px);
-    background: #eeeeee;
-}
-
-.member-card img {
-    width: 100%;
-    aspect-ratio: 1/1;
-    object-fit: cover;
-    border-radius: 12px;
-}
-
-.member-card h3 {
-    font-size: 18px;
-    margin: 6px 0 4px;
-    color: #111;
-}
-
-.member-card p {
-    font-size: 16px;
-    margin: 2px 0 0;
-    color: #666;
-}
-
-@media (max-width: 768px) {
-    #members {
-        padding-top: 120px;
-    }
-    .members-main-title {
-        font-size: 52px;
-    }
-    .member-title-logo {
-        width: 52px;
-        height: 52px;
-    }
-    .members-main-img {
-        max-width: 550px;
-        margin-bottom: 20px;
-    }
-    .members-subtitle {
-        font-size: 36px;
-        margin-bottom: 10px;
-    }
-    .members-container {
-        gap: 10px;
-    }
-    .member-card h3 {
-        font-size: 12px;
-    }
-    .member-card p {
-        font-size: 10px;
-    }
-    .member-card {
-        padding: 8px;
-    }
-}
-
-
-/* ============================================
-   ========== 新增：Profile/Members 选项卡切换样式 ==========
-   ============================================ */
-
-/* 顶部导航按钮容器 */
-.members-nav {
-    display: flex;
-    justify-content: flex-end;
-    gap: 14px;
-    margin-top: 22px;
-    padding-right: 20px;
-    width: 100%;
-}
-
-/* 导航按钮样式 */
-.nav-btn {
-    border: none;
-    background: none;
-    color: #999;
-    font-size: 15px;
-    cursor: pointer;
-    transition: 0.3s;
-    padding-bottom: 4px;
-}
-
-.nav-btn:hover {
-    color: #333;
-}
-
-/* 激活状态：黑色 + 下划线 */
-.nav-btn.active {
-    color: #111;
-    border-bottom: 1.5px solid #111;
-}
-
-/* 页面切换容器 */
-.tab-content {
-    display: none;
-}
-
-.tab-content.active {
-    display: block;
-}
-
-/* Profile 页面样式 */
-.profile-box {
-    max-width: 900px;
-    margin: 60px auto;
-    padding: 0 24px;
-    color: #111;
-    line-height: 2.1;
-}
-
-.profile-box h2 {
-    font-size: 28px;
-    margin-bottom: 30px;
-    letter-spacing: 3px;
-}
-
-.profile-box p {
-    font-size: 16px;
-    color: #555;
-    margin-bottom: 28px;
-    text-align: justify;
-}
-
-/* 手机端适配 - 选项卡 + Profile */
-@media (max-width: 768px) {
-    .members-nav {
-        justify-content: center;
-        margin-top: 15px;
-        padding-right: 0;
-        gap: 20px;
-    }
-    
-    .nav-btn {
-        font-size: 14px;
-    }
-    
-    .profile-box {
-        margin: 30px auto;
-        padding: 0 16px;
-    }
-    
-    .profile-box h2 {
-        font-size: 24px;
-        margin-bottom: 20px;
-    }
-    
-    .profile-box p {
-        font-size: 14px;
-        line-height: 1.8;
-    }
-}
-
-
-/* ============================================
-   页脚
-   ============================================ */
-footer {
-    background: #f5f5f5;
-    padding: 20px;
-    text-align: center;
-    color: #888;
-    font-size: 14px;
-    margin-top: 40px;
-}
-
-
-/* ============================================
-   成员超链接样式
-   ============================================ */
-
-/* Profile 页面中的成员名字链接 */
-.member-link {
-    color: #111;
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.2s;
-}
-
-.member-link:hover {
-    color: #ff6b6b;
-    text-decoration: underline;
-}
-
-/* Members 卡片区域的链接（包裹整个卡片） */
-.member-card-link {
-    text-decoration: none;
-    display: block;
-}
-
-/* 保持卡片原有 hover 效果 */
-.member-card-link:hover .member-card {
-    transform: translateY(-5px);
-    background: #eeeeee;
-}
-
-/* 确保卡片内的文字颜色不受链接影响 */
-.member-card-link .member-card h3,
-.member-card-link .member-card p {
-    color: inherit;
-}
-
-
-/* ============================================
    Profile 独立页面样式
    ============================================ */
 #profile-page {
@@ -756,21 +487,24 @@ footer {
     text-align: justify;
 }
 
-/* 成员名字链接 */
+/* 成员名字链接 - 粉色，点击后不换色 */
 .member-link {
-    color: #111;
+    color: #ff6b6b;
     text-decoration: none;
     font-weight: bold;
-    transition: color 0.2s;
 }
 
-.member-link:hover {
+.member-link:visited,
+.member-link:hover,
+.member-link:active,
+.member-link:focus {
     color: #ff6b6b;
-    text-decoration: underline;
+    text-decoration: none;
 }
+
 
 /* ============================================
-   Members 独立页面样式（保留原有 + 卡片链接）
+   Members 独立页面样式
    ============================================ */
 #members-page {
     max-width: 1000px;
@@ -778,7 +512,71 @@ footer {
     padding-top: 100px;
 }
 
-/* 卡片链接样式 */
+.members-top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.members-main-title {
+    display: flex;
+    align-items: center;
+    font-size: 80px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    justify-content: center;
+    letter-spacing: 4px;
+}
+
+.member-title-logo {
+    width: 80px;
+    height: 80px;
+    margin-right: 16px;
+}
+
+.members-main-img {
+    width: 90%;
+    max-width: 700px;
+    border-radius: 16px;
+    margin-bottom: 30px;
+    display: block;
+}
+
+.members-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.member-card {
+    background: #f5f5f5;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.member-card img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.member-card h3 {
+    font-size: 18px;
+    margin: 6px 0 4px;
+    color: #111;
+}
+
+.member-card p {
+    font-size: 16px;
+    margin: 2px 0 0;
+    color: #666;
+}
+
+/* 卡片超链接样式 */
 .member-card-link {
     text-decoration: none;
     display: block;
@@ -796,28 +594,67 @@ footer {
 
 /* 手机端适配 */
 @media (max-width: 768px) {
-    #profile-page {
+    #profile-page,
+    #members-page {
         padding-top: 120px;
     }
-    .profile-main-title {
+    
+    .profile-main-title,
+    .members-main-title {
         font-size: 52px;
     }
-    .profile-title-logo {
+    
+    .profile-title-logo,
+    .member-title-logo {
         width: 52px;
         height: 52px;
     }
-    .profile-main-img {
+    
+    .profile-main-img,
+    .members-main-img {
         max-width: 550px;
     }
+    
     .profile-box {
         margin: 30px auto;
         padding: 0 16px;
     }
+    
     .profile-box h2 {
         font-size: 24px;
     }
+    
     .profile-box p {
         font-size: 14px;
         line-height: 1.8;
     }
+    
+    .members-container {
+        gap: 10px;
+    }
+    
+    .member-card h3 {
+        font-size: 12px;
+    }
+    
+    .member-card p {
+        font-size: 10px;
+    }
+    
+    .member-card {
+        padding: 8px;
+    }
+}
+
+
+/* ============================================
+   页脚
+   ============================================ */
+footer {
+    background: #f5f5f5;
+    padding: 20px;
+    text-align: center;
+    color: #888;
+    font-size: 14px;
+    margin-top: 40px;
 }
