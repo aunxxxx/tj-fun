@@ -473,12 +473,6 @@ section {
     line-height: 2.1;
 }
 
-.profile-box h2 {
-    font-size: 28px;
-    margin-bottom: 30px;
-    letter-spacing: 3px;
-}
-
 .profile-box p {
     font-size: 16px;
     color: #555;
@@ -486,20 +480,21 @@ section {
     text-align: justify;
 }
 
-/* 成员名字链接 - 蓝色，正常超链接样式 */
+/* 成员名字链接 - 蓝色，无下划线 */
 .member-link {
     color: #0066cc;
-    text-decoration: none;
+    text-decoration: none !important;
     font-weight: normal;
 }
 
 .member-link:hover {
-    text-decoration: underline;
+    text-decoration: none !important;
     color: #0066cc;
 }
 
 .member-link:visited {
     color: #0066cc;
+    text-decoration: none !important;
 }
 
 
@@ -564,11 +559,11 @@ section {
     border-radius: 12px;
 }
 
-/* 成员卡片名字 - 黑色 */
+/* 成员卡片名字 - 强制黑色 */
 .member-card h3 {
     font-size: 18px;
     margin: 6px 0 4px;
-    color: #111;
+    color: #111 !important;
 }
 
 .member-card p {
@@ -588,9 +583,13 @@ section {
     background: #eeeeee;
 }
 
-.member-card-link .member-card h3,
+/* 确保链接不改变卡片内文字颜色 */
+.member-card-link .member-card h3 {
+    color: #111 !important;
+}
+
 .member-card-link .member-card p {
-    color: inherit;
+    color: #666;
 }
 
 
@@ -653,10 +652,6 @@ section {
     .profile-box {
         margin: 30px auto;
         padding: 0 16px;
-    }
-    
-    .profile-box h2 {
-        font-size: 24px;
     }
     
     .profile-box p {
