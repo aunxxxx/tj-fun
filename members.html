@@ -33,8 +33,8 @@
             <span>iX*OnE</span>
         </div>
         <img src="images/iX*OnE.jpg" alt="iX*OnE" class="members-main-img">
-
-        <!-- 页面内副标题切换 -->
+        
+        <!-- 副标题切换：Profile / Members -->
         <div class="page-nav">
             <a href="profile1.html" class="page-nav-item">Profile</a>
             <a href="members.html" class="page-nav-item active">Members</a>
@@ -113,13 +113,11 @@
 </footer>
 
 <script>
-    // 强制登录检查
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (!currentUser) {
         window.location.href = 'login.html';
     }
 
-    // 头部滚动隐藏
     let lastScrollTop = 0;
     const header = document.querySelector('header');
     window.addEventListener('scroll', function() {
