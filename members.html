@@ -1,40 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iX*OnE - Members</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+    <div class="header-container">
+        <a href="about.html">
+            <img src="images/logo.png" alt="公司Logo" class="logo">
+        </a>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="news.html">大事件</a>
+            <a href="forum.html">铁汁窝</a>
+        </nav>
+        <div class="user-area">
+            <a href="profile.html" class="user-icon">
+                <img src="images/people.jpg" alt="个人中心" class="user-avatar">
+            </a>
+        </div>
+    </div>
+</header>
+
 <section id="members">
-
-    <!-- 顶部 -->
     <div class="members-top">
-
         <div class="members-main-title">
             <img src="images/ilogo.jpg" alt="Logo" class="member-title-logo">
             <span>iX*OnE</span>
         </div>
-
         <img src="images/iX*OnE.jpg" alt="iX*OnE" class="members-main-img">
 
-        <!-- 顶部导航 -->
+        <!-- 顶部导航：默认 Profile 高亮 -->
         <div class="members-nav">
-            <button class="nav-btn active" data-tab="profile">
-                Profile
-            </button>
-
-            <button class="nav-btn" data-tab="members">
-                Members
-            </button>
+            <button class="nav-btn active" data-tab="profile">Profile</button>
+            <button class="nav-btn" data-tab="members">Members</button>
         </div>
     </div>
 
-    <!-- Profile 页面 -->
+    <!-- Profile 页面（默认显示） -->
     <div class="tab-content active" id="profile-tab">
-
         <div class="profile-box">
-
             <h2>PROFILE</h2>
-
             <p>
                 　　iX*OnE，时代骏风（TJ-Fun）旗下国际流行乐演唱组合，
                 由马睿婕、陈朗（队长）、冯浩轩、徐楚茹、唐芷莹、
                 谭思盈、陈安愉、陈珊珊、陈琪琪九位成员组成。
             </p>
-
             <p>
                 　　2024年11月1日在时代骏风（TJ-Fun）自制的青春成长节目
                 《登基计划》中正式出道。同年11月25日发行出道专辑
@@ -42,79 +57,106 @@
                 12月担任公益星设计的公益明星大使，
                 年底获得国际新歌榜“最受欢迎团体”等十余奖项。
             </p>
-
             <p>
                 　　2025年7月11日，推出mini专辑《iX'World》，
                 销售额近5000万，并获得时代骏风“年度最佳团体奖”。
                 2026年1月26日，推出第一张正规专辑《CROWN THE iX》，
                 销售额近1亿。
             </p>
-
         </div>
-
     </div>
 
-    <!-- Members 页面 -->
+    <!-- Members 页面（初始隐藏） -->
     <div class="tab-content" id="members-tab">
-
         <div class="members-container">
-
             <div class="member-card">
                 <img src="images/马睿婕.png" alt="马睿婕">
                 <h3>马睿婕</h3>
                 <p>2004 / 09 / 02</p>
             </div>
-
             <div class="member-card">
                 <img src="images/陈朗.png" alt="陈朗">
                 <h3>陈朗</h3>
                 <p>2005 / 08 / 26</p>
             </div>
-
             <div class="member-card">
                 <img src="images/冯浩轩.png" alt="冯浩轩">
                 <h3>冯浩轩</h3>
                 <p>2004 / 10 / 29</p>
             </div>
-
             <div class="member-card">
                 <img src="images/徐楚茹.png" alt="徐楚茹">
                 <h3>徐楚茹</h3>
                 <p>2004 / 12 / 19</p>
             </div>
-
             <div class="member-card">
                 <img src="images/唐芷莹.png" alt="唐芷莹">
                 <h3>唐芷莹</h3>
                 <p>2005 / 04 / 06</p>
             </div>
-
             <div class="member-card">
                 <img src="images/谭思盈.png" alt="谭思盈">
                 <h3>谭思盈</h3>
                 <p>2004 / 10 / 27</p>
             </div>
-
             <div class="member-card">
                 <img src="images/陈安愉.png" alt="陈安愉">
                 <h3>陈安愉</h3>
                 <p>2005 / 02 / 01</p>
             </div>
-
             <div class="member-card">
                 <img src="images/陈珊珊.png" alt="陈珊珊">
                 <h3>陈珊珊</h3>
                 <p>2005 / 08 / 10</p>
             </div>
-
             <div class="member-card">
                 <img src="images/陈琪琪.png" alt="陈琪琪">
                 <h3>陈琪琪</h3>
                 <p>2005 / 08 / 10</p>
             </div>
-
         </div>
-
     </div>
-
 </section>
+
+<footer>
+    <p>© 2026 时代骏风</p>
+</footer>
+
+<script>
+    // 强制登录检查
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) {
+        window.location.href = 'login.html';
+    }
+
+    // 头部滚动隐藏
+    let lastScrollTop = 0;
+    const header = document.querySelector('header');
+    window.addEventListener('scroll', function() {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        if (scrollTop > lastScrollTop && scrollTop > 50) {
+            header.classList.add('hide');
+        } else {
+            header.classList.remove('hide');
+        }
+        lastScrollTop = scrollTop;
+    });
+
+    // 选项卡切换
+    const navBtns = document.querySelectorAll('.nav-btn');
+    const tabs = document.querySelectorAll('.tab-content');
+
+    navBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            navBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            tabs.forEach(tab => tab.classList.remove('active'));
+            const targetTabId = btn.dataset.tab + '-tab';
+            document.getElementById(targetTabId).classList.add('active');
+        });
+    });
+</script>
+
+</body>
+</html>
